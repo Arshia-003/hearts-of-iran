@@ -2095,7 +2095,7 @@
     </footer>
 
     <!-- ============================================================
-    FIREBASE + JAVASCRIPT
+    FIREBASE SDK
     ============================================================ -->
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js">
     </script>
@@ -2104,7 +2104,7 @@
 
     <script>
         // ============================================================
-        // FIREBASE CONFIG (با آدرس دیتابیس شما)
+        // FIREBASE CONFIG
         // ============================================================
         const firebaseConfig = {
             apiKey: "AIzaSyBDtmnlLlvEth9GLxgShvKpPcfF4AZahRU",
@@ -2470,6 +2470,7 @@
             e.preventDefault();
 
             if (isLoginMode) {
+                // ===== LOGIN =====
                 const loginIdentifier = loginUsernameInput.value.trim();
                 const password = passwordInput.value;
 
@@ -2484,34 +2485,79 @@
                     return;
                 }
 
-                const users = getUsers();
-                const foundUser = users.find(u =>
-                    (u.username.toLowerCase() === loginIdentifier.toLowerCase() ||
-                        u.email.toLowerCase() === loginIdentifier.toLowerCase()) &&
-                    u.password === password
-                );
+                // جستجو در Firebase
+                const usersRef = database.ref('users');
+                usersRef.orderByChild('username').equalTo(loginIdentifier).once('value').then((snapshot) => {
+                    let userData = null;
+                    let userKey = null;
 
-                if (!foundUser) {
-                    loginUsernameInput.classList.add('error');
-                    loginUsernameError.textContent = 'نام کاربری، ایمیل یا رمز عبور اشتباه است!';
-                    loginUsernameError.classList.add('show');
-                    loginSuccessMsg.classList.remove('show');
-                    return;
+                    snapshot.forEach((childSnapshot) => {
+                        const data = childSnapshot.val();
+                        if (data.username === loginIdentifier || data.email === loginIdentifier) {
+                            userData = data;
+                            userKey = childSnapshot.key;
+                        }
+                    });
+
+                    if (!userData) {
+                        // جستجو با ایمیل
+                        usersRef.orderByChild('email').equalTo(loginIdentifier).once('value').then((emailSnapshot) => {
+                            emailSnapshot.forEach((childSnapshot) => {
+                                const data = childSnapshot.val();
+                                if (data.email === loginIdentifier) {
+                                    userData = data;
+                                    userKey = childSnapshot.key;
+                                }
+                            });
+
+                            if (!userData || userData.password !== password) {
+                                loginUsernameInput.classList.add('error');
+                                loginUsernameError.textContent = 'نام کاربری، ایمیل یا رمز عبور اشتباه است!';
+                                loginUsernameError.classList.add('show');
+                                loginSuccessMsg.classList.remove('show');
+                                return;
+                            }
+
+                            loginSuccess(userData);
+                        });
+                        return;
+                    }
+
+                    if (userData.password !== password) {
+                        loginUsernameInput.classList.add('error');
+                        loginUsernameError.textContent = 'نام کاربری، ایمیل یا رمز عبور اشتباه است!';
+                        loginUsernameError.classList.add('show');
+                        loginSuccessMsg.classList.remove('show');
+                        return;
+                    }
+
+                    loginSuccess(userData);
+                });
+
+                function loginSuccess(userData) {
+                    // ذخیره در localStorage
+                    localStorage.setItem('hoi4-current-user', JSON.stringify(userData));
+                    updateUIForUser();
+
+                    // به‌روزرسانی آنلاین در Firebase
+                    database.ref('users/' + userData.username).update({
+                        online: true,
+                        lastSeen: firebase.database.ServerValue.TIMESTAMP
+                    });
+
+                    loginSuccessMsg.style.display = 'block';
+                    loginSuccessMsg.classList.add('show');
+                    loginSuccessMsg.textContent = '✅ ورود با موفقیت انجام شد!';
+
+                    setTimeout(() => {
+                        loginSuccessMsg.classList.remove('show');
+                        loginSuccessMsg.style.display = 'none';
+                        showSection('dashboard');
+                    }, 1500);
                 }
 
-                localStorage.setItem('hoi4-current-user', JSON.stringify(foundUser));
-                updateUIForUser();
-                loginSuccessMsg.style.display = 'block';
-                loginSuccessMsg.classList.add('show');
-                loginSuccessMsg.textContent = '✅ ورود با موفقیت انجام شد!';
-
-                setTimeout(() => {
-                    loginSuccessMsg.classList.remove('show');
-                    loginSuccessMsg.style.display = 'none';
-                    showSection('dashboard');
-                }, 1500);
-
             } else {
+                // ===== REGISTER =====
                 const username = usernameInput.value.trim();
                 const email = emailInput.value.trim();
                 const password = passwordInput.value;
@@ -2530,46 +2576,76 @@
                     return;
                 }
 
-                const users = getUsers();
+                // چک کردن تکراری بودن در Firebase
+                const usersRef = database.ref('users');
+                let isDuplicate = false;
 
-                if (users.some(u => u.username.toLowerCase() === username.toLowerCase())) {
-                    usernameInput.classList.add('error');
-                    usernameError.textContent = 'این نام کاربری قبلاً ثبت‌نام شده است!';
-                    usernameError.classList.add('show');
-                    successMsg.classList.remove('show');
-                    return;
-                }
+                usersRef.once('value').then((snapshot) => {
+                    const users = snapshot.val();
+                    if (users) {
+                        for (const key in users) {
+                            if (users[key].username === username) {
+                                usernameInput.classList.add('error');
+                                usernameError.textContent = 'این نام کاربری قبلاً ثبت‌نام شده است!';
+                                usernameError.classList.add('show');
+                                isDuplicate = true;
+                            }
+                            if (users[key].email === email) {
+                                emailInput.classList.add('error');
+                                emailError.textContent = 'این ایمیل قبلاً ثبت‌نام شده است!';
+                                emailError.classList.add('show');
+                                isDuplicate = true;
+                            }
+                        }
+                    }
 
-                if (users.some(u => u.email.toLowerCase() === email.toLowerCase())) {
-                    emailInput.classList.add('error');
-                    emailError.textContent = 'این ایمیل قبلاً ثبت‌نام شده است!';
-                    emailError.classList.add('show');
-                    successMsg.classList.remove('show');
-                    return;
-                }
+                    if (isDuplicate) {
+                        successMsg.classList.remove('show');
+                        return;
+                    }
 
-                const newUser = { username, email, password, country, date: new Date().toLocaleDateString('fa-IR') };
-                users.push(newUser);
-                saveUsers(users);
-                localStorage.setItem('hoi4-current-user', JSON.stringify(newUser));
-                updateUIForUser();
+                    // ذخیره در Firebase
+                    const newUser = {
+                        username: username,
+                        email: email,
+                        password: password,
+                        country: country,
+                        date: new Date().toLocaleDateString('fa-IR'),
+                        online: false,
+                        lastSeen: firebase.database.ServerValue.TIMESTAMP
+                    };
 
-                successMsg.classList.add('show');
-                form.reset();
-                document.querySelectorAll('.form-box input').forEach(el => el.classList.remove('success', 'error'));
-                document.querySelectorAll('.error-msg').forEach(el => el.classList.remove('show'));
+                    database.ref('users/' + username).set(newUser).then(() => {
+                        // ذخیره در localStorage
+                        const users = getUsers();
+                        users.push({ username, email, password, country });
+                        saveUsers(users);
 
-                setTimeout(() => {
-                    successMsg.classList.remove('show');
-                    showSection('dashboard');
-                }, 1500);
+                        localStorage.setItem('hoi4-current-user', JSON.stringify(newUser));
+                        updateUIForUser();
+
+                        // آنلاین کردن
+                        database.ref('users/' + username).update({
+                            online: true
+                        });
+
+                        successMsg.classList.add('show');
+                        form.reset();
+
+                        setTimeout(() => {
+                            successMsg.classList.remove('show');
+                            showSection('dashboard');
+                        }, 1500);
+                    }).catch((error) => {
+                        console.error('Error saving user:', error);
+                        alert('خطا در ثبت‌نام!');
+                    });
+                });
             }
         });
 
         // ============================================================
-        // ============================================================
         // CHAT SYSTEM (با Firebase)
-        // ============================================================
         // ============================================================
 
         function sendMessage() {
@@ -2596,7 +2672,6 @@
                 timestamp: firebase.database.ServerValue.TIMESTAMP
             };
 
-            // ارسال به Firebase
             const messagesRef = database.ref('messages');
             messagesRef.push(message).then(() => {
                 input.value = '';
@@ -2608,18 +2683,19 @@
 
         function loadMessages() {
             const messagesRef = database.ref('messages');
-            messagesRef.off('child_added'); // حذف لیسنر قبلی
+            messagesRef.off('child_added');
 
             messagesRef.orderByChild('timestamp').limitToLast(50).on('child_added', function(snapshot) {
                 const msg = snapshot.val();
                 const container = document.getElementById('chatMessages');
                 const currentUser = JSON.parse(localStorage.getItem('hoi4-current-user'));
 
-                // حذف پیام "هنوز پیامی..."
                 const emptyMsg = container.querySelector('div[style]');
                 if (emptyMsg && emptyMsg.textContent.includes('هنوز پیامی ارسال نشده است')) {
                     container.innerHTML = '';
                 }
+
+                if (!currentUser) return;
 
                 const isOwn = msg.username === currentUser.username;
                 const canModerate = canManageMessages(currentUser.username);
@@ -2648,7 +2724,7 @@
 
             const messagesRef = database.ref('messages/' + messageKey);
             messagesRef.remove().then(() => {
-                // پیام از دیتابیس حذف شد
+                // پیام حذف شد
             }).catch((error) => {
                 console.error('Error deleting message:', error);
                 alert('خطا در حذف پیام!');
@@ -2656,25 +2732,19 @@
         };
 
         // ============================================================
-        // CHAT USERS (با Firebase)
+        // CHAT USERS (از Firebase)
         // ============================================================
         function loadChatUsers() {
             const currentUser = JSON.parse(localStorage.getItem('hoi4-current-user'));
             if (!currentUser) return;
 
             // آپدیت وضعیت آنلاین
-            const userStatusRef = database.ref('users/' + currentUser.username);
-            userStatusRef.update({
+            database.ref('users/' + currentUser.username).update({
                 online: true,
                 lastSeen: firebase.database.ServerValue.TIMESTAMP
             });
 
-            // وقتی کاربر میره، آفلاین بشه
-            window.addEventListener('beforeunload', function() {
-                userStatusRef.update({ online: false });
-            });
-
-            // لیست کاربران رو از Firebase بگیر
+            // لیست کاربران از Firebase
             const usersRef = database.ref('users');
             usersRef.off('value');
             usersRef.on('value', function(snapshot) {
@@ -2683,27 +2753,32 @@
 
                 if (!usersData) {
                     container.innerHTML =
-                        `<div style="text-align:center; color:var(--text-secondary); padding:20px;">هیچ کاربری آنلاین نیست</div>`;
+                        `<div style="text-align:center; color:var(--text-secondary); padding:20px;">هیچ کاربری ثبت‌نام نکرده است</div>`;
                     return;
                 }
 
-                // گرفتن لیست کاربران از localStorage
-                const allUsers = getUsers();
+                // تبدیل به آرایه
+                const allUsers = [];
                 const onlineUsers = [];
 
                 for (const [username, data] of Object.entries(usersData)) {
+                    allUsers.push({
+                        username: username,
+                        ...data
+                    });
                     if (data.online === true) {
                         onlineUsers.push(username);
                     }
                 }
 
-                // ذخیره آنلاین‌ها در localStorage
+                // ذخیره آنلاین‌ها
                 saveOnlineUsers(onlineUsers);
 
                 let html = '';
                 const onlineList = allUsers.filter(u => onlineUsers.includes(u.username));
                 const offlineList = allUsers.filter(u => !onlineUsers.includes(u.username));
 
+                // مرتب‌سازی آنلاین‌ها: مدیر اول، سپس ادمین‌ها
                 onlineList.sort((a, b) => {
                     const roleA = getUserRole(a.username);
                     const roleB = getUserRole(b.username);
@@ -2812,70 +2887,78 @@
         };
 
         function loadAdminUsers() {
-            const users = getUsers();
-            const container = document.getElementById('adminUsersList');
-            const currentUser = JSON.parse(localStorage.getItem('hoi4-current-user'));
+            const usersRef = database.ref('users');
+            usersRef.once('value').then((snapshot) => {
+                const usersData = snapshot.val();
+                const container = document.getElementById('adminUsersList');
+                const currentUser = JSON.parse(localStorage.getItem('hoi4-current-user'));
 
-            if (users.length === 0) {
-                container.innerHTML = '<p style="color:var(--text-secondary);">هیچ کاربری ثبت‌نام نکرده است.</p>';
-                return;
-            }
+                if (!usersData) {
+                    container.innerHTML = '<p style="color:var(--text-secondary);">هیچ کاربری ثبت‌نام نکرده است.</p>';
+                    return;
+                }
 
-            let html = `
-                <table>
-                    <thead>
+                const users = [];
+                for (const [key, data] of Object.entries(usersData)) {
+                    users.push({ key, ...data });
+                }
+
+                let html = `
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>نام کاربری</th>
+                                <th>ایمیل</th>
+                                <th>کشور</th>
+                                <th>تاریخ ثبت</th>
+                                <th>نقش</th>
+                                <th>عملیات</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                `;
+
+                users.forEach(u => {
+                    const role = getUserRole(u.username);
+                    const isCurrentUser = u.username === currentUser.username;
+                    let roleLabel = '';
+                    let roleClass = '';
+                    if (role === 'owner') { roleLabel = 'مدیر';
+                        roleClass = 'owner'; } else if (role === 'admin') { roleLabel = 'ادمین';
+                        roleClass = 'admin'; } else { roleLabel = 'کاربر';
+                        roleClass = 'user'; }
+
+                    html += `
                         <tr>
-                            <th>نام کاربری</th>
-                            <th>ایمیل</th>
-                            <th>کشور</th>
-                            <th>تاریخ ثبت</th>
-                            <th>نقش</th>
-                            <th>عملیات</th>
+                            <td><strong>${u.username}</strong> ${role === 'owner' ? '⭐' : ''}</td>
+                            <td>${u.email}</td>
+                            <td>${u.country}</td>
+                            <td>${u.date || 'نامشخص'}</td>
+                            <td><span class="role-badge ${roleClass}">${roleLabel}</span></td>
+                            <td>
+                                ${!isCurrentUser ? `
+                                    ${role !== 'owner' ? `
+                                        <button class="action-btn ${role === 'admin' ? 'remove-admin' : 'make-admin'}" 
+                                                onclick="${role === 'admin' ? `removeAdmin('${u.username}')` : `makeAdmin('${u.username}')`}">
+                                            ${role === 'admin' ? '⬇️ حذف ادمین' : '👑 ادمین کن'}
+                                        </button>
+                                    ` : ''}
+                                    <button class="action-btn delete" onclick="deleteUser('${u.username}')">🗑️ حذف</button>
+                                ` : `
+                                    <span style="color:var(--text-secondary); font-size:0.8rem;">خودتان</span>
+                                `}
+                            </td>
                         </tr>
-                    </thead>
-                    <tbody>
-            `;
-
-            users.forEach(u => {
-                const role = getUserRole(u.username);
-                const isCurrentUser = u.username === currentUser.username;
-                let roleLabel = '';
-                let roleClass = '';
-                if (role === 'owner') { roleLabel = 'مدیر';
-                    roleClass = 'owner'; } else if (role === 'admin') { roleLabel = 'ادمین';
-                    roleClass = 'admin'; } else { roleLabel = 'کاربر';
-                    roleClass = 'user'; }
+                    `;
+                });
 
                 html += `
-                    <tr>
-                        <td><strong>${u.username}</strong> ${role === 'owner' ? '⭐' : ''}</td>
-                        <td>${u.email}</td>
-                        <td>${u.country}</td>
-                        <td>${u.date || 'نامشخص'}</td>
-                        <td><span class="role-badge ${roleClass}">${roleLabel}</span></td>
-                        <td>
-                            ${!isCurrentUser ? `
-                                ${role !== 'owner' ? `
-                                    <button class="action-btn ${role === 'admin' ? 'remove-admin' : 'make-admin'}" 
-                                            onclick="${role === 'admin' ? `removeAdmin('${u.username}')` : `makeAdmin('${u.username}')`}">
-                                        ${role === 'admin' ? '⬇️ حذف ادمین' : '👑 ادمین کن'}
-                                    </button>
-                                ` : ''}
-                                <button class="action-btn delete" onclick="deleteUser('${u.username}')">🗑️ حذف</button>
-                            ` : `
-                                <span style="color:var(--text-secondary); font-size:0.8rem;">خودتان</span>
-                            `}
-                        </td>
-                    </tr>
+                        </tbody>
+                    </table>
                 `;
+
+                container.innerHTML = html;
             });
-
-            html += `
-                    </tbody>
-                </table>
-            `;
-
-            container.innerHTML = html;
         }
 
         window.deleteUser = function(username) {
@@ -2892,25 +2975,29 @@
                 return;
             }
 
-            let users = getUsers();
-            users = users.filter(u => u.username !== username);
-            saveUsers(users);
-
             // حذف از Firebase
-            database.ref('users/' + username).remove();
+            database.ref('users/' + username).remove().then(() => {
+                // حذف از localStorage
+                let users = getUsers();
+                users = users.filter(u => u.username !== username);
+                saveUsers(users);
 
-            const onlineUsers = getOnlineUsers().filter(u => u !== username);
-            saveOnlineUsers(onlineUsers);
+                const onlineUsers = getOnlineUsers().filter(u => u !== username);
+                saveOnlineUsers(onlineUsers);
 
-            adminList = adminList.filter(u => u !== username);
-            saveAdminList();
+                adminList = adminList.filter(u => u !== username);
+                saveAdminList();
 
-            const timedOut = getTimedOutUsers().filter(u => u !== username);
-            saveTimedOutUsers(timedOut);
+                const timedOut = getTimedOutUsers().filter(u => u !== username);
+                saveTimedOutUsers(timedOut);
 
-            loadAdminUsers();
-            loadChatUsers();
-            alert(`✅ کاربر "${username}" با موفقیت حذف شد!`);
+                loadAdminUsers();
+                loadChatUsers();
+                alert(`✅ کاربر "${username}" با موفقیت حذف شد!`);
+            }).catch((error) => {
+                console.error('Error deleting user:', error);
+                alert('خطا در حذف کاربر!');
+            });
         };
 
         window.makeAdmin = function(username) {
@@ -2951,7 +3038,6 @@
         window.closeChat = function() {
             const currentUser = JSON.parse(localStorage.getItem('hoi4-current-user'));
             if (currentUser) {
-                // آفلاین کردن در Firebase
                 database.ref('users/' + currentUser.username).update({ online: false });
                 const onlineUsers = getOnlineUsers().filter(u => u !== currentUser.username);
                 saveOnlineUsers(onlineUsers);
@@ -2976,7 +3062,6 @@
         function handleLogout() {
             const currentUser = JSON.parse(localStorage.getItem('hoi4-current-user'));
             if (currentUser) {
-                // آفلاین کردن در Firebase
                 database.ref('users/' + currentUser.username).update({ online: false });
                 const onlineUsers = getOnlineUsers().filter(u => u !== currentUser.username);
                 saveOnlineUsers(onlineUsers);
@@ -3095,14 +3180,26 @@
                 return;
             }
 
-            const userIndex = users.findIndex(u => u.email === currentUser.email);
-            if (userIndex !== -1) {
-                users[userIndex].username = newUsername;
+            // به‌روزرسانی در Firebase
+            const userRef = database.ref('users/' + currentUser.username);
+            userRef.update({
+                username: newUsername,
+                country: newCountry
+            }).then(() => {
                 if (newPassword) {
-                    users[userIndex].password = newPassword;
+                    userRef.update({ password: newPassword });
                 }
-                users[userIndex].country = newCountry;
-                saveUsers(users);
+
+                // به‌روزرسانی localStorage
+                const userIndex = users.findIndex(u => u.email === currentUser.email);
+                if (userIndex !== -1) {
+                    users[userIndex].username = newUsername;
+                    if (newPassword) {
+                        users[userIndex].password = newPassword;
+                    }
+                    users[userIndex].country = newCountry;
+                    saveUsers(users);
+                }
 
                 const updatedUser = { ...currentUser, username: newUsername, country: newCountry };
                 if (newPassword) {
@@ -3118,7 +3215,11 @@
                     settingsSuccess.classList.remove('show');
                     closeSettings();
                 }, 2000);
-            }
+            }).catch((error) => {
+                console.error('Error updating user:', error);
+                settingsError.textContent = '❌ خطا در ذخیره تغییرات!';
+                settingsError.classList.add('show');
+            });
         });
 
         // ============================================================
@@ -3127,7 +3228,6 @@
         const currentUser = JSON.parse(localStorage.getItem('hoi4-current-user'));
         if (currentUser) {
             updateUIForUser();
-            // کاربر رو آنلاین کن
             database.ref('users/' + currentUser.username).update({
                 online: true,
                 lastSeen: firebase.database.ServerValue.TIMESTAMP
