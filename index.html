@@ -1,0 +1,3148 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hearts of Iran</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Vazirmatn:wght@400;700;900&display=swap" rel="stylesheet" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #0b0e14;
+            --bg-secondary: #141a22;
+            --bg-card: #181f29;
+            --bg-input: #0b0e14;
+            --bg-hover: #1f2835;
+            --text-primary: #ddd;
+            --text-secondary: #b0b8c5;
+            --gold: #b8860b;
+            --gold-light: #f5d77b;
+            --border-color: #2e3a48;
+            --shadow: 0 8px 30px rgba(0, 0, 0, 0.7);
+            --transition: 0.3s ease;
+            --card-radius: 16px;
+            --online-green: #44ff88;
+            --offline-gray: #666;
+            --admin-color: #ff6b35;
+            --owner-color: #ffd700;
+        }
+
+        [data-theme="light"] {
+            --bg-primary: #f0ede8;
+            --bg-secondary: #e8e3da;
+            --bg-card: #dcd5ca;
+            --bg-input: #fff8f0;
+            --bg-hover: #cbc2b5;
+            --text-primary: #1a1a1a;
+            --text-secondary: #3a3a3a;
+            --border-color: #b8a99a;
+            --shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        body {
+            font-family: 'Vazirmatn', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.8;
+            transition: background var(--transition), color var(--transition);
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: -1;
+            pointer-events: none;
+            background:
+                repeating-linear-gradient(45deg,
+                    transparent,
+                    transparent 50px,
+                    rgba(184, 134, 11, 0.04) 50px,
+                    rgba(184, 134, 11, 0.04) 51px),
+                repeating-linear-gradient(-45deg,
+                    transparent,
+                    transparent 50px,
+                    rgba(184, 134, 11, 0.04) 50px,
+                    rgba(184, 134, 11, 0.04) 51px),
+                radial-gradient(circle at 20% 30%, rgba(184, 134, 11, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(184, 134, 11, 0.07) 0%, transparent 40%),
+                radial-gradient(circle at 50% 50%, rgba(184, 134, 11, 0.05) 0%, transparent 60%),
+                repeating-linear-gradient(0deg,
+                    transparent,
+                    transparent 100px,
+                    rgba(184, 134, 11, 0.03) 100px,
+                    rgba(184, 134, 11, 0.03) 101px);
+        }
+
+        .shape {
+            position: fixed;
+            border: 1px solid rgba(184, 134, 11, 0.1);
+            pointer-events: none;
+            z-index: -1;
+            border-radius: 50%;
+        }
+
+        .shape-1 {
+            width: 350px;
+            height: 350px;
+            top: 5%;
+            right: 5%;
+            animation: float 20s ease-in-out infinite;
+        }
+        .shape-2 {
+            width: 250px;
+            height: 250px;
+            bottom: 10%;
+            left: 5%;
+            animation: float 25s ease-in-out infinite reverse;
+            border-radius: 30% 70% 50% 50% / 30% 30% 70% 70%;
+        }
+        .shape-3 {
+            width: 180px;
+            height: 180px;
+            top: 45%;
+            right: 12%;
+            animation: float 18s ease-in-out infinite 2s;
+            border-radius: 40% 60% 40% 60% / 60% 40% 60% 40%;
+        }
+        .shape-4 {
+            width: 120px;
+            height: 120px;
+            bottom: 25%;
+            right: 25%;
+            animation: float 22s ease-in-out infinite 1s;
+            border-radius: 50%;
+        }
+        .shape-5 {
+            width: 300px;
+            height: 300px;
+            top: 2%;
+            left: 15%;
+            animation: float 30s ease-in-out infinite 3s;
+            border-radius: 50%;
+        }
+
+        @keyframes float {
+            0%,
+            100% {
+                transform: translate(0, 0) rotate(0deg);
+            }
+            25% {
+                transform: translate(25px, -35px) rotate(5deg);
+            }
+            50% {
+                transform: translate(-15px, 25px) rotate(-3deg);
+            }
+            75% {
+                transform: translate(35px, 15px) rotate(7deg);
+            }
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg-secondary);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--gold);
+            border-radius: 10px;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+        @keyframes pulseGlow {
+            0%,
+            100% {
+                box-shadow: 0 0 20px var(--gold);
+            }
+            50% {
+                box-shadow: 0 0 50px var(--gold-light);
+            }
+        }
+
+        .animate-on-load {
+            animation: fadeInUp 0.6s ease forwards;
+            opacity: 0;
+            will-change: transform, opacity;
+        }
+
+        .hero {
+            background: radial-gradient(ellipse at bottom, var(--bg-secondary) 0%, var(--bg-primary) 100%);
+            padding: 25px 20px 50px;
+            text-align: center;
+            border-bottom: 4px solid var(--gold);
+            position: relative;
+            overflow: hidden;
+            transition: background var(--transition);
+        }
+
+        .hero::before {
+            content: "⚔️";
+            font-size: 100px;
+            position: absolute;
+            left: -20px;
+            top: -30px;
+            opacity: 0.06;
+            transform: rotate(-15deg);
+            animation: float 6s ease-in-out infinite;
+        }
+        .hero::after {
+            content: "✈️";
+            font-size: 80px;
+            position: absolute;
+            right: -10px;
+            bottom: -20px;
+            opacity: 0.06;
+            transform: rotate(10deg);
+            animation: float 8s ease-in-out infinite reverse;
+        }
+
+        .hero h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.8rem;
+            font-weight: 900;
+            background: linear-gradient(45deg, var(--gold-light), var(--gold));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 30px rgba(184, 134, 11, 0.3);
+            letter-spacing: 4px;
+        }
+        .hero .subtitle {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            margin-top: 10px;
+        }
+        .hero .badge {
+            display: inline-block;
+            background: var(--gold);
+            color: #0b0e14;
+            padding: 6px 24px;
+            border-radius: 40px;
+            font-weight: 900;
+            font-size: 1rem;
+            letter-spacing: 2px;
+            animation: pulseGlow 2s infinite;
+            margin-bottom: 12px;
+        }
+
+        /* ============================================================
+           NAVBAR
+           ============================================================ */
+        nav {
+            background: var(--bg-secondary);
+            padding: 12px 25px;
+            border-bottom: 2px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 999;
+            backdrop-filter: blur(6px);
+            transition: all var(--transition);
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .nav-left {
+            position: absolute;
+            right: 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-center {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+            flex-wrap: wrap;
+        }
+
+        .nav-right {
+            position: absolute;
+            left: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        nav a {
+            color: var(--gold);
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1rem;
+            transition: all var(--transition);
+            padding: 6px 12px;
+            border-radius: 6px;
+            position: relative;
+            cursor: pointer;
+        }
+        nav a::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--gold-light);
+            transition: var(--transition);
+        }
+        nav a:hover::after {
+            width: 100%;
+        }
+        nav a:hover {
+            color: var(--gold-light);
+            transform: scale(1.05);
+        }
+        nav a.active {
+            color: var(--gold-light);
+            background: var(--bg-card);
+            border-radius: 8px;
+        }
+
+        .register-btn-nav {
+            background: var(--gold);
+            color: #0b0e14;
+            border: none;
+            border-radius: 50px;
+            padding: 6px 18px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all var(--transition);
+            font-weight: 700;
+            font-family: 'Vazirmatn', sans-serif;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .register-btn-nav:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px var(--gold);
+        }
+
+        .user-btn-nav {
+            background: var(--gold);
+            color: #0b0e14;
+            border: none;
+            border-radius: 50px;
+            padding: 6px 18px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all var(--transition);
+            font-weight: 700;
+            font-family: 'Vazirmatn', sans-serif;
+            white-space: nowrap;
+            display: none;
+            align-items: center;
+            gap: 6px;
+        }
+        .user-btn-nav:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px var(--gold);
+        }
+        .user-btn-nav.show {
+            display: flex;
+        }
+
+        /* دکمه چت روم در نوار */
+        .chat-btn-nav {
+            background: var(--bg-card);
+            color: var(--text-primary);
+            border: 2px solid var(--gold);
+            border-radius: 50px;
+            padding: 6px 14px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all var(--transition);
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-family: 'Vazirmatn', sans-serif;
+            white-space: nowrap;
+            display: none;
+        }
+        .chat-btn-nav:hover {
+            transform: scale(1.05);
+            border-color: var(--gold-light);
+            box-shadow: 0 0 20px var(--gold);
+        }
+        .chat-btn-nav.show {
+            display: flex;
+        }
+
+        .theme-toggle-nav {
+            background: var(--bg-card);
+            color: var(--text-primary);
+            border: 2px solid var(--gold);
+            border-radius: 50px;
+            padding: 6px 14px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all var(--transition);
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-family: 'Vazirmatn', sans-serif;
+            white-space: nowrap;
+        }
+        .theme-toggle-nav:hover {
+            transform: scale(1.05);
+            border-color: var(--gold-light);
+            box-shadow: 0 0 20px var(--gold);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+
+        .section-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2rem;
+            color: var(--gold);
+            text-align: center;
+            margin-bottom: 30px;
+            position: relative;
+        }
+        .section-title::after {
+            content: "";
+            display: block;
+            width: 100px;
+            height: 3px;
+            background: var(--gold);
+            margin: 8px auto 0;
+            border-radius: 10px;
+        }
+
+        /* ============================================================
+           REGISTER / LOGIN
+           ============================================================ */
+        .register-section {
+            display: none;
+            animation: slideDown 0.4s ease;
+            margin: 20px 0 40px;
+        }
+        .register-section.active {
+            display: block;
+        }
+
+        .form-box {
+            background: var(--bg-secondary);
+            padding: 35px 30px;
+            border-radius: 30px;
+            border: 1px solid var(--border-color);
+            max-width: 500px;
+            margin: 0 auto;
+            transition: all var(--transition);
+            box-shadow: var(--shadow);
+        }
+        .form-box h2 {
+            color: var(--gold);
+            font-family: 'Orbitron', sans-serif;
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 1.6rem;
+        }
+        .form-box input,
+        .form-box select {
+            width: 100%;
+            padding: 12px 16px;
+            margin: 6px 0 14px;
+            background: var(--bg-input);
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            color: var(--text-primary);
+            font-size: 0.95rem;
+            font-family: 'Vazirmatn', sans-serif;
+            transition: all var(--transition);
+        }
+        .form-box input:focus,
+        .form-box select:focus {
+            border-color: var(--gold);
+            outline: none;
+            box-shadow: 0 0 20px rgba(184, 134, 11, 0.2);
+            transform: scale(1.01);
+        }
+        .form-box input.error {
+            border-color: #ff4444;
+            box-shadow: 0 0 20px rgba(255, 68, 68, 0.3);
+        }
+        .form-box input.success {
+            border-color: #44ff88;
+            box-shadow: 0 0 20px rgba(68, 255, 136, 0.2);
+        }
+        .form-box label {
+            font-weight: 700;
+            color: var(--gold);
+            font-size: 0.95rem;
+        }
+        .form-box .error-msg {
+            color: #ff4444;
+            font-size: 0.8rem;
+            margin-top: -10px;
+            margin-bottom: 10px;
+            display: none;
+            font-weight: 700;
+        }
+        .form-box .error-msg.show {
+            display: block;
+            animation: fadeInUp 0.3s ease;
+        }
+        .form-box button {
+            background: var(--gold);
+            color: #0b0e14;
+            font-weight: 900;
+            padding: 14px 28px;
+            border: none;
+            border-radius: 40px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all var(--transition);
+            width: 100%;
+            font-family: 'Orbitron', sans-serif;
+            letter-spacing: 1px;
+        }
+        .form-box button:hover {
+            background: var(--gold-light);
+            transform: scale(1.03);
+            box-shadow: 0 0 40px rgba(245, 215, 123, 0.4);
+        }
+        .form-box .success-msg {
+            background: #44ff8855;
+            color: #00cc66;
+            padding: 12px;
+            border-radius: 14px;
+            margin-top: 15px;
+            display: none;
+            font-weight: 700;
+            text-align: center;
+            border: 2px solid #44ff88;
+        }
+        .form-box .success-msg.show {
+            display: block;
+            animation: fadeInUp 0.5s ease;
+        }
+
+        .switch-auth {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .switch-auth .switch-btn {
+            background: transparent;
+            color: var(--gold-light);
+            border: 2px solid var(--gold);
+            border-radius: 50px;
+            padding: 10px 24px;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all var(--transition);
+            font-weight: 700;
+            font-family: 'Vazirmatn', sans-serif;
+            width: 100%;
+        }
+        .switch-auth .switch-btn:hover {
+            background: var(--gold);
+            color: #0b0e14;
+            transform: scale(1.02);
+            box-shadow: 0 0 30px rgba(184, 134, 11, 0.3);
+        }
+        .switch-auth .switch-btn.login-btn {
+            background: var(--gold);
+            color: #0b0e14;
+        }
+        .switch-auth .switch-btn.login-btn:hover {
+            background: var(--gold-light);
+            box-shadow: 0 0 30px rgba(245, 215, 123, 0.4);
+        }
+
+        /* ============================================================
+           DASHBOARD
+           ============================================================ */
+        .dashboard {
+            display: none;
+            animation: slideDown 0.4s ease;
+            margin: 20px 0 40px;
+            position: relative;
+            min-height: 400px;
+        }
+        .dashboard.active {
+            display: block;
+        }
+
+        .dashboard .dashboard-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.15;
+            background-size: cover;
+            background-position: center;
+            filter: blur(3px);
+            transition: all 0.6s ease;
+            pointer-events: none;
+            will-change: opacity, filter;
+        }
+        .dashboard .dashboard-bg::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(ellipse at center, transparent 40%, var(--bg-primary) 100%);
+        }
+
+        .dashboard .welcome-banner {
+            background: linear-gradient(135deg, var(--bg-card), var(--bg-secondary));
+            padding: 25px 30px;
+            border-radius: var(--card-radius);
+            border: 2px solid var(--gold);
+            margin-bottom: 30px;
+            text-align: center;
+            box-shadow: var(--shadow);
+            position: relative;
+            overflow: hidden;
+        }
+        .dashboard .welcome-banner::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, var(--gold), transparent 70%);
+            opacity: 0.05;
+            animation: float 10s ease-in-out infinite;
+        }
+        .dashboard .welcome-banner .country-flag {
+            width: 60px;
+            height: 40px;
+            border-radius: 8px;
+            border: 2px solid var(--gold);
+            margin: 0 auto 10px;
+            object-fit: cover;
+            box-shadow: 0 0 20px rgba(184, 134, 11, 0.3);
+        }
+        .dashboard .welcome-banner h2 {
+            color: var(--gold);
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.8rem;
+        }
+        .dashboard .welcome-banner p {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            margin-top: 5px;
+        }
+        .dashboard .welcome-banner .country-badge {
+            display: inline-block;
+            background: var(--gold);
+            color: #0b0e14;
+            padding: 4px 20px;
+            border-radius: 30px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            margin-top: 8px;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .dashboard-card {
+            background: var(--bg-card);
+            padding: 20px 15px;
+            border-radius: var(--card-radius);
+            border: 1px solid var(--border-color);
+            transition: all var(--transition);
+            box-shadow: var(--shadow);
+            cursor: pointer;
+            text-align: center;
+            backdrop-filter: blur(5px);
+            background: rgba(24, 31, 41, 0.85);
+            will-change: transform;
+        }
+        [data-theme="light"] .dashboard-card {
+            background: rgba(220, 213, 202, 0.85);
+        }
+        .dashboard-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--gold);
+            box-shadow: 0 12px 40px rgba(184, 134, 11, 0.2);
+        }
+        .dashboard-card .icon {
+            font-size: 2.5rem;
+            display: block;
+            margin-bottom: 8px;
+        }
+        .dashboard-card h4 {
+            color: var(--gold);
+            font-size: 1.1rem;
+            margin-bottom: 4px;
+        }
+        .dashboard-card p {
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+        }
+
+        /* ============================================================
+           CHAT ROOM
+           ============================================================ */
+        .chat-room {
+            display: none;
+            animation: slideDown 0.4s ease;
+            margin: 20px 0 40px;
+            position: relative;
+            min-height: 500px;
+        }
+        .chat-room.active {
+            display: block;
+        }
+
+        .chat-container {
+            display: flex;
+            gap: 25px;
+            background: var(--bg-secondary);
+            border-radius: var(--card-radius);
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            min-height: 500px;
+            max-height: 600px;
+        }
+
+        .chat-users {
+            width: 280px;
+            background: var(--bg-card);
+            border-left: 1px solid var(--border-color);
+            padding: 15px 10px;
+            overflow-y: auto;
+            flex-shrink: 0;
+        }
+        .chat-users::-webkit-scrollbar {
+            width: 4px;
+        }
+        .chat-users::-webkit-scrollbar-thumb {
+            background: var(--gold);
+            border-radius: 10px;
+        }
+        .chat-users .users-title {
+            color: var(--gold);
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.9rem;
+            text-align: center;
+            padding-bottom: 12px;
+            border-bottom: 2px solid var(--border-color);
+            margin-bottom: 12px;
+        }
+
+        .chat-users .user-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 12px;
+            border-radius: 8px;
+            transition: var(--transition);
+            cursor: default;
+            margin-bottom: 2px;
+        }
+        .chat-users .user-item:hover {
+            background: var(--bg-hover);
+        }
+        .chat-users .user-item .status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            flex-shrink: 0;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .chat-users .user-item .status-dot.online {
+            background: var(--online-green);
+            box-shadow: 0 0 10px rgba(68, 255, 136, 0.3);
+        }
+        .chat-users .user-item .status-dot.offline {
+            background: var(--offline-gray);
+        }
+        .chat-users .user-item .username {
+            font-size: 0.9rem;
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+        .chat-users .user-item .user-role {
+            font-size: 0.65rem;
+            padding: 1px 8px;
+            border-radius: 12px;
+            margin-right: auto;
+            font-weight: 700;
+        }
+        .chat-users .user-item .user-role.owner {
+            background: var(--owner-color);
+            color: #0b0e14;
+        }
+        .chat-users .user-item .user-role.admin {
+            background: var(--admin-color);
+            color: #fff;
+        }
+
+        .chat-users .divider {
+            border: none;
+            border-top: 1px solid var(--border-color);
+            margin: 10px 0;
+            opacity: 0.5;
+        }
+
+        .chat-main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 15px 20px;
+            background: var(--bg-primary);
+            min-width: 0;
+        }
+
+        .chat-main .chat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 12px;
+            border-bottom: 2px solid var(--border-color);
+        }
+        .chat-main .chat-header .chat-title {
+            color: var(--gold);
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.1rem;
+        }
+        .chat-main .chat-header .chat-close {
+            background: var(--bg-card);
+            color: var(--text-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 50%;
+            width: 35px;
+            height: 35px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .chat-main .chat-header .chat-close:hover {
+            transform: rotate(90deg);
+            border-color: var(--gold);
+            color: var(--gold);
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 15px 5px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .chat-messages::-webkit-scrollbar {
+            width: 4px;
+        }
+        .chat-messages::-webkit-scrollbar-thumb {
+            background: var(--gold);
+            border-radius: 10px;
+        }
+
+        .chat-messages .message {
+            max-width: 75%;
+            padding: 10px 14px;
+            border-radius: 14px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            word-wrap: break-word;
+            animation: fadeInUp 0.3s ease;
+            position: relative;
+        }
+        .chat-messages .message.own {
+            align-self: flex-end;
+            background: var(--gold);
+            color: #0b0e14;
+            border-color: var(--gold-light);
+        }
+        .chat-messages .message .msg-user {
+            font-weight: 700;
+            font-size: 0.85rem;
+            color: var(--gold-light);
+            margin-bottom: 3px;
+        }
+        .chat-messages .message.own .msg-user {
+            color: #0b0e14;
+        }
+        .chat-messages .message .msg-text {
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+        .chat-messages .message .msg-time {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            opacity: 0.6;
+            margin-top: 4px;
+            text-align: left;
+        }
+        .chat-messages .message.own .msg-time {
+            color: #0b0e14;
+            opacity: 0.7;
+        }
+
+        .chat-messages .message .msg-actions {
+            margin-top: 6px;
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+        .chat-messages .message .msg-actions button {
+            padding: 2px 12px;
+            border: none;
+            border-radius: 14px;
+            font-size: 0.7rem;
+            cursor: pointer;
+            font-weight: 700;
+            transition: all var(--transition);
+            font-family: 'Vazirmatn', sans-serif;
+        }
+        .chat-messages .message .msg-actions .delete-msg {
+            background: #ff4444;
+            color: #fff;
+        }
+        .chat-messages .message .msg-actions .delete-msg:hover {
+            transform: scale(1.05);
+        }
+        .chat-messages .message .msg-actions .timeout-msg {
+            background: #ffaa00;
+            color: #0b0e14;
+        }
+        .chat-messages .message .msg-actions .timeout-msg:hover {
+            transform: scale(1.05);
+        }
+
+        .chat-input-area {
+            display: flex;
+            gap: 10px;
+            padding-top: 12px;
+            border-top: 2px solid var(--border-color);
+        }
+        .chat-input-area input {
+            flex: 1;
+            padding: 10px 16px;
+            background: var(--bg-input);
+            border: 2px solid var(--border-color);
+            border-radius: 30px;
+            color: var(--text-primary);
+            font-size: 0.95rem;
+            font-family: 'Vazirmatn', sans-serif;
+            transition: all var(--transition);
+            outline: none;
+        }
+        .chat-input-area input:focus {
+            border-color: var(--gold);
+            box-shadow: 0 0 20px rgba(184, 134, 11, 0.15);
+        }
+        .chat-input-area input:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .chat-input-area input::placeholder {
+            color: var(--text-secondary);
+            opacity: 0.5;
+        }
+        .chat-input-area .send-btn {
+            background: var(--gold);
+            color: #0b0e14;
+            border: none;
+            border-radius: 50%;
+            width: 45px;
+            height: 45px;
+            font-size: 1.3rem;
+            cursor: pointer;
+            transition: all var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .chat-input-area .send-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 30px rgba(184, 134, 11, 0.3);
+        }
+        .chat-input-area .send-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* ============================================================
+           ADMIN PANEL
+           ============================================================ */
+        .admin-panel {
+            display: none;
+            animation: slideDown 0.4s ease;
+            margin: 20px 0 40px;
+        }
+        .admin-panel.active {
+            display: block;
+        }
+
+        .admin-panel .admin-header {
+            background: linear-gradient(135deg, var(--bg-card), var(--bg-secondary));
+            padding: 25px 30px;
+            border-radius: var(--card-radius);
+            border: 2px solid var(--gold);
+            margin-bottom: 30px;
+            text-align: center;
+            box-shadow: var(--shadow);
+            position: relative;
+            overflow: hidden;
+        }
+        .admin-panel .admin-header h2 {
+            color: var(--gold);
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.8rem;
+        }
+        .admin-panel .admin-header p {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            margin-top: 5px;
+        }
+        .admin-panel .admin-header .close-admin {
+            margin-top: 12px;
+            background: var(--bg-card);
+            color: var(--text-secondary);
+            border: 1px solid var(--border-color);
+            padding: 8px 24px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 0.9rem;
+            transition: all var(--transition);
+            font-family: 'Vazirmatn', sans-serif;
+        }
+        .admin-panel .admin-header .close-admin:hover {
+            border-color: var(--gold);
+            color: var(--gold);
+            transform: scale(1.05);
+        }
+
+        .admin-panel .admin-content {
+            background: var(--bg-card);
+            border-radius: var(--card-radius);
+            border: 1px solid var(--border-color);
+            padding: 20px;
+            overflow-x: auto;
+        }
+        .admin-panel .admin-content h3 {
+            color: var(--gold);
+            font-family: 'Orbitron', sans-serif;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+
+        .admin-panel .admin-content table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: right;
+            font-size: 0.9rem;
+        }
+        .admin-panel .admin-content table th {
+            padding: 10px;
+            border-bottom: 2px solid var(--border-color);
+            color: var(--gold);
+            font-weight: 700;
+        }
+        .admin-panel .admin-content table td {
+            padding: 10px;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-secondary);
+        }
+        .admin-panel .admin-content table .role-badge {
+            padding: 2px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            display: inline-block;
+        }
+        .admin-panel .admin-content table .role-badge.owner {
+            background: var(--owner-color);
+            color: #0b0e14;
+        }
+        .admin-panel .admin-content table .role-badge.admin {
+            background: var(--admin-color);
+            color: #fff;
+        }
+        .admin-panel .admin-content table .role-badge.user {
+            background: var(--bg-primary);
+            color: var(--text-secondary);
+        }
+
+        .admin-panel .admin-content table .action-btn {
+            padding: 4px 12px;
+            border: none;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all var(--transition);
+            font-family: 'Vazirmatn', sans-serif;
+            margin: 2px;
+        }
+        .admin-panel .admin-content table .action-btn:hover {
+            transform: scale(1.05);
+        }
+        .admin-panel .admin-content table .action-btn.delete {
+            background: #ff4444;
+            color: #fff;
+        }
+        .admin-panel .admin-content table .action-btn.make-admin {
+            background: var(--admin-color);
+            color: #fff;
+        }
+        .admin-panel .admin-content table .action-btn.remove-admin {
+            background: var(--bg-card);
+            color: var(--text-secondary);
+            border: 1px solid var(--border-color);
+        }
+
+        /* ============================================================
+           LOGOUT OVERLAY
+           ============================================================ */
+        .logout-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 9997;
+            backdrop-filter: blur(8px);
+            justify-content: center;
+            align-items: center;
+        }
+        .logout-overlay.active {
+            display: flex;
+        }
+
+        .logout-box {
+            background: var(--bg-secondary);
+            padding: 40px 35px;
+            border-radius: 30px;
+            border: 2px solid var(--gold);
+            max-width: 450px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
+            animation: slideDown 0.4s ease;
+        }
+        .logout-box .logout-icon {
+            font-size: 4rem;
+            display: block;
+            margin-bottom: 15px;
+        }
+        .logout-box h3 {
+            color: var(--text-primary);
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+        }
+        .logout-box p {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            margin-bottom: 25px;
+            line-height: 1.8;
+        }
+        .logout-box .logout-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .logout-box .logout-buttons button {
+            padding: 10px 25px;
+            border: none;
+            border-radius: 30px;
+            font-size: 0.95rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all var(--transition);
+            font-family: 'Vazirmatn', sans-serif;
+        }
+        .logout-box .logout-buttons .btn-yes {
+            background: #ff4444;
+            color: #fff;
+        }
+        .logout-box .logout-buttons .btn-yes:hover {
+            transform: scale(1.05);
+            background: #ff6666;
+            box-shadow: 0 0 30px rgba(255, 68, 68, 0.3);
+        }
+        .logout-box .logout-buttons .btn-no {
+            background: var(--bg-card);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+        .logout-box .logout-buttons .btn-no:hover {
+            transform: scale(1.05);
+            border-color: var(--gold);
+            box-shadow: 0 0 20px rgba(184, 134, 11, 0.2);
+        }
+
+        /* ============================================================
+           SETTINGS OVERLAY
+           ============================================================ */
+        .settings-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 9996;
+            backdrop-filter: blur(5px);
+        }
+        .settings-overlay.active {
+            display: block;
+        }
+
+        .settings-panel {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 9997;
+            max-width: 550px;
+            width: 90%;
+        }
+        .settings-panel.active {
+            display: block;
+            animation: slideDown 0.4s ease;
+        }
+
+        .settings-panel .form-box {
+            background: var(--bg-secondary);
+            padding: 35px 30px;
+            border-radius: 30px;
+            border: 2px solid var(--gold);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
+            max-width: 100%;
+            position: relative;
+        }
+        .settings-panel .form-box .close-settings {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: var(--bg-card);
+            color: var(--text-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .settings-panel .form-box .close-settings:hover {
+            transform: rotate(90deg);
+            border-color: var(--gold);
+            color: var(--gold);
+        }
+
+        /* ============================================================
+           FACTION CARDS
+           ============================================================ */
+        .factions {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+            margin-bottom: 50px;
+        }
+        .faction-card {
+            background: var(--bg-card);
+            padding: 20px 15px;
+            border-radius: var(--card-radius);
+            text-align: center;
+            border: 2px solid var(--border-color);
+            transition: all var(--transition);
+            box-shadow: var(--shadow);
+            cursor: default;
+            position: relative;
+            overflow: hidden;
+            will-change: transform;
+        }
+        .faction-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            border-color: var(--gold);
+            box-shadow: 0 12px 40px rgba(184, 134, 11, 0.3);
+        }
+        .faction-card .card-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            z-index: 0;
+            filter: blur(2px);
+        }
+        .faction-card .card-bg::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+        }
+        .faction-card:hover .card-bg {
+            opacity: 0.6;
+            filter: blur(1px);
+        }
+        .faction-card .flag-container,
+        .faction-card h3,
+        .faction-card p {
+            position: relative;
+            z-index: 1;
+        }
+        .faction-card .flag-container {
+            width: 120px;
+            height: 80px;
+            margin: 0 auto 12px;
+            border: 3px solid var(--gold);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 0 20px rgba(184, 134, 11, 0.2);
+        }
+        .faction-card .flag-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .faction-card h3 {
+            color: var(--gold);
+            font-size: 1.5rem;
+            margin-top: 8px;
+        }
+        .faction-card p {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            margin-top: 4px;
+        }
+
+        /* ============================================================
+           EVENT CARDS
+           ============================================================ */
+        .event-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin: 30px 0 50px;
+        }
+        .event-card {
+            background: var(--bg-card);
+            border-radius: var(--card-radius);
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            transition: all var(--transition);
+            box-shadow: var(--shadow);
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            min-height: 400px;
+            will-change: transform;
+        }
+        .event-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--gold);
+            box-shadow: 0 12px 40px rgba(184, 134, 11, 0.2);
+        }
+        .event-card .event-image {
+            width: 100%;
+            height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            border-bottom: 3px solid var(--gold);
+            overflow: hidden;
+            flex-shrink: 0;
+            background: var(--bg-secondary);
+        }
+        .event-card .event-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.7;
+        }
+        .event-card .event-image .year-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: var(--gold);
+            color: #0b0e14;
+            padding: 4px 14px;
+            border-radius: 20px;
+            font-weight: 900;
+            font-size: 0.85rem;
+            z-index: 2;
+        }
+        .event-card .event-image .overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 10px;
+            background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
+            color: #fff;
+            font-weight: 700;
+            text-align: center;
+            font-size: 1.1rem;
+            z-index: 2;
+        }
+        .event-card .event-body {
+            padding: 18px 20px 20px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        .event-card .event-body h4 {
+            color: var(--gold);
+            font-size: 1.2rem;
+            margin-bottom: 8px;
+        }
+        .event-card .event-body p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            line-height: 1.6;
+            flex-grow: 1;
+        }
+        .event-card .event-body .detail-hidden {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease, margin 0.3s ease;
+            margin-top: 0;
+        }
+        .event-card .event-body .detail-hidden.show {
+            max-height: 200px;
+            margin-top: 12px;
+        }
+        .event-card .event-body .detail-hidden .detail-box {
+            background: var(--bg-primary);
+            padding: 12px 16px;
+            border-radius: 10px;
+            border-right: 3px solid var(--gold);
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+        .event-card .event-body .event-toggle {
+            margin-top: 10px;
+            background: var(--gold);
+            color: #0b0e14;
+            border: none;
+            padding: 6px 18px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 0.85rem;
+            transition: all var(--transition);
+            align-self: flex-start;
+        }
+        .event-card .event-body .event-toggle:hover {
+            background: var(--gold-light);
+            transform: scale(1.05);
+        }
+
+        /* ============================================================
+           ABOUT / FOOTER
+           ============================================================ */
+        .about-section {
+            background: var(--bg-card);
+            padding: 25px 30px;
+            border-radius: var(--card-radius);
+            border: 1px solid var(--border-color);
+            margin: 0 0 40px 0;
+            text-align: center;
+            box-shadow: var(--shadow);
+        }
+        .about-section p {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 2;
+        }
+        .about-section p strong {
+            color: var(--gold);
+        }
+
+        footer {
+            background: var(--bg-secondary);
+            padding: 25px 20px 15px;
+            text-align: center;
+            border-top: 3px solid var(--gold);
+            margin-top: 40px;
+            transition: all var(--transition);
+        }
+        footer .socials {
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            font-size: 1.8rem;
+            margin-bottom: 12px;
+        }
+        footer .socials span {
+            cursor: default;
+            transition: var(--transition);
+            filter: grayscale(0.3);
+        }
+        footer .socials span:hover {
+            transform: scale(1.4) rotate(10deg);
+            filter: grayscale(0);
+        }
+        footer p {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+
+        .home-section {
+            display: block;
+        }
+        .home-section.hidden {
+            display: none;
+        }
+
+        /* ============================================================
+           RESPONSIVE
+           ============================================================ */
+        @media (max-width: 768px) {
+            .factions {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .nav-container {
+                flex-direction: column;
+                gap: 10px;
+                padding: 5px 0;
+            }
+            .nav-left {
+                position: relative;
+                right: auto;
+            }
+            .nav-right {
+                position: relative;
+                left: auto;
+            }
+            .nav-center {
+                gap: 8px;
+                justify-content: center;
+            }
+            .register-btn-nav {
+                font-size: 0.75rem;
+                padding: 4px 12px;
+            }
+            .user-btn-nav {
+                font-size: 0.75rem;
+                padding: 4px 12px;
+            }
+            .chat-btn-nav {
+                font-size: 0.75rem;
+                padding: 4px 10px;
+            }
+            .theme-toggle-nav {
+                font-size: 0.75rem;
+                padding: 4px 10px;
+            }
+            .logout-box {
+                padding: 30px 20px;
+            }
+            .chat-container {
+                flex-direction: column-reverse;
+                max-height: none;
+            }
+            .chat-users {
+                width: 100%;
+                border-left: none;
+                border-top: 1px solid var(--border-color);
+                max-height: 200px;
+            }
+            .chat-main {
+                min-height: 400px;
+            }
+            .admin-panel .admin-content {
+                overflow-x: scroll;
+            }
+            .admin-panel .admin-content table {
+                font-size: 0.75rem;
+                min-width: 600px;
+            }
+            .shape-1,
+            .shape-2,
+            .shape-3,
+            .shape-4,
+            .shape-5 {
+                display: none;
+            }
+        }
+
+        @media (max-width: 650px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+            .hero .subtitle {
+                font-size: 1rem;
+            }
+            nav a {
+                font-size: 0.8rem;
+                padding: 4px 8px;
+            }
+            .factions {
+                grid-template-columns: 1fr 1fr;
+                gap: 15px;
+            }
+            .event-cards {
+                grid-template-columns: 1fr;
+            }
+            .faction-card .flag-container {
+                width: 90px;
+                height: 60px;
+            }
+            .about-section {
+                padding: 18px 15px;
+            }
+            .settings-panel {
+                width: 95%;
+            }
+            .settings-panel .form-box {
+                padding: 25px 15px;
+            }
+            .logout-box .logout-buttons {
+                flex-direction: column;
+            }
+            .logout-box .logout-buttons button {
+                width: 100%;
+            }
+            .chat-container {
+                max-height: none;
+            }
+            .chat-users {
+                max-height: 150px;
+            }
+            .chat-main {
+                min-height: 350px;
+            }
+            .shape-1,
+            .shape-2,
+            .shape-3,
+            .shape-4,
+            .shape-5 {
+                display: none;
+            }
+        }
+
+        @media (max-width: 450px) {
+            .factions {
+                grid-template-columns: 1fr;
+            }
+            .hero h1 {
+                font-size: 1.6rem;
+            }
+            .section-title {
+                font-size: 1.4rem;
+            }
+            .nav-center {
+                gap: 5px;
+            }
+            nav a {
+                font-size: 0.7rem;
+                padding: 3px 6px;
+            }
+            .register-btn-nav {
+                font-size: 0.7rem;
+                padding: 3px 8px;
+            }
+            .user-btn-nav {
+                font-size: 0.7rem;
+                padding: 3px 8px;
+            }
+            .chat-btn-nav {
+                font-size: 0.7rem;
+                padding: 3px 8px;
+            }
+            .theme-toggle-nav {
+                font-size: 0.7rem;
+                padding: 3px 8px;
+            }
+            .dashboard .welcome-banner {
+                padding: 18px 15px;
+            }
+            .dashboard .welcome-banner h2 {
+                font-size: 1.4rem;
+            }
+            .chat-users .user-item {
+                padding: 5px 8px;
+                font-size: 0.8rem;
+            }
+            .shape-1,
+            .shape-2,
+            .shape-3,
+            .shape-4,
+            .shape-5 {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ============================================================
+    SHAPES
+    ============================================================ -->
+    <div class="shape shape-1"></div>
+    <div class="shape shape-2"></div>
+    <div class="shape shape-3"></div>
+    <div class="shape shape-4"></div>
+    <div class="shape shape-5"></div>
+
+    <!-- ============================================================
+    HEADER
+    ============================================================ -->
+    <header class="hero">
+        <div class="badge">🎖️ استراتژی بی‌نهایت</div>
+        <h1>Hearts of Iran</h1>
+        <div class="subtitle">جنگ جهانی دوم را از نو بنویس...</div>
+        <div style="margin-top:15px; font-size:1.5rem; letter-spacing:10px;">
+            🛩️ 🚢 🚀
+        </div>
+    </header>
+
+    <!-- ============================================================
+    NAVBAR
+    ============================================================ -->
+    <nav>
+        <div class="nav-container">
+            <div class="nav-left">
+                <button class="register-btn-nav" id="registerBtnNav">📝 ثبت‌نام / ورود</button>
+                <button class="user-btn-nav" id="userBtnNav">👤</button>
+                <button class="chat-btn-nav" id="chatBtnNav">💬 چت روم</button>
+            </div>
+            <div class="nav-center">
+                <a href="#" class="active" data-target="home">🏠 خانه</a>
+                <a href="#" data-target="events">⏳ رویدادها</a>
+                <a href="#">🗺️ نقشه</a>
+                <a href="#">⚙️ آپدیت‌ها</a>
+            </div>
+            <div class="nav-right">
+                <button class="theme-toggle-nav" id="themeToggleNav">
+                    <span id="themeIconNav">🌙</span>
+                    <span id="themeLabelNav">تاریک</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container">
+
+        <!-- ============================================================
+        HOME SECTION
+        ============================================================ -->
+        <div id="homeSection" class="home-section">
+            <div class="animate-on-load about-section">
+                <p>
+                    <strong>Hearts of Iran</strong> یک بازی استراتژی بزرگ از Paradox Interactive است.
+                    در این بازی کنترل کامل یک کشور را در جنگ جهانی دوم به دست می‌گیرید.
+                    اقتصاد، دیپلماسی، فناوری و نیروهای نظامی را مدیریت کنید و تاریخ را تغییر دهید!
+                </p>
+            </div>
+
+            <h2 class="section-title animate-on-load">🇺🇳 قدرت‌های بزرگ</h2>
+            <div class="factions">
+                <div class="faction-card animate-on-load">
+                    <div class="card-bg" style="background-image: url('images/germany-bg.jpg');"></div>
+                    <div class="flag-container">
+                        <img src="images/germany-flag.png" alt="پرچم آلمان" />
+                    </div>
+                    <h3>آلمان</h3>
+                    <p>آدولف هیتلر • بلایتس کریگ</p>
+                </div>
+                <div class="faction-card animate-on-load">
+                    <div class="card-bg" style="background-image: url('images/uk-bg.jpg');"></div>
+                    <div class="flag-container">
+                        <img src="images/uk-flag.png" alt="پرچم بریتانیا" />
+                    </div>
+                    <h3>بریتانیا</h3>
+                    <p>وینستون چرچیل • نیروی هوایی</p>
+                </div>
+                <div class="faction-card animate-on-load">
+                    <div class="card-bg" style="background-image: url('images/usa-bg.jpg');"></div>
+                    <div class="flag-container">
+                        <img src="images/usa-flag.png" alt="پرچم آمریکا" />
+                    </div>
+                    <h3>آمریکا</h3>
+                    <p>فرانکلین روزولت • تولید عظیم</p>
+                </div>
+                <div class="faction-card animate-on-load">
+                    <div class="card-bg" style="background-image: url('images/japan-bg.jpg');"></div>
+                    <div class="flag-container">
+                        <img src="images/japan-flag.png" alt="پرچم ژاپن" />
+                    </div>
+                    <h3>ژاپن</h3>
+                    <p>هیروهیتو • ناوگان قدرتمند</p>
+                </div>
+                <div class="faction-card animate-on-load">
+                    <div class="card-bg" style="background-image: url('images/soviet-bg.jpg');"></div>
+                    <div class="flag-container">
+                        <img src="images/soviet-flag.png" alt="پرچم شوروی" />
+                    </div>
+                    <h3>شوروی</h3>
+                    <p>ژوزف استالین • جبهه شرقی</p>
+                </div>
+                <div class="faction-card animate-on-load">
+                    <div class="card-bg" style="background-image: url('images/italy-bg.jpg');"></div>
+                    <div class="flag-container">
+                        <img src="images/italy-flag.png" alt="پرچم ایتالیا" />
+                    </div>
+                    <h3>ایتالیا</h3>
+                    <p>بنیتو موسولینی • متحد محور</p>
+                </div>
+            </div>
+
+            <h2 class="section-title animate-on-load" id="eventsSection">⏳ رویدادهای کلیدی</h2>
+            <div class="event-cards animate-on-load">
+                <div class="event-card">
+                    <div class="event-image">
+                        <img src="images/ww2-start.jpg" alt="آغاز جنگ" />
+                        <span class="year-badge">۱۹۳۹</span>
+                        <div class="overlay">آغاز جنگ جهانی دوم</div>
+                    </div>
+                    <div class="event-body">
+                        <h4>حمله به لهستان</h4>
+                        <p>۱ سپتامبر ۱۹۳۹ - آلمان نازی با حمله به لهستان، جنگ جهانی دوم را آغاز کرد.</p>
+                        <div class="detail-hidden">
+                            <div class="detail-box">
+                                این حمله باعث شد بریتانیا و فرانسه به آلمان اعلام جنگ کنند.
+                                لهستان در کمتر از یک ماه سقوط کرد و کشورهای بالتیک تحت تأثیر قرار گرفتند.
+                                تاکتیک بلیتس‌کریگ برای اولین بار در این جنگ استفاده شد.
+                            </div>
+                        </div>
+                        <button class="event-toggle">بیشتر بدانید</button>
+                    </div>
+                </div>
+                <div class="event-card">
+                    <div class="event-image">
+                        <img src="images/france-fall.jpg" alt="سقوط فرانسه" />
+                        <span class="year-badge">۱۹۴۰</span>
+                        <div class="overlay">سقوط فرانسه</div>
+                    </div>
+                    <div class="event-body">
+                        <h4>سقوط فرانسه</h4>
+                        <p>مه-ژوئن ۱۹۴۰ - فرانسه در کمتر از ۶ هفته سقوط کرد.</p>
+                        <div class="detail-hidden">
+                            <div class="detail-box">
+                                آلمان با استفاده از تاکتیک "بلیتس‌کریگ" از طریق جنگل‌های آردن به فرانسه حمله کرد.
+                                فرانسه سقوط کرد و آلمان کنترل بخش بزرگی از اروپای غربی را به دست گرفت.
+                                نیروهای بریتانیایی از دانکرک عقب‌نشینی کردند.
+                            </div>
+                        </div>
+                        <button class="event-toggle">بیشتر بدانید</button>
+                    </div>
+                </div>
+                <div class="event-card">
+                    <div class="event-image">
+                        <img src="images/barbarossa.jpg" alt="عملیات بارباروسا" />
+                        <span class="year-badge">۱۹۴۱</span>
+                        <div class="overlay">عملیات بارباروسا</div>
+                    </div>
+                    <div class="event-body">
+                        <h4>حمله به شوروی</h4>
+                        <p>۲۲ ژوئن ۱۹۴۱ - بزرگترین عملیات نظامی تاریخ.</p>
+                        <div class="detail-hidden">
+                            <div class="detail-box">
+                                آلمان با بیش از ۳ میلیون سرباز به شوروی حمله کرد.
+                                این بزرگترین عملیات نظامی تاریخ بود.
+                                با رسیدن زمستان و مقاومت شوروی، پیشروی متوقف شد.
+                            </div>
+                        </div>
+                        <button class="event-toggle">بیشتر بدانید</button>
+                    </div>
+                </div>
+                <div class="event-card">
+                    <div class="event-image">
+                        <img src="images/dday.jpg" alt="پیاده‌سازی در نرماندی" />
+                        <span class="year-badge">۱۹۴۴</span>
+                        <div class="overlay">پیاده‌سازی در نرماندی</div>
+                    </div>
+                    <div class="event-body">
+                        <h4>عملیات اوورلرد</h4>
+                        <p>۶ ژوئن ۱۹۴۴ (D-Day) - بزرگترین عملیات آبی-خاکی.</p>
+                        <div class="detail-hidden">
+                            <div class="detail-box">
+                                متفقین با پیاده‌سازی در سواحل نرماندی فرانسه، جبهه غربی را باز کردند.
+                                این عملیات با نام "اوورلرد" بزرگترین عملیات آبی-خاکی تاریخ بود.
+                                پس از چند ماه نبرد، متفقین موفق به آزادسازی پاریس شدند.
+                            </div>
+                        </div>
+                        <button class="event-toggle">بیشتر بدانید</button>
+                    </div>
+                </div>
+                <div class="event-card">
+                    <div class="event-image">
+                        <img src="images/ww2-end.jpg" alt="پایان جنگ" />
+                        <span class="year-badge">۱۹۴۵</span>
+                        <div class="overlay">پایان جنگ</div>
+                    </div>
+                    <div class="event-body">
+                        <h4>پایان جنگ جهانی دوم</h4>
+                        <p>۸ مه ۱۹۴۵ - پایان جنگ در اروپا.</p>
+                        <div class="detail-hidden">
+                            <div class="detail-box">
+                                پس از سقوط برلین و خودکشی هیتلر، آلمان تسلیم شد.
+                                در اوت ۱۹۴۵، آمریکا با پرتاب بمب‌های اتمی بر هیروشیما و ناکازاکی،
+                                جنگ را در اقیانوس آرام نیز به پایان رساند.
+                            </div>
+                        </div>
+                        <button class="event-toggle">بیشتر بدانید</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================================
+        REGISTER / LOGIN
+        ============================================================ -->
+        <div id="registerSection" class="register-section">
+            <div class="form-box animate-on-load">
+                <h2 id="authTitle">📝 ساخت اکانت جدید</h2>
+                <form id="registerForm" novalidate>
+                    <div id="registerFields">
+                        <label>👤 نام کاربری (حداقل ۳ کاراکتر)</label>
+                        <input type="text" id="username" placeholder="مثال: General_Patton" required minlength="3" />
+                        <div class="error-msg" id="usernameError">نام کاربری باید حداقل ۳ حرف باشد.</div>
+
+                        <label>✉️ ایمیل معتبر</label>
+                        <input type="email" id="email" placeholder="your@email.com" required />
+                        <div class="error-msg" id="emailError">لطفاً یک ایمیل واقعی و معتبر وارد کنید.</div>
+                    </div>
+
+                    <div id="loginFields" style="display:none;">
+                        <label>👤 نام کاربری یا ایمیل</label>
+                        <input type="text" id="loginUsername" placeholder="نام کاربری یا ایمیل خود را وارد کنید" />
+                        <div class="error-msg" id="loginUsernameError">لطفاً نام کاربری یا ایمیل خود را وارد کنید.</div>
+                    </div>
+
+                    <label>🔒 رمز عبور (حداقل ۶ کاراکتر)</label>
+                    <input type="password" id="password" placeholder="********" required minlength="6" />
+                    <div class="error-msg" id="passwordError">رمز عبور باید حداقل ۶ کاراکتر باشد.</div>
+
+                    <label id="countryLabel">🎖️ کشور مورد علاقه</label>
+                    <select id="country">
+                        <option value="آلمان">آلمان</option>
+                        <option value="بریتانیا">بریتانیا</option>
+                        <option value="آمریکا">آمریکا</option>
+                        <option value="شوروی">شوروی</option>
+                        <option value="ژاپن">ژاپن</option>
+                        <option value="ایتالیا">ایتالیا</option>
+                        <option value="فرانسه">فرانسه</option>
+                    </select>
+
+                    <button type="submit" id="authSubmitBtn">⚡ ساخت اکانت</button>
+                    <div class="success-msg" id="successMsg">✅ اکانت شما با موفقیت ساخته شد!</div>
+                    <div class="success-msg" id="loginSuccessMsg" style="display:none;">✅ ورود با موفقیت انجام شد!</div>
+                </form>
+
+                <div class="switch-auth">
+                    <button class="switch-btn" id="switchAuthBtn">
+                        آیا از قبل حساب کاربری دارید؟ وارد شوید
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================================
+        DASHBOARD
+        ============================================================ -->
+        <div id="dashboardSection" class="dashboard">
+            <div class="dashboard-bg" id="dashboardBg"></div>
+
+            <div class="welcome-banner animate-on-load">
+                <img src="" alt="پرچم کشور" class="country-flag" id="countryFlag" />
+                <h2>👋 خوش آمدید، <span id="dashboardUsername">کاربر</span>!</h2>
+                <p>به پنل کاربری خود خوش آمدید.</p>
+                <div class="country-badge" id="countryBadge">🎖️ کشور مورد علاقه: آلمان</div>
+            </div>
+
+            <div class="dashboard-grid">
+                <div class="dashboard-card" onclick="openSettings()">
+                    <span class="icon">⚙️</span>
+                    <h4>تنظیمات</h4>
+                    <p>تغییر نام کاربری، رمز عبور و کشور</p>
+                </div>
+                <div class="dashboard-card" onclick="openAdminPanel()" id="adminPanelBtn" style="display:none;">
+                    <span class="icon">🛡️</span>
+                    <h4>پنل مدیریت</h4>
+                    <p>مدیریت کاربران و تنظیمات</p>
+                </div>
+                <div class="dashboard-card" onclick="openLogout()">
+                    <span class="icon">🚪</span>
+                    <h4>خروج از حساب کاربری</h4>
+                    <p>از حساب کاربری خود خارج شوید</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================================
+        CHAT ROOM
+        ============================================================ -->
+        <div id="chatSection" class="chat-room">
+            <div class="chat-container">
+                <div class="chat-users" id="chatUsersList">
+                    <div class="users-title">👥 کاربران آنلاین</div>
+                    <div id="usersListContainer">
+                        <!-- توسط جاوااسکریپت پر میشه -->
+                    </div>
+                </div>
+
+                <div class="chat-main">
+                    <div class="chat-header">
+                        <span class="chat-title">💬 چت روم</span>
+                        <button class="chat-close" onclick="closeChat()">✕</button>
+                    </div>
+                    <div class="chat-messages" id="chatMessages">
+                        <!-- توسط جاوااسکریپت پر میشه -->
+                    </div>
+                    <div class="chat-input-area">
+                        <input type="text" id="chatInput" placeholder="پیام خود را بنویسید..." />
+                        <button class="send-btn" id="sendChatBtn">📤</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================================
+        ADMIN PANEL
+        ============================================================ -->
+        <div id="adminPanel" class="admin-panel">
+            <div class="admin-header">
+                <h2>🛡️ پنل مدیریت</h2>
+                <p>مدیریت کاربران سایت</p>
+                <button class="close-admin" onclick="closeAdminPanel()">❌ بستن پنل</button>
+            </div>
+
+            <div class="admin-content">
+                <h3>👥 لیست کاربران</h3>
+                <div id="adminUsersList">
+                    <!-- توسط جاوااسکریپت پر میشه -->
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- ============================================================
+    LOGOUT OVERLAY
+    ============================================================ -->
+    <div class="logout-overlay" id="logoutOverlay">
+        <div class="logout-box">
+            <span class="logout-icon">😞</span>
+            <h3>آیا مطمئن هستید؟</h3>
+            <p>آیا واقعاً می‌خواهید از حساب کاربری خود خارج شوید؟</p>
+            <div class="logout-buttons">
+                <button class="btn-yes" id="logoutConfirmBtn">بله، مطمئنم</button>
+                <button class="btn-no" id="logoutCancelBtn">نه، در این حساب می‌مانم</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================================
+    SETTINGS OVERLAY
+    ============================================================ -->
+    <div class="settings-overlay" id="settingsOverlay" onclick="closeSettings()"></div>
+    <div class="settings-panel" id="settingsPanel">
+        <div class="form-box animate-on-load">
+            <button class="close-settings" onclick="closeSettings()">✕</button>
+            <h3>⚙️ تنظیمات حساب کاربری</h3>
+
+            <form id="settingsForm">
+                <label>👤 نام کاربری جدید</label>
+                <input type="text" id="settingsUsername" placeholder="نام کاربری جدید" />
+                <div class="error-msg" id="settingsUsernameError">این نام قبلاً ثبت شده یا نامعتبر است.</div>
+
+                <hr class="divider" />
+
+                <label>🔒 رمز عبور جدید (اختیاری)</label>
+                <input type="password" id="settingsPassword" placeholder="رمز عبور جدید (حداقل ۶ کاراکتر)" />
+                <div class="error-msg" id="settingsPasswordError">رمز عبور باید حداقل ۶ کاراکتر باشد.</div>
+
+                <hr class="divider" />
+
+                <label>🎖️ تغییر کشور مورد علاقه</label>
+                <select id="settingsCountry">
+                    <option value="آلمان">آلمان</option>
+                    <option value="بریتانیا">بریتانیا</option>
+                    <option value="آمریکا">آمریکا</option>
+                    <option value="شوروی">شوروی</option>
+                    <option value="ژاپن">ژاپن</option>
+                    <option value="ایتالیا">ایتالیا</option>
+                    <option value="فرانسه">فرانسه</option>
+                </select>
+
+                <button type="submit" style="margin-top:15px;">💾 ذخیره تغییرات</button>
+                <div class="settings-success" id="settingsSuccess">✅ تغییرات با موفقیت ذخیره شد!</div>
+                <div class="settings-error" id="settingsError">❌ خطا در ذخیره تغییرات!</div>
+            </form>
+        </div>
+    </div>
+
+    <footer>
+        <div class="socials">
+            <span>🎮</span>
+            <span>🕹️</span>
+            <span>📺</span>
+            <span>💬</span>
+            <span>🎧</span>
+        </div>
+        <p>طراحی شده با ❤️ برای طرفداران Hearts of Iran • ۲۰۲۶</p>
+        <p style="margin-top:8px; font-size:0.8rem; color:var(--text-secondary); opacity:0.5;">نسخه نهایی</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+
+            // ============================================================
+            // ROLES & ADMIN LIST
+            // ============================================================
+            const ownerUsername = 'ArshiaT';
+            let adminList = [];
+
+            function loadAdminList() {
+                try {
+                    const saved = localStorage.getItem('hoi4-admin-list');
+                    if (saved) {
+                        adminList = JSON.parse(saved);
+                    } else {
+                        adminList = [];
+                        saveAdminList();
+                    }
+                } catch {
+                    adminList = [];
+                }
+            }
+
+            function saveAdminList() {
+                localStorage.setItem('hoi4-admin-list', JSON.stringify(adminList));
+            }
+
+            function getUserRole(username) {
+                if (username === ownerUsername) return 'owner';
+                if (adminList.includes(username)) return 'admin';
+                return 'user';
+            }
+
+            function isOwner(username) {
+                return username === ownerUsername;
+            }
+
+            function isAdmin(username) {
+                return adminList.includes(username) || isOwner(username);
+            }
+
+            function canManageUsers(username) {
+                return isOwner(username);
+            }
+
+            function canManageMessages(username) {
+                return isAdmin(username);
+            }
+
+            loadAdminList();
+
+            // ============================================================
+            // THEME TOGGLE
+            // ============================================================
+            const themeToggleNav = document.getElementById('themeToggleNav');
+            const themeIconNav = document.getElementById('themeIconNav');
+            const themeLabelNav = document.getElementById('themeLabelNav');
+            let currentTheme = localStorage.getItem('hoi4-theme') || 'dark';
+
+            function applyTheme(theme) {
+                document.documentElement.setAttribute('data-theme', theme);
+                currentTheme = theme;
+                localStorage.setItem('hoi4-theme', theme);
+                if (theme === 'light') {
+                    themeIconNav.textContent = '☀️';
+                    themeLabelNav.textContent = 'روشن';
+                } else {
+                    themeIconNav.textContent = '🌙';
+                    themeLabelNav.textContent = 'تاریک';
+                }
+            }
+
+            applyTheme(currentTheme);
+
+            themeToggleNav.addEventListener('click', function() {
+                const nextTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                applyTheme(nextTheme);
+            });
+
+            // ============================================================
+            // NAVIGATION
+            // ============================================================
+            const navLinks = document.querySelectorAll('nav a[data-target]');
+            const homeSection = document.getElementById('homeSection');
+            const registerSection = document.getElementById('registerSection');
+            const dashboardSection = document.getElementById('dashboardSection');
+            const chatSection = document.getElementById('chatSection');
+            const adminPanel = document.getElementById('adminPanel');
+            const registerBtnNav = document.getElementById('registerBtnNav');
+            const userBtnNav = document.getElementById('userBtnNav');
+            const chatBtnNav = document.getElementById('chatBtnNav');
+
+            function showSection(section) {
+                homeSection.classList.add('hidden');
+                registerSection.classList.remove('active');
+                dashboardSection.classList.remove('active');
+                chatSection.classList.remove('active');
+                adminPanel.classList.remove('active');
+
+                if (section === 'home') {
+                    homeSection.classList.remove('hidden');
+                } else if (section === 'register') {
+                    registerSection.classList.add('active');
+                } else if (section === 'dashboard') {
+                    dashboardSection.classList.add('active');
+                    updateDashboardUI();
+                } else if (section === 'chat') {
+                    chatSection.classList.add('active');
+                    loadChatUsers();
+                    loadMessages();
+                } else if (section === 'admin') {
+                    adminPanel.classList.add('active');
+                    loadAdminUsers();
+                }
+            }
+
+            navLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const target = this.dataset.target;
+
+                    navLinks.forEach(l => l.classList.remove('active'));
+                    this.classList.add('active');
+
+                    if (target === 'home') {
+                        showSection('home');
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                    } else if (target === 'events') {
+                        showSection('home');
+                        setTimeout(() => {
+                            document.getElementById('eventsSection').scrollIntoView({ behavior: 'smooth' });
+                        }, 100);
+                    }
+                });
+            });
+
+            registerBtnNav.addEventListener('click', function() {
+                showSection('register');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+
+            userBtnNav.addEventListener('click', function() {
+                const currentUser = JSON.parse(localStorage.getItem('hoi4-current-user'));
+                if (currentUser) {
+                    showSection('dashboard');
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                }
+            });
+
+            chatBtnNav.addEventListener('click', function() {
+                const currentUser = JSON.parse(localStorage.getItem('hoi4-current-user'));
+                if (!currentUser) {
+                    alert('لطفاً ابتدا وارد شوید!');
+                    return;
+                }
+                showSection('chat');
+                if (window.chatInterval) clearInterval(window.chatInterval);
+                window.chatInterval = setInterval(() => {
+                    if (document.getElementById('chatSection').classList.contains('active')) {
+                        loadChatUsers();
+                    }
+                }, 10000);
+            });
+
+            // ============================================================
+            // EVENT TOGGLES
+            // ============================================================
+            document.querySelectorAll('.event-toggle').forEach((btn) => {
+                btn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const detail = this.parentElement.querySelector('.detail-hidden');
+                    if (detail) {
+                        detail.classList.toggle('show');
+                        this.textContent = detail.classList.contains('show') ? '✕' : 'بیشتر بدانید';
+                    }
+                });
+            });
+
+            // ============================================================
+            // SWITCH BETWEEN REGISTER & LOGIN (درست شده)
+            // ============================================================
+            let isLoginMode = false;
+            const switchBtn = document.getElementById('switchAuthBtn');
+            const authTitle = document.getElementById('authTitle');
+            const registerFields = document.getElementById('registerFields');
+            const loginFields = document.getElementById('loginFields');
+            const countryLabel = document.getElementById('countryLabel');
+            const countrySelect = document.getElementById('country');
+            const authSubmitBtn = document.getElementById('authSubmitBtn');
+            const successMsg = document.getElementById('successMsg');
+            const loginSuccessMsg = document.getElementById('loginSuccessMsg');
+
+            switchBtn.addEventListener('click', function() {
+                isLoginMode = !isLoginMode;
+
+                if (isLoginMode) {
+                    authTitle.textContent = '🔐 ورود به حساب کاربری';
+                    registerFields.style.display = 'none';
+                    loginFields.style.display = 'block';
+                    countryLabel.style.display = 'none';
+                    countrySelect.style.display = 'none';
+                    authSubmitBtn.textContent = '🚪 ورود';
+                    switchBtn.textContent = 'حساب کاربری ندارید؟ ثبت‌نام کنید';
+                    switchBtn.classList.add('login-btn');
+                    successMsg.classList.remove('show');
+                    loginSuccessMsg.classList.remove('show');
+                } else {
+                    authTitle.textContent = '📝 ساخت اکانت جدید';
+                    registerFields.style.display = 'block';
+                    loginFields.style.display = 'none';
+                    countryLabel.style.display = 'block';
+                    countrySelect.style.display = 'block';
+                    authSubmitBtn.textContent = '⚡ ساخت اکانت';
+                    switchBtn.textContent = 'آیا از قبل حساب کاربری دارید؟ وارد شوید';
+                    switchBtn.classList.remove('login-btn');
+                    successMsg.classList.remove('show');
+                    loginSuccessMsg.classList.remove('show');
+                }
+            });
+
+            // ============================================================
+            // REGISTER / LOGIN SYSTEM
+            // ============================================================
+            const form = document.getElementById('registerForm');
+            const usernameInput = document.getElementById('username');
+            const emailInput = document.getElementById('email');
+            const loginUsernameInput = document.getElementById('loginUsername');
+            const passwordInput = document.getElementById('password');
+            const usernameError = document.getElementById('usernameError');
+            const emailError = document.getElementById('emailError');
+            const loginUsernameError = document.getElementById('loginUsernameError');
+            const passwordError = document.getElementById('passwordError');
+
+            const validDomains = [
+                'gmail.com', 'yahoo.com', 'outlook.com', 'hotmail.com',
+                'protonmail.com', 'mail.com', 'yandex.com', 'aol.com',
+                'icloud.com', 'zoho.com', 'gmx.com', 'tutanota.com'
+            ];
+
+            function isValidEmail(email) {
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(email)) return false;
+                const domain = email.split('@')[1];
+                return validDomains.some(d => domain.toLowerCase() === d.toLowerCase());
+            }
+
+            function validateField(input, errorEl, condition, errorMsg) {
+                if (!condition) {
+                    input.classList.add('error');
+                    input.classList.remove('success');
+                    errorEl.textContent = errorMsg;
+                    errorEl.classList.add('show');
+                    return false;
+                } else {
+                    input.classList.remove('error');
+                    input.classList.add('success');
+                    errorEl.classList.remove('show');
+                    return true;
+                }
+            }
+
+            usernameInput.addEventListener('input', function() {
+                validateField(this, usernameError, this.value.trim().length >= 3, 'نام کاربری باید حداقل ۳ کاراکتر باشد.');
+            });
+
+            emailInput.addEventListener('input', function() {
+                validateField(this, emailError, isValidEmail(this.value.trim()), 'لطفاً یک ایمیل واقعی و معتبر وارد کنید.');
+            });
+
+            passwordInput.addEventListener('input', function() {
+                validateField(this, passwordError, this.value.length >= 6, 'رمز عبور باید حداقل ۶ کاراکتر باشد.');
+            });
+
+            loginUsernameInput.addEventListener('input', function() {
+                validateField(this, loginUsernameError, this.value.trim().length > 0, 'لطفاً نام کاربری یا ایمیل خود را وارد کنید.');
+            });
+
+            function getUsers() {
+                try { return JSON.parse(localStorage.getItem('hoi4-users')) || []; } catch { return []; }
+            }
+
+            function saveUsers(users) {
+                localStorage.setItem('hoi4-users', JSON.stringify(users));
+            }
+
+            // ============================================================
+            // DASHBOARD
+            // ============================================================
+            const flagMap = {
+                'آلمان': 'germany-flag.png',
+                'بریتانیا': 'uk-flag.png',
+                'آمریکا': 'usa-flag.png',
+                'ژاپن': 'japan-flag.png',
+                'شوروی': 'soviet-flag.png',
+                'ایتالیا': 'italy-flag.png',
+                'فرانسه': 'france-flag.png'
+            };
+
+            const bgMap = {
+                'آلمان': 'germany-bg.jpg',
+                'بریتانیا': 'uk-bg.jpg',
+                'آمریکا': 'usa-bg.jpg',
+                'ژاپن': 'japan-bg.jpg',
+                'شوروی': 'soviet-bg.jpg',
+                'ایتالیا': 'italy-bg.jpg',
+                'فرانسه': 'france-bg.jpg'
+            };
+
+            function updateDashboardUI() {
+                const currentUser = JSON.parse(localStorage.getItem('hoi4-current-user'));
+                if (currentUser) {
+                    document.getElementById('dashboardUsername').textContent = currentUser.username;
+                    const country = currentUser.country;
+                    document.getElementById('countryBadge').textContent = `🎖️ کشور مورد علاقه: ${country}`;
+                    document.getElementById('countryFlag').src = `images/${flagMap[country] || 'germany-flag.png'}`;
+                    const bgElement = document.getElementById('dashboardBg');
+                    bgElement.style.backgroundImage = `url('images/${bgMap[country] || 'germany-bg.jpg'}')`;
+                }
+            }
+
+            function updateUIForUser() {
+                const currentUser = JSON.parse(localStorage.getItem('hoi4-current-user'));
+                if (currentUser) {
+                    registerBtnNav.style.display = 'none';
+                    userBtnNav.classList.add('show');
+                    userBtnNav.textContent = `👤 ${currentUser.username}`;
+                    chatBtnNav.classList.add('show');
+                    updateAdminButton();
+                } else {
+                    registerBtnNav.style.display = 'flex';
+                    userBtnNav.classList.remove('show');
+                    chatBtnNav.classList.remove('show');
+                }
+            }
+
+            function updateAdminButton() {
+                const currentUser = JSON.parse(localStorage.getItem('hoi4-current-user'));
+                const btn = document.getElementById('adminPanelBtn');
+                if (currentUser && isOwner(currentUser.username)) {
+                    btn.style.display = 'block';
+                } else {
+                    btn.style.display = 'none';
+                }
+            }
+
+            updateUIForUser();
+
+            // ============================================================
+            // SUBMIT REGISTER / LOGIN
+            // ============================================================
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+
+                if (isLoginMode) {
+                    // ===== LOGIN =====
+                    const loginIdentifier = loginUsernameInput.value.trim();
+                    const password = passwordInput.value;
+
+                    const isLoginValid = loginIdentifier.length > 0;
+                    const isPasswordValid = password.length >= 6;
+
+                    validateField(loginUsernameInput, loginUsernameError, isLoginValid, 'لطفاً نام کاربری یا ایمیل خود را وارد کنید.');
+                    validateField(passwordInput, passwordError, isPasswordValid, 'رمز عبور باید حداقل ۶ کاراکتر باشد.');
+
+                    if (!isLoginValid || !isPasswordValid) {
+                        loginSuccessMsg.classList.remove('show');
+                        return;
+                    }
+
+                    const users = getUsers();
+                    const foundUser = users.find(u =>
+                        (u.username.toLowerCase() === loginIdentifier.toLowerCase() ||
+                            u.email.toLowerCase() === loginIdentifier.toLowerCase()) &&
+                        u.password === password
+                    );
+
+                    if (!foundUser) {
+                        loginUsernameInput.classList.add('error');
+                        loginUsernameError.textContent = 'نام کاربری، ایمیل یا رمز عبور اشتباه است!';
+                        loginUsernameError.classList.add('show');
+                        loginSuccessMsg.classList.remove('show');
+                        return;
+                    }
+
+                    localStorage.setItem('hoi4-current-user', JSON.stringify(foundUser));
+                    updateUIForUser();
+                    loginSuccessMsg.style.display = 'block';
+                    loginSuccessMsg.classList.add('show');
+                    loginSuccessMsg.textContent = '✅ ورود با موفقیت انجام شد!';
+
+                    setTimeout(() => {
+                        loginSuccessMsg.classList.remove('show');
+                        loginSuccessMsg.style.display = 'none';
+                        showSection('dashboard');
+                    }, 1500);
+
+                } else {
+                    // ===== REGISTER =====
+                    const username = usernameInput.value.trim();
+                    const email = emailInput.value.trim();
+                    const password = passwordInput.value;
+                    const country = document.getElementById('country').value;
+
+                    const isUsernameValid = username.length >= 3;
+                    const isEmailValid = isValidEmail(email);
+                    const isPasswordValid = password.length >= 6;
+
+                    validateField(usernameInput, usernameError, isUsernameValid, 'نام کاربری باید حداقل ۳ کاراکتر باشد.');
+                    validateField(emailInput, emailError, isEmailValid, 'لطفاً یک ایمیل واقعی و معتبر وارد کنید.');
+                    validateField(passwordInput, passwordError, isPasswordValid, 'رمز عبور باید حداقل ۶ کاراکتر باشد.');
+
+                    if (!isUsernameValid || !isEmailValid || !isPasswordValid) {
+                        successMsg.classList.remove('show');
+                        return;
+                    }
+
+                    const users = getUsers();
+
+                    if (users.some(u => u.username.toLowerCase() === username.toLowerCase())) {
+                        usernameInput.classList.add('error');
+                        usernameError.textContent = 'این نام کاربری قبلاً ثبت‌نام شده است!';
+                        usernameError.classList.add('show');
+                        successMsg.classList.remove('show');
+                        return;
+                    }
+
+                    if (users.some(u => u.email.toLowerCase() === email.toLowerCase())) {
+                        emailInput.classList.add('error');
+                        emailError.textContent = 'این ایمیل قبلاً ثبت‌نام شده است!';
+                        emailError.classList.add('show');
+                        successMsg.classList.remove('show');
+                        return;
+                    }
+
+                    const newUser = { username, email, password, country, date: new Date().toLocaleDateString('fa-IR') };
+                    users.push(newUser);
+                    saveUsers(users);
+                    localStorage.setItem('hoi4-current-user', JSON.stringify(newUser));
+                    updateUIForUser();
+
+                    successMsg.classList.add('show');
+                    form.reset();
+                    document.querySelectorAll('.form-box input').forEach(el => el.classList.remove('success', 'error'));
+                    document.querySelectorAll('.error-msg').forEach(el => el.classList.remove('show'));
+
+                    setTimeout(() => {
+                        successMsg.classList.remove('show');
+                        showSection('dashboard');
+                    }, 1500);
+                }
+            });
+
+            // ============================================================
+            // CHAT SYSTEM
+            // ============================================================
+            function getChatMessages() {
+                try { return JSON.parse(localStorage.getItem('hoi4-chat-messages')) || []; } catch { return []; }
+            }
+
+            function saveChatMessages(messages) {
+                localStorage.setItem('hoi4-chat-messages', JSON.stringify(messages));
+            }
+
+            function getOnlineUsers() {
+                try { return JSON.parse(localStorage.getItem('hoi4-online-users')) || []; } catch { return []; }
+            }
+
+            function saveOnlineUsers(users) {
+                localStorage.setItem('hoi4-online-users', JSON.stringify(users));
+            }
+
+            function loadChatUsers() {
+                const currentUser = JSON.parse(localStorage.getItem('hoi4-current-user'));
+                if (!currentUser) return;
+
+                const allUsers = getUsers();
+                let onlineUsers = getOnlineUsers();
+
+                if (!onlineUsers.includes(currentUser.username)) {
+                    onlineUsers.push(currentUser.username);
+                    saveOnlineUsers(onlineUsers);
+                }
+
+                const container = document.getElementById('usersListContainer');
+                let html = '';
+
+                const onlineList = allUsers.filter(u => onlineUsers.includes(u.username));
+                const offlineList = allUsers.filter(u => !onlineUsers.includes(u.username));
+
+                onlineList.sort((a, b) => {
+                    const roleA = getUserRole(a.username);
+                    const roleB = getUserRole(b.username);
+                    if (roleA === 'owner') return -1;
+                    if (roleB === 'owner') return 1;
+                    if (roleA === 'admin' && roleB !== 'admin') return -1;
+                    if (roleB === 'admin' && roleA !== 'admin') return 1;
+                    return 0;
+                });
+
+                if (onlineList.length > 0) {
+                    onlineList.forEach(u => {
+                        const role = getUserRole(u.username);
+                        let roleLabel = '';
+                        if (role === 'owner') roleLabel = '<span class="user-role owner">مدیر</span>';
+                        else if (role === 'admin') roleLabel = '<span class="user-role admin">ادمین</span>';
+                        html += `
+                            <div class="user-item">
+                                <span class="status-dot online"></span>
+                                <span class="username">${u.username}</span>
+                                ${roleLabel}
+                            </div>
+                        `;
+                    });
+                }
+
+                if (onlineList.length > 0 && offlineList.length > 0) {
+                    html += `<hr class="divider" />`;
+                }
+
+                if (offlineList.length > 0) {
+                    offlineList.forEach(u => {
+                        const role = getUserRole(u.username);
+                        let roleLabel = '';
+                        if (role === 'owner') roleLabel = '<span class="user-role owner">مدیر</span>';
+                        else if (role === 'admin') roleLabel = '<span class="user-role admin">ادمین</span>';
+                        html += `
+                            <div class="user-item">
+                                <span class="status-dot offline"></span>
+                                <span class="username">${u.username}</span>
+                                ${roleLabel}
+                            </div>
+                        `;
+                    });
+                }
+
+                if (allUsers.length === 0) {
+                    html = `<div style="text-align:center; color:var(--text-secondary); padding:20px;">هیچ کاربری ثبت‌نام نکرده است</div>`;
+                }
+
+                container.innerHTML = html;
+            }
+
+            function loadMessages() {
+                const messages = getChatMessages();
+                const container = document.getElementById('chatMessages');
+                const currentUser = JSON.parse(localStorage.getItem('hoi4-current-user'));
+
+                if (messages.length === 0) {
+                    container.innerHTML =
+                        `<div style="text-align:center; color:var(--text-secondary); padding:40px 0;">هنوز پیامی ارسال نشده است</div>`;
+                    return;
+                }
+
+                let html = '';
+                messages.forEach((msg, index) => {
+                    const isOwn = msg.username === currentUser.username;
+                    const canModerate = canManageMessages(currentUser.username);
+                    html += `
+                        <div class="message ${isOwn ? 'own' : ''}" data-msg-index="${index}">
+                            <div class="msg-user">${msg.username}</div>
+                            <div class="msg-text">${msg.text}</div>
+                            <div class="msg-time">${msg.time}</div>
+                            ${canModerate && !isOwn ? `
+                                <div class="msg-actions">
+                                    <button class="delete-msg" onclick="deleteMessage(${index})">🗑️ حذف</button>
+                                    <button class="timeout-msg" onclick="timeoutUser('${msg.username}')">⏰ تایم‌اوت</button>
+                                </div>
+                            ` : ''}
+                        </div>
+                    `;
+                });
+
+                container.innerHTML = html;
+                container.scrollTop = container.scrollHeight;
+            }
+
+            function sendMessage() {
+                const input = document.getElementById('chatInput');
+                const text = input.value.trim();
+                if (!text) return;
+
+                const currentUser = JSON.parse(localStorage.getItem('hoi4-current-user'));
+                if (!currentUser) {
+                    alert('لطفاً ابتدا وارد شوید!');
+                    return;
+                }
+
+                const timedOutUsers = getTimedOutUsers();
+                if (timedOutUsers.includes(currentUser.username)) {
+                    alert('⏰ شما توسط ادمین تایم‌اوت شده‌اید و نمیتوانید پیام بفرستید!');
+                    return;
+                }
+
+                const messages = getChatMessages();
+                messages.push({
+                    username: currentUser.username,
+                    text: text,
+                    time: new Date().toLocaleTimeString('fa-IR', { hour: '2-digit', minute: '2-digit' })
+                });
+                saveChatMessages(messages);
+
+                input.value = '';
+                loadMessages();
+
+                setTimeout(() => {
+                    document.getElementById('chatMessages').scrollTop = document.getElementById('chatMessages')
+                        .scrollHeight;
+                }, 50);
+            }
+
+            // ============================================================
+            // ADMIN CHAT ACTIONS
+            // ============================================================
+            window.deleteMessage = function(index) {
+                if (!confirm('آیا از حذف این پیام مطمئن هستید؟')) return;
+
+                const messages = getChatMessages();
+                messages.splice(index, 1);
+                saveChatMessages(messages);
+                loadMessages();
+            };
+
+            function getTimedOutUsers() {
+                try { return JSON.parse(localStorage.getItem('hoi4-timedout-users')) || []; } catch { return []; }
+            }
+
+            function saveTimedOutUsers(users) {
+                localStorage.setItem('hoi4-timedout-users', JSON.stringify(users));
+            }
+
+            window.timeoutUser = function(username) {
+                if (!confirm(`آیا میخواهید "${username}" را ۵ دقیقه تایم‌اوت کنید؟`)) return;
+
+                const timedOut = getTimedOutUsers();
+                if (!timedOut.includes(username)) {
+                    timedOut.push(username);
+                    saveTimedOutUsers(timedOut);
+                }
+
+                alert(`⏰ "${username}" به مدت ۵ دقیقه تایم‌اوت شد!`);
+
+                setTimeout(() => {
+                    const newList = getTimedOutUsers().filter(u => u !== username);
+                    saveTimedOutUsers(newList);
+                }, 300000);
+            };
+
+            // ============================================================
+            // ADMIN PANEL
+            // ============================================================
+            window.openAdminPanel = function() {
+                const currentUser = JSON.parse(localStorage.getItem('hoi4-current-user'));
+                if (!currentUser || !isOwner(currentUser.username)) {
+                    alert('شما دسترسی مدیر ندارید!');
+                    return;
+                }
+                showSection('admin');
+            };
+
+            window.closeAdminPanel = function() {
+                showSection('dashboard');
+            };
+
+            function loadAdminUsers() {
+                const users = getUsers();
+                const container = document.getElementById('adminUsersList');
+                const currentUser = JSON.parse(localStorage.getItem('hoi4-current-user'));
+
+                if (users.length === 0) {
+                    container.innerHTML = '<p style="color:var(--text-secondary);">هیچ کاربری ثبت‌نام نکرده است.</p>';
+                    return;
+                }
+
+                let html = `
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>نام کاربری</th>
+                                <th>ایمیل</th>
+                                <th>کشور</th>
+                                <th>تاریخ ثبت</th>
+                                <th>نقش</th>
+                                <th>عملیات</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                `;
+
+                users.forEach(u => {
+                    const role = getUserRole(u.username);
+                    const isCurrentUser = u.username === currentUser.username;
+                    let roleLabel = '';
+                    let roleClass = '';
+                    if (role === 'owner') { roleLabel = 'مدیر';
+                        roleClass = 'owner'; } else if (role === 'admin') { roleLabel = 'ادمین';
+                        roleClass = 'admin'; } else { roleLabel = 'کاربر';
+                        roleClass = 'user'; }
+
+                    html += `
+                        <tr>
+                            <td><strong>${u.username}</strong> ${role === 'owner' ? '⭐' : ''}</td>
+                            <td>${u.email}</td>
+                            <td>${u.country}</td>
+                            <td>${u.date || 'نامشخص'}</td>
+                            <td><span class="role-badge ${roleClass}">${roleLabel}</span></td>
+                            <td>
+                                ${!isCurrentUser ? `
+                                    ${role !== 'owner' ? `
+                                        <button class="action-btn ${role === 'admin' ? 'remove-admin' : 'make-admin'}" 
+                                                onclick="${role === 'admin' ? `removeAdmin('${u.username}')` : `makeAdmin('${u.username}')`}">
+                                            ${role === 'admin' ? '⬇️ حذف ادمین' : '👑 ادمین کن'}
+                                        </button>
+                                    ` : ''}
+                                    <button class="action-btn delete" onclick="deleteUser('${u.username}')">🗑️ حذف</button>
+                                ` : `
+                                    <span style="color:var(--text-secondary); font-size:0.8rem;">خودتان</span>
+                                `}
+                            </td>
+                        </tr>
+                    `;
+                });
+
+                html += `
+                        </tbody>
+                    </table>
+                `;
+
+                container.innerHTML = html;
+            }
+
+            window.deleteUser = function(username) {
+                if (!confirm(`آیا از حذف کاربر "${username}" مطمئن هستید؟`)) return;
+
+                const currentUser = JSON.parse(localStorage.getItem('hoi4-current-user'));
+                if (username === currentUser.username) {
+                    alert('نمیتوانید خودتان را حذف کنید!');
+                    return;
+                }
+
+                if (isOwner(username)) {
+                    alert('نمیتوانید مدیر اصلی را حذف کنید!');
+                    return;
+                }
+
+                let users = getUsers();
+                users = users.filter(u => u.username !== username);
+                saveUsers(users);
+
+                let online = getOnlineUsers();
+                online = online.filter(u => u !== username);
+                saveOnlineUsers(online);
+
+                adminList = adminList.filter(u => u !== username);
+                saveAdminList();
+
+                const timedOut = getTimedOutUsers().filter(u => u !== username);
+                saveTimedOutUsers(timedOut);
+
+                loadAdminUsers();
+                loadChatUsers();
+                alert(`✅ کاربر "${username}" با موفقیت حذف شد!`);
+            };
+
+            window.makeAdmin = function(username) {
+                if (!confirm(`آیا میخواهید "${username}" را ادمین کنید؟`)) return;
+
+                if (isOwner(username)) {
+                    alert('این کاربر مدیر اصلی است!');
+                    return;
+                }
+
+                if (!adminList.includes(username)) {
+                    adminList.push(username);
+                    saveAdminList();
+                }
+                loadAdminUsers();
+                loadChatUsers();
+                alert(`✅ "${username}" به لیست ادمین‌ها اضافه شد!`);
+            };
+
+            window.removeAdmin = function(username) {
+                if (!confirm(`آیا میخواهید ادمین بودن "${username}" را لغو کنید؟`)) return;
+
+                if (isOwner(username)) {
+                    alert('نمیتوانید مدیر اصلی را تغییر دهید!');
+                    return;
+                }
+
+                adminList = adminList.filter(u => u !== username);
+                saveAdminList();
+                loadAdminUsers();
+                loadChatUsers();
+                alert(`✅ ادمین بودن "${username}" لغو شد!`);
+            };
+
+            // ============================================================
+            // CLOSE CHAT
+            // ============================================================
+            window.closeChat = function() {
+                const currentUser = JSON.parse(localStorage.getItem('hoi4-current-user'));
+                if (currentUser) {
+                    const onlineUsers = getOnlineUsers();
+                    const newOnline = onlineUsers.filter(u => u !== currentUser.username);
+                    saveOnlineUsers(newOnline);
+                }
+                if (window.chatInterval) {
+                    clearInterval(window.chatInterval);
+                    window.chatInterval = null;
+                }
+                showSection('dashboard');
+            };
+
+            document.getElementById('sendChatBtn').addEventListener('click', sendMessage);
+            document.getElementById('chatInput').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    sendMessage();
+                }
+            });
+
+            // ============================================================
+            // LOGOUT
+            // ============================================================
+            function handleLogout() {
+                const currentUser = JSON.parse(localStorage.getItem('hoi4-current-user'));
+                if (currentUser) {
+                    const onlineUsers = getOnlineUsers();
+                    const newOnline = onlineUsers.filter(u => u !== currentUser.username);
+                    saveOnlineUsers(newOnline);
+                }
+                if (window.chatInterval) {
+                    clearInterval(window.chatInterval);
+                    window.chatInterval = null;
+                }
+                localStorage.removeItem('hoi4-current-user');
+                updateUIForUser();
+                showSection('home');
+                document.getElementById('logoutOverlay').classList.remove('active');
+                alert('✅ شما با موفقیت خارج شدید!');
+            }
+
+            window.openLogout = function() {
+                const currentUser = JSON.parse(localStorage.getItem('hoi4-current-user'));
+                if (!currentUser) {
+                    alert('لطفاً ابتدا وارد شوید!');
+                    return;
+                }
+                document.getElementById('logoutOverlay').classList.add('active');
+            };
+
+            document.getElementById('logoutConfirmBtn').addEventListener('click', function() {
+                handleLogout();
+            });
+
+            document.getElementById('logoutCancelBtn').addEventListener('click', function() {
+                document.getElementById('logoutOverlay').classList.remove('active');
+            });
+
+            document.getElementById('logoutOverlay').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    this.classList.remove('active');
+                }
+            });
+
+            // ============================================================
+            // SETTINGS
+            // ============================================================
+            window.openSettings = function() {
+                const currentUser = JSON.parse(localStorage.getItem('hoi4-current-user'));
+                if (!currentUser) {
+                    alert('لطفاً ابتدا وارد شوید!');
+                    return;
+                }
+                document.getElementById('settingsOverlay').classList.add('active');
+                document.getElementById('settingsPanel').classList.add('active');
+                document.getElementById('settingsUsername').value = currentUser.username;
+                document.getElementById('settingsCountry').value = currentUser.country;
+                document.getElementById('settingsPassword').value = '';
+                document.getElementById('settingsSuccess').classList.remove('show');
+                document.getElementById('settingsError').classList.remove('show');
+                document.getElementById('settingsUsernameError').classList.remove('show');
+                document.getElementById('settingsPasswordError').classList.remove('show');
+            };
+
+            window.closeSettings = function() {
+                document.getElementById('settingsOverlay').classList.remove('active');
+                document.getElementById('settingsPanel').classList.remove('active');
+            };
+
+            // ============================================================
+            // SETTINGS FORM
+            // ============================================================
+            const settingsForm = document.getElementById('settingsForm');
+            const settingsUsername = document.getElementById('settingsUsername');
+            const settingsPassword = document.getElementById('settingsPassword');
+            const settingsCountry = document.getElementById('settingsCountry');
+            const settingsUsernameError = document.getElementById('settingsUsernameError');
+            const settingsPasswordError = document.getElementById('settingsPasswordError');
+            const settingsSuccess = document.getElementById('settingsSuccess');
+            const settingsError = document.getElementById('settingsError');
+
+            settingsForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+
+                const currentUser = JSON.parse(localStorage.getItem('hoi4-current-user'));
+                if (!currentUser) {
+                    alert('لطفاً ابتدا وارد شوید!');
+                    return;
+                }
+
+                const newUsername = settingsUsername.value.trim();
+                const newPassword = settingsPassword.value.trim();
+                const newCountry = settingsCountry.value;
+
+                let hasError = false;
+                let users = getUsers();
+
+                if (newUsername.length < 3) {
+                    settingsUsernameError.textContent = 'نام کاربری باید حداقل ۳ کاراکتر باشد.';
+                    settingsUsernameError.classList.add('show');
+                    hasError = true;
+                } else if (newUsername !== currentUser.username &&
+                    users.some(u => u.username.toLowerCase() === newUsername.toLowerCase())) {
+                    settingsUsernameError.textContent = 'این نام کاربری قبلاً ثبت شده است!';
+                    settingsUsernameError.classList.add('show');
+                    hasError = true;
+                } else {
+                    settingsUsernameError.classList.remove('show');
+                }
+
+                if (newPassword && newPassword.length < 6) {
+                    settingsPasswordError.textContent = 'رمز عبور باید حداقل ۶ کاراکتر باشد.';
+                    settingsPasswordError.classList.add('show');
+                    hasError = true;
+                } else {
+                    settingsPasswordError.classList.remove('show');
+                }
+
+                if (hasError) {
+                    settingsSuccess.classList.remove('show');
+                    settingsError.classList.remove('show');
+                    return;
+                }
+
+                const userIndex = users.findIndex(u => u.email === currentUser.email);
+                if (userIndex !== -1) {
+                    users[userIndex].username = newUsername;
+                    if (newPassword) {
+                        users[userIndex].password = newPassword;
+                    }
+                    users[userIndex].country = newCountry;
+                    saveUsers(users);
+
+                    const updatedUser = { ...currentUser, username: newUsername, country: newCountry };
+                    if (newPassword) {
+                        updatedUser.password = newPassword;
+                    }
+                    localStorage.setItem('hoi4-current-user', JSON.stringify(updatedUser));
+                    updateUIForUser();
+                    updateDashboardUI();
+
+                    settingsSuccess.classList.add('show');
+                    settingsError.classList.remove('show');
+                    setTimeout(() => {
+                        settingsSuccess.classList.remove('show');
+                        closeSettings();
+                    }, 2000);
+                }
+            });
+
+            // ============================================================
+            // CHECK USER ON LOAD
+            // ============================================================
+            const currentUser = JSON.parse(localStorage.getItem('hoi4-current-user'));
+            if (currentUser) {
+                updateUIForUser();
+                const onlineUsers = getOnlineUsers();
+                if (!onlineUsers.includes(currentUser.username)) {
+                    onlineUsers.push(currentUser.username);
+                    saveOnlineUsers(onlineUsers);
+                }
+            }
+
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    closeSettings();
+                    document.getElementById('logoutOverlay').classList.remove('active');
+                }
+            });
+
+        });
+    </script>
+
+</body>
+</html>
