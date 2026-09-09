@@ -2094,30 +2094,50 @@
         <p style="margin-top:8px; font-size:0.8rem; color:var(--text-secondary); opacity:0.5;">نسخه نهایی</p>
     </footer>
 
-    <!-- ============================================================
-    FIREBASE SDK
-    ============================================================ -->
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js">
-    </script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js">
-    </script>
-
     <script>
         // ============================================================
-        // FIREBASE CONFIG
+        // JSONBin CONFIG
         // ============================================================
-        const firebaseConfig = {
-            apiKey: "AIzaSyBDtmnlLlvEth9GLxgShvKpPcfF4AZahRU",
-            authDomain: "hoi4-chat.firebaseapp.com",
-            databaseURL: "https://hoi4-chat-default-rtdb.firebaseio.com",
-            projectId: "hoi4-chat",
-            storageBucket: "hoi4-chat.firebasestorage.app",
-            messagingSenderId: "919716344773",
-            appId: "1:919716344773:web:b29192ccb2247db796d1ac"
+        const JSONBIN_CONFIG = {
+            binId: '6aa1c487ffd5d16053f334a8',
+            masterKey: '$2a$10$mDg3SyyLT5EllFbL6AmIFOFWyRH0vabGoCEDRnoL1YIFewWDwLeJa',
+            apiUrl: 'https://api.jsonbin.io/v3/b/6aa1c487ffd5d16053f334a8'
         };
 
-        firebase.initializeApp(firebaseConfig);
-        const database = firebase.database();
+        // ============================================================
+        // JSONBin Helper Functions
+        // ============================================================
+        async function getData() {
+            try {
+                const response = await fetch(JSONBIN_CONFIG.apiUrl + '/latest', {
+                    headers: {
+                        'X-Master-Key': JSONBIN_CONFIG.masterKey
+                    }
+                });
+                const data = await response.json();
+                return data.record || { messages: [], users: [] };
+            } catch (error) {
+                console.error('Error fetching data:', error);
+                return { messages: [], users: [] };
+            }
+        }
+
+        async function updateData(data) {
+            try {
+                const response = await fetch(JSONBIN_CONFIG.apiUrl, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Master-Key': JSONBIN_CONFIG.masterKey
+                    },
+                    body: JSON.stringify(data)
+                });
+                return await response.json();
+            } catch (error) {
+                console.error('Error updating data:', error);
+                return null;
+            }
+        }
 
         // ============================================================
         // ROLES & ADMIN LIST
@@ -2157,11 +2177,10 @@
             return adminList.includes(username) || isOwner(username);
         }
 
-        // ===== مدیریت کاربران با سطوح دسترسی =====
         function canManageUsers(adminUsername, targetUsername) {
-            if (isOwner(adminUsername)) return true; // مدیر همه رو میتونه حذف کنه
+            if (isOwner(adminUsername)) return true;
             if (isAdmin(adminUsername) && !isAdmin(targetUsername) && adminUsername !== targetUsername) {
-                return true; // ادمین فقط کاربرای عادی رو میتونه حذف کنه
+                return true;
             }
             return false;
         }
@@ -2471,7 +2490,7 @@
         // ============================================================
         // SUBMIT REGISTER / LOGIN
         // ============================================================
-        form.addEventListener('submit', function(e) {
+        form.addEventListener('submit', async function(e) {
             e.preventDefault();
 
             if (isLoginMode) {
@@ -2490,71 +2509,44 @@
                     return;
                 }
 
-                // جستجو در Firebase
-                const usersRef = database.ref('users');
-                usersRef.orderByChild('username').equalTo(loginIdentifier).once('value').then((snapshot) => {
-                    let userData = null;
+                const data = await getData();
+                const users = data.users || [];
 
-                    snapshot.forEach((childSnapshot) => {
-                        const data = childSnapshot.val();
-                        if (data.username === loginIdentifier || data.email === loginIdentifier) {
-                            userData = data;
-                        }
-                    });
+                const foundUser = users.find(u =>
+                    (u.username.toLowerCase() === loginIdentifier.toLowerCase() ||
+                        u.email.toLowerCase() === loginIdentifier.toLowerCase()) &&
+                    u.password === password
+                );
 
-                    if (!userData) {
-                        // جستجو با ایمیل
-                        usersRef.orderByChild('email').equalTo(loginIdentifier).once('value').then((emailSnapshot) => {
-                            emailSnapshot.forEach((childSnapshot) => {
-                                const data = childSnapshot.val();
-                                if (data.email === loginIdentifier) {
-                                    userData = data;
-                                }
-                            });
-
-                            if (!userData || userData.password !== password) {
-                                loginUsernameInput.classList.add('error');
-                                loginUsernameError.textContent = 'نام کاربری، ایمیل یا رمز عبور اشتباه است!';
-                                loginUsernameError.classList.add('show');
-                                loginSuccessMsg.classList.remove('show');
-                                return;
-                            }
-
-                            loginSuccess(userData);
-                        });
-                        return;
-                    }
-
-                    if (userData.password !== password) {
-                        loginUsernameInput.classList.add('error');
-                        loginUsernameError.textContent = 'نام کاربری، ایمیل یا رمز عبور اشتباه است!';
-                        loginUsernameError.classList.add('show');
-                        loginSuccessMsg.classList.remove('show');
-                        return;
-                    }
-
-                    loginSuccess(userData);
-                });
-
-                function loginSuccess(userData) {
-                    localStorage.setItem('hoi4-current-user', JSON.stringify(userData));
-                    updateUIForUser();
-
-                    database.ref('users/' + userData.username).update({
-                        online: true,
-                        lastSeen: firebase.database.ServerValue.TIMESTAMP
-                    });
-
-                    loginSuccessMsg.style.display = 'block';
-                    loginSuccessMsg.classList.add('show');
-                    loginSuccessMsg.textContent = '✅ ورود با موفقیت انجام شد!';
-
-                    setTimeout(() => {
-                        loginSuccessMsg.classList.remove('show');
-                        loginSuccessMsg.style.display = 'none';
-                        showSection('dashboard');
-                    }, 1500);
+                if (!foundUser) {
+                    loginUsernameInput.classList.add('error');
+                    loginUsernameError.textContent = 'نام کاربری، ایمیل یا رمز عبور اشتباه است!';
+                    loginUsernameError.classList.add('show');
+                    loginSuccessMsg.classList.remove('show');
+                    return;
                 }
+
+                localStorage.setItem('hoi4-current-user', JSON.stringify(foundUser));
+                updateUIForUser();
+
+                // ذخیره وضعیت آنلاین
+                const updatedData = await getData();
+                const usersList = updatedData.users || [];
+                const userIndex = usersList.findIndex(u => u.username === foundUser.username);
+                if (userIndex !== -1) {
+                    usersList[userIndex].online = true;
+                    await updateData({ ...updatedData, users: usersList });
+                }
+
+                loginSuccessMsg.style.display = 'block';
+                loginSuccessMsg.classList.add('show');
+                loginSuccessMsg.textContent = '✅ ورود با موفقیت انجام شد!';
+
+                setTimeout(() => {
+                    loginSuccessMsg.classList.remove('show');
+                    loginSuccessMsg.style.display = 'none';
+                    showSection('dashboard');
+                }, 1500);
 
             } else {
                 // ===== REGISTER =====
@@ -2576,75 +2568,59 @@
                     return;
                 }
 
-                const usersRef = database.ref('users');
-                let isDuplicate = false;
+                const data = await getData();
+                const users = data.users || [];
 
-                usersRef.once('value').then((snapshot) => {
-                    const users = snapshot.val();
-                    if (users) {
-                        for (const key in users) {
-                            if (users[key].username === username) {
-                                usernameInput.classList.add('error');
-                                usernameError.textContent = 'این نام کاربری قبلاً ثبت‌نام شده است!';
-                                usernameError.classList.add('show');
-                                isDuplicate = true;
-                            }
-                            if (users[key].email === email) {
-                                emailInput.classList.add('error');
-                                emailError.textContent = 'این ایمیل قبلاً ثبت‌نام شده است!';
-                                emailError.classList.add('show');
-                                isDuplicate = true;
-                            }
-                        }
-                    }
+                if (users.some(u => u.username.toLowerCase() === username.toLowerCase())) {
+                    usernameInput.classList.add('error');
+                    usernameError.textContent = 'این نام کاربری قبلاً ثبت‌نام شده است!';
+                    usernameError.classList.add('show');
+                    successMsg.classList.remove('show');
+                    return;
+                }
 
-                    if (isDuplicate) {
-                        successMsg.classList.remove('show');
-                        return;
-                    }
+                if (users.some(u => u.email.toLowerCase() === email.toLowerCase())) {
+                    emailInput.classList.add('error');
+                    emailError.textContent = 'این ایمیل قبلاً ثبت‌نام شده است!';
+                    emailError.classList.add('show');
+                    successMsg.classList.remove('show');
+                    return;
+                }
 
-                    const newUser = {
-                        username: username,
-                        email: email,
-                        password: password,
-                        country: country,
-                        date: new Date().toLocaleDateString('fa-IR'),
-                        online: false,
-                        lastSeen: firebase.database.ServerValue.TIMESTAMP
-                    };
+                const newUser = {
+                    username,
+                    email,
+                    password,
+                    country,
+                    date: new Date().toLocaleDateString('fa-IR'),
+                    online: true
+                };
 
-                    database.ref('users/' + username).set(newUser).then(() => {
-                        const users = getUsers();
-                        users.push({ username, email, password, country });
-                        saveUsers(users);
+                users.push(newUser);
+                await updateData({ ...data, users: users });
 
-                        localStorage.setItem('hoi4-current-user', JSON.stringify(newUser));
-                        updateUIForUser();
+                const usersList = getUsers();
+                usersList.push({ username, email, password, country });
+                saveUsers(usersList);
 
-                        database.ref('users/' + username).update({
-                            online: true
-                        });
+                localStorage.setItem('hoi4-current-user', JSON.stringify(newUser));
+                updateUIForUser();
 
-                        successMsg.classList.add('show');
-                        form.reset();
+                successMsg.classList.add('show');
+                form.reset();
 
-                        setTimeout(() => {
-                            successMsg.classList.remove('show');
-                            showSection('dashboard');
-                        }, 1500);
-                    }).catch((error) => {
-                        console.error('Error saving user:', error);
-                        alert('خطا در ثبت‌نام!');
-                    });
-                });
+                setTimeout(() => {
+                    successMsg.classList.remove('show');
+                    showSection('dashboard');
+                }, 1500);
             }
         });
 
         // ============================================================
-        // CHAT SYSTEM (با Firebase)
+        // CHAT SYSTEM (با JSONBin)
         // ============================================================
 
-        function sendMessage() {
+        async function sendMessage() {
             const input = document.getElementById('chatInput');
             const text = input.value.trim();
             if (!text) return;
@@ -2661,181 +2637,172 @@
                 return;
             }
 
-            const message = {
+            const data = await getData();
+            const messages = data.messages || [];
+
+            messages.push({
                 username: currentUser.username,
                 text: text,
                 time: new Date().toLocaleTimeString('fa-IR', { hour: '2-digit', minute: '2-digit' }),
-                timestamp: firebase.database.ServerValue.TIMESTAMP
-            };
-
-            const messagesRef = database.ref('messages');
-            messagesRef.push(message).then(() => {
-                input.value = '';
-            }).catch((error) => {
-                console.error('Error sending message:', error);
-                alert('خطا در ارسال پیام!');
+                timestamp: Date.now()
             });
+
+            await updateData({ ...data, messages: messages });
+            input.value = '';
+            loadMessages();
         }
 
-        function loadMessages() {
-            const messagesRef = database.ref('messages');
-            messagesRef.off('child_added');
+        async function loadMessages() {
+            const data = await getData();
+            const messages = data.messages || [];
+            const container = document.getElementById('chatMessages');
+            const currentUser = JSON.parse(localStorage.getItem('hoi4-current-user'));
 
-            messagesRef.orderByChild('timestamp').limitToLast(50).on('child_added', function(snapshot) {
-                const msg = snapshot.val();
-                const container = document.getElementById('chatMessages');
-                const currentUser = JSON.parse(localStorage.getItem('hoi4-current-user'));
+            if (messages.length === 0) {
+                container.innerHTML =
+                    `<div style="text-align:center; color:var(--text-secondary); padding:40px 0;">هنوز پیامی ارسال نشده است</div>`;
+                return;
+            }
 
-                const emptyMsg = container.querySelector('div[style]');
-                if (emptyMsg && emptyMsg.textContent.includes('هنوز پیامی ارسال نشده است')) {
-                    container.innerHTML = '';
-                }
-
-                if (!currentUser) return;
-
+            let html = '';
+            messages.forEach((msg, index) => {
                 const isOwn = msg.username === currentUser.username;
                 const canModerate = canManageMessages(currentUser.username);
 
-                const msgDiv = document.createElement('div');
-                msgDiv.className = `message ${isOwn ? 'own' : ''}`;
-                msgDiv.innerHTML = `
-                    <div class="msg-user">${msg.username}</div>
-                    <div class="msg-text">${msg.text}</div>
-                    <div class="msg-time">${msg.time}</div>
-                    ${canModerate && !isOwn ? `
-                        <div class="msg-actions">
-                            <button class="delete-msg" onclick="deleteMessage('${snapshot.key}')">🗑️ حذف</button>
-                            <button class="timeout-msg" onclick="timeoutUser('${msg.username}')">⏰ تایم‌اوت</button>
-                        </div>
-                    ` : ''}
+                html += `
+                    <div class="message ${isOwn ? 'own' : ''}" data-msg-index="${index}">
+                        <div class="msg-user">${msg.username}</div>
+                        <div class="msg-text">${msg.text}</div>
+                        <div class="msg-time">${msg.time}</div>
+                        ${canModerate && !isOwn ? `
+                            <div class="msg-actions">
+                                <button class="delete-msg" onclick="deleteMessage(${index})">🗑️ حذف</button>
+                                <button class="timeout-msg" onclick="timeoutUser('${msg.username}')">⏰ تایم‌اوت</button>
+                            </div>
+                        ` : ''}
+                    </div>
                 `;
-
-                container.appendChild(msgDiv);
-                container.scrollTop = container.scrollHeight;
             });
+
+            container.innerHTML = html;
+            container.scrollTop = container.scrollHeight;
+
+            // هر 5 ثانیه یکبار چک کن
+            if (window.chatLoadInterval) clearInterval(window.chatLoadInterval);
+            window.chatLoadInterval = setInterval(async () => {
+                if (document.getElementById('chatSection').classList.contains('active')) {
+                    const newData = await getData();
+                    const newMessages = newData.messages || [];
+                    if (newMessages.length !== messages.length) {
+                        loadMessages();
+                    }
+                }
+            }, 5000);
         }
 
-        window.deleteMessage = function(messageKey) {
+        window.deleteMessage = async function(index) {
             if (!confirm('آیا از حذف این پیام مطمئن هستید؟')) return;
 
-            const messagesRef = database.ref('messages/' + messageKey);
-            messagesRef.remove().then(() => {
-                // پیام حذف شد
-            }).catch((error) => {
-                console.error('Error deleting message:', error);
-                alert('خطا در حذف پیام!');
-            });
+            const data = await getData();
+            const messages = data.messages || [];
+            messages.splice(index, 1);
+            await updateData({ ...data, messages: messages });
+            loadMessages();
         };
 
         // ============================================================
-        // CHAT USERS (از Firebase)
+        // CHAT USERS
         // ============================================================
-        function loadChatUsers() {
+        async function loadChatUsers() {
             const currentUser = JSON.parse(localStorage.getItem('hoi4-current-user'));
             if (!currentUser) return;
 
-            database.ref('users/' + currentUser.username).update({
-                online: true,
-                lastSeen: firebase.database.ServerValue.TIMESTAMP
+            const data = await getData();
+            const users = data.users || [];
+            const container = document.getElementById('usersListContainer');
+
+            // آپدیت آنلاین
+            const updatedUsers = users.map(u => {
+                if (u.username === currentUser.username) {
+                    return { ...u, online: true };
+                }
+                return u;
+            });
+            await updateData({ ...data, users: updatedUsers });
+
+            const onlineUsers = updatedUsers.filter(u => u.online === true).map(u => u.username);
+            const offlineUsers = updatedUsers.filter(u => u.online !== true).map(u => u.username);
+
+            let html = '';
+
+            // مرتب‌سازی آنلاین‌ها
+            const onlineList = updatedUsers.filter(u => onlineUsers.includes(u.username));
+            onlineList.sort((a, b) => {
+                const roleA = getUserRole(a.username);
+                const roleB = getUserRole(b.username);
+                if (roleA === 'owner') return -1;
+                if (roleB === 'owner') return 1;
+                if (roleA === 'admin' && roleB !== 'admin') return -1;
+                if (roleB === 'admin' && roleA !== 'admin') return 1;
+                return 0;
             });
 
-            const usersRef = database.ref('users');
-            usersRef.off('value');
-            usersRef.on('value', function(snapshot) {
-                const usersData = snapshot.val();
-                const container = document.getElementById('usersListContainer');
-
-                if (!usersData) {
-                    container.innerHTML =
-                        `<div style="text-align:center; color:var(--text-secondary); padding:20px;">هیچ کاربری ثبت‌نام نکرده است</div>`;
-                    return;
-                }
-
-                const allUsers = [];
-                const onlineUsers = [];
-
-                for (const [username, data] of Object.entries(usersData)) {
-                    allUsers.push({
-                        username: username,
-                        ...data
-                    });
-                    if (data.online === true) {
-                        onlineUsers.push(username);
-                    }
-                }
-
-                saveOnlineUsers(onlineUsers);
-
-                let html = '';
-                const onlineList = allUsers.filter(u => onlineUsers.includes(u.username));
-                const offlineList = allUsers.filter(u => !onlineUsers.includes(u.username));
-
-                onlineList.sort((a, b) => {
-                    const roleA = getUserRole(a.username);
-                    const roleB = getUserRole(b.username);
-                    if (roleA === 'owner') return -1;
-                    if (roleB === 'owner') return 1;
-                    if (roleA === 'admin' && roleB !== 'admin') return -1;
-                    if (roleB === 'admin' && roleA !== 'admin') return 1;
-                    return 0;
+            if (onlineList.length > 0) {
+                onlineList.forEach(u => {
+                    const role = getUserRole(u.username);
+                    let roleLabel = '';
+                    if (role === 'owner') roleLabel = '<span class="user-role owner">مدیر</span>';
+                    else if (role === 'admin') roleLabel = '<span class="user-role admin">ادمین</span>';
+                    html += `
+                        <div class="user-item">
+                            <span class="status-dot online"></span>
+                            <span class="username">${u.username}</span>
+                            ${roleLabel}
+                        </div>
+                    `;
                 });
+            }
 
-                if (onlineList.length > 0) {
-                    onlineList.forEach(u => {
-                        const role = getUserRole(u.username);
-                        let roleLabel = '';
-                        if (role === 'owner') roleLabel = '<span class="user-role owner">مدیر</span>';
-                        else if (role === 'admin') roleLabel = '<span class="user-role admin">ادمین</span>';
-                        html += `
-                            <div class="user-item">
-                                <span class="status-dot online"></span>
-                                <span class="username">${u.username}</span>
-                                ${roleLabel}
-                            </div>
-                        `;
-                    });
+            if (onlineList.length > 0 && offlineUsers.length > 0) {
+                html += `<hr class="divider" />`;
+            }
+
+            if (offlineUsers.length > 0) {
+                offlineUsers.forEach(username => {
+                    const u = updatedUsers.find(user => user.username === username);
+                    const role = getUserRole(username);
+                    let roleLabel = '';
+                    if (role === 'owner') roleLabel = '<span class="user-role owner">مدیر</span>';
+                    else if (role === 'admin') roleLabel = '<span class="user-role admin">ادمین</span>';
+                    html += `
+                        <div class="user-item">
+                            <span class="status-dot offline"></span>
+                            <span class="username">${username}</span>
+                            ${roleLabel}
+                        </div>
+                    `;
+                });
+            }
+
+            if (updatedUsers.length === 0) {
+                html =
+                    `<div style="text-align:center; color:var(--text-secondary); padding:20px;">هیچ کاربری ثبت‌نام نکرده است</div>`;
+            }
+
+            container.innerHTML = html;
+
+            // هر 10 ثانیه یکبار آپدیت
+            if (window.userInterval) clearInterval(window.userInterval);
+            window.userInterval = setInterval(() => {
+                if (document.getElementById('chatSection').classList.contains('active')) {
+                    loadChatUsers();
                 }
-
-                if (onlineList.length > 0 && offlineList.length > 0) {
-                    html += `<hr class="divider" />`;
-                }
-
-                if (offlineList.length > 0) {
-                    offlineList.forEach(u => {
-                        const role = getUserRole(u.username);
-                        let roleLabel = '';
-                        if (role === 'owner') roleLabel = '<span class="user-role owner">مدیر</span>';
-                        else if (role === 'admin') roleLabel = '<span class="user-role admin">ادمین</span>';
-                        html += `
-                            <div class="user-item">
-                                <span class="status-dot offline"></span>
-                                <span class="username">${u.username}</span>
-                                ${roleLabel}
-                            </div>
-                        `;
-                    });
-                }
-
-                if (allUsers.length === 0) {
-                    html =
-                        `<div style="text-align:center; color:var(--text-secondary); padding:20px;">هیچ کاربری ثبت‌نام نکرده است</div>`;
-                }
-
-                container.innerHTML = html;
-            });
+            }, 10000);
         }
 
         // ============================================================
         // HELPER FUNCTIONS
         // ============================================================
-        function getOnlineUsers() {
-            try { return JSON.parse(localStorage.getItem('hoi4-online-users')) || []; } catch { return []; }
-        }
-
-        function saveOnlineUsers(users) {
-            localStorage.setItem('hoi4-online-users', JSON.stringify(users));
-        }
-
         function getTimedOutUsers() {
             try { return JSON.parse(localStorage.getItem('hoi4-timedout-users')) || []; } catch { return []; }
         }
@@ -2862,7 +2829,7 @@
         };
 
         // ============================================================
-        // ADMIN PANEL (با مدیریت کامل)
+        // ADMIN PANEL
         // ============================================================
         window.openAdminPanel = function() {
             const currentUser = JSON.parse(localStorage.getItem('hoi4-current-user'));
@@ -2877,87 +2844,79 @@
             showSection('dashboard');
         };
 
-        function loadAdminUsers() {
-            const usersRef = database.ref('users');
-            usersRef.once('value').then((snapshot) => {
-                const usersData = snapshot.val();
-                const container = document.getElementById('adminUsersList');
-                const currentUser = JSON.parse(localStorage.getItem('hoi4-current-user'));
+        async function loadAdminUsers() {
+            const data = await getData();
+            const users = data.users || [];
+            const container = document.getElementById('adminUsersList');
+            const currentUser = JSON.parse(localStorage.getItem('hoi4-current-user'));
 
-                if (!usersData) {
-                    container.innerHTML = '<p style="color:var(--text-secondary);">هیچ کاربری ثبت‌نام نکرده است.</p>';
-                    return;
-                }
+            if (users.length === 0) {
+                container.innerHTML = '<p style="color:var(--text-secondary);">هیچ کاربری ثبت‌نام نکرده است.</p>';
+                return;
+            }
 
-                const users = [];
-                for (const [key, data] of Object.entries(usersData)) {
-                    users.push({ key, ...data });
-                }
-
-                let html = `
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>نام کاربری</th>
-                                <th>ایمیل</th>
-                                <th>کشور</th>
-                                <th>تاریخ ثبت</th>
-                                <th>نقش</th>
-                                <th>عملیات</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                `;
-
-                users.forEach(u => {
-                    const role = getUserRole(u.username);
-                    const isCurrentUser = u.username === currentUser.username;
-                    let roleLabel = '';
-                    let roleClass = '';
-                    if (role === 'owner') { roleLabel = 'مدیر';
-                        roleClass = 'owner'; } else if (role === 'admin') { roleLabel = 'ادمین';
-                        roleClass = 'admin'; } else { roleLabel = 'کاربر';
-                        roleClass = 'user'; }
-
-                    // بررسی دسترسی برای حذف
-                    const canDelete = canManageUsers(currentUser.username, u.username);
-
-                    html += `
+            let html = `
+                <table>
+                    <thead>
                         <tr>
-                            <td><strong>${u.username}</strong> ${role === 'owner' ? '⭐' : ''}</td>
-                            <td>${u.email}</td>
-                            <td>${u.country}</td>
-                            <td>${u.date || 'نامشخص'}</td>
-                            <td><span class="role-badge ${roleClass}">${roleLabel}</span></td>
-                            <td>
-                                ${!isCurrentUser && canDelete ? `
-                                    ${role !== 'owner' && isOwner(currentUser.username) ? `
-                                        <button class="action-btn ${role === 'admin' ? 'remove-admin' : 'make-admin'}" 
-                                                onclick="${role === 'admin' ? `removeAdmin('${u.username}')` : `makeAdmin('${u.username}')`}">
-                                            ${role === 'admin' ? '⬇️ حذف ادمین' : '👑 ادمین کن'}
-                                        </button>
-                                    ` : ''}
-                                    <button class="action-btn delete" onclick="deleteUser('${u.username}')">🗑️ حذف</button>
-                                ` : `
-                                    <span style="color:var(--text-secondary); font-size:0.8rem;">
-                                        ${isCurrentUser ? 'خودتان' : 'دسترسی ندارید'}
-                                    </span>
-                                `}
-                            </td>
+                            <th>نام کاربری</th>
+                            <th>ایمیل</th>
+                            <th>کشور</th>
+                            <th>تاریخ ثبت</th>
+                            <th>نقش</th>
+                            <th>عملیات</th>
                         </tr>
-                    `;
-                });
+                    </thead>
+                    <tbody>
+            `;
+
+            users.forEach(u => {
+                const role = getUserRole(u.username);
+                const isCurrentUser = u.username === currentUser.username;
+                let roleLabel = '';
+                let roleClass = '';
+                if (role === 'owner') { roleLabel = 'مدیر';
+                    roleClass = 'owner'; } else if (role === 'admin') { roleLabel = 'ادمین';
+                    roleClass = 'admin'; } else { roleLabel = 'کاربر';
+                    roleClass = 'user'; }
+
+                const canDelete = canManageUsers(currentUser.username, u.username);
 
                 html += `
-                        </tbody>
-                    </table>
+                    <tr>
+                        <td><strong>${u.username}</strong> ${role === 'owner' ? '⭐' : ''}</td>
+                        <td>${u.email}</td>
+                        <td>${u.country}</td>
+                        <td>${u.date || 'نامشخص'}</td>
+                        <td><span class="role-badge ${roleClass}">${roleLabel}</span></td>
+                        <td>
+                            ${!isCurrentUser && canDelete ? `
+                                ${role !== 'owner' && isOwner(currentUser.username) ? `
+                                    <button class="action-btn ${role === 'admin' ? 'remove-admin' : 'make-admin'}" 
+                                            onclick="${role === 'admin' ? `removeAdmin('${u.username}')` : `makeAdmin('${u.username}')`}">
+                                        ${role === 'admin' ? '⬇️ حذف ادمین' : '👑 ادمین کن'}
+                                    </button>
+                                ` : ''}
+                                <button class="action-btn delete" onclick="deleteUser('${u.username}')">🗑️ حذف</button>
+                            ` : `
+                                <span style="color:var(--text-secondary); font-size:0.8rem;">
+                                    ${isCurrentUser ? 'خودتان' : 'دسترسی ندارید'}
+                                </span>
+                            `}
+                        </td>
+                    </tr>
                 `;
-
-                container.innerHTML = html;
             });
+
+            html += `
+                    </tbody>
+                </table>
+            `;
+
+            container.innerHTML = html;
         }
 
-        window.deleteUser = function(username) {
+        window.deleteUser = async function(username) {
             const currentUser = JSON.parse(localStorage.getItem('hoi4-current-user'));
 
             if (!canManageUsers(currentUser.username, username)) {
@@ -2977,29 +2936,23 @@
                 return;
             }
 
-            // حذف از Firebase
-            database.ref('users/' + username).remove().then(() => {
-                // حذف از localStorage
-                let users = getUsers();
-                users = users.filter(u => u.username !== username);
-                saveUsers(users);
+            const data = await getData();
+            const users = data.users || [];
+            const updatedUsers = users.filter(u => u.username !== username);
+            await updateData({ ...data, users: updatedUsers });
 
-                const onlineUsers = getOnlineUsers().filter(u => u !== username);
-                saveOnlineUsers(onlineUsers);
+            const usersList = getUsers().filter(u => u.username !== username);
+            saveUsers(usersList);
 
-                adminList = adminList.filter(u => u !== username);
-                saveAdminList();
+            adminList = adminList.filter(u => u !== username);
+            saveAdminList();
 
-                const timedOut = getTimedOutUsers().filter(u => u !== username);
-                saveTimedOutUsers(timedOut);
+            const timedOut = getTimedOutUsers().filter(u => u !== username);
+            saveTimedOutUsers(timedOut);
 
-                loadAdminUsers();
-                loadChatUsers();
-                alert(`✅ کاربر "${username}" با موفقیت حذف شد!`);
-            }).catch((error) => {
-                console.error('Error deleting user:', error);
-                alert('خطا در حذف کاربر!');
-            });
+            loadAdminUsers();
+            loadChatUsers();
+            alert(`✅ کاربر "${username}" با موفقیت حذف شد!`);
         };
 
         window.makeAdmin = function(username) {
@@ -3037,16 +2990,30 @@
         // ============================================================
         // CLOSE CHAT
         // ============================================================
-        window.closeChat = function() {
+        window.closeChat = async function() {
             const currentUser = JSON.parse(localStorage.getItem('hoi4-current-user'));
             if (currentUser) {
-                database.ref('users/' + currentUser.username).update({ online: false });
-                const onlineUsers = getOnlineUsers().filter(u => u !== currentUser.username);
-                saveOnlineUsers(onlineUsers);
+                const data = await getData();
+                const users = data.users || [];
+                const updatedUsers = users.map(u => {
+                    if (u.username === currentUser.username) {
+                        return { ...u, online: false };
+                    }
+                    return u;
+                });
+                await updateData({ ...data, users: updatedUsers });
             }
             if (window.chatInterval) {
                 clearInterval(window.chatInterval);
                 window.chatInterval = null;
+            }
+            if (window.userInterval) {
+                clearInterval(window.userInterval);
+                window.userInterval = null;
+            }
+            if (window.chatLoadInterval) {
+                clearInterval(window.chatLoadInterval);
+                window.chatLoadInterval = null;
             }
             showSection('dashboard');
         };
@@ -3061,16 +3028,30 @@
         // ============================================================
         // LOGOUT
         // ============================================================
-        function handleLogout() {
+        async function handleLogout() {
             const currentUser = JSON.parse(localStorage.getItem('hoi4-current-user'));
             if (currentUser) {
-                database.ref('users/' + currentUser.username).update({ online: false });
-                const onlineUsers = getOnlineUsers().filter(u => u !== currentUser.username);
-                saveOnlineUsers(onlineUsers);
+                const data = await getData();
+                const users = data.users || [];
+                const updatedUsers = users.map(u => {
+                    if (u.username === currentUser.username) {
+                        return { ...u, online: false };
+                    }
+                    return u;
+                });
+                await updateData({ ...data, users: updatedUsers });
             }
             if (window.chatInterval) {
                 clearInterval(window.chatInterval);
                 window.chatInterval = null;
+            }
+            if (window.userInterval) {
+                clearInterval(window.userInterval);
+                window.userInterval = null;
+            }
+            if (window.chatLoadInterval) {
+                clearInterval(window.chatLoadInterval);
+                window.chatLoadInterval = null;
             }
             localStorage.removeItem('hoi4-current-user');
             updateUIForUser();
@@ -3139,7 +3120,7 @@
         const settingsSuccess = document.getElementById('settingsSuccess');
         const settingsError = document.getElementById('settingsError');
 
-        settingsForm.addEventListener('submit', function(e) {
+        settingsForm.addEventListener('submit', async function(e) {
             e.preventDefault();
 
             const currentUser = JSON.parse(localStorage.getItem('hoi4-current-user'));
@@ -3153,14 +3134,14 @@
             const newCountry = settingsCountry.value;
 
             let hasError = false;
-            let users = getUsers();
+            let usersList = getUsers();
 
             if (newUsername.length < 3) {
                 settingsUsernameError.textContent = 'نام کاربری باید حداقل ۳ کاراکتر باشد.';
                 settingsUsernameError.classList.add('show');
                 hasError = true;
             } else if (newUsername !== currentUser.username &&
-                users.some(u => u.username.toLowerCase() === newUsername.toLowerCase())) {
+                usersList.some(u => u.username.toLowerCase() === newUsername.toLowerCase())) {
                 settingsUsernameError.textContent = 'این نام کاربری قبلاً ثبت شده است!';
                 settingsUsernameError.classList.add('show');
                 hasError = true;
@@ -3182,44 +3163,46 @@
                 return;
             }
 
-            const userRef = database.ref('users/' + currentUser.username);
-            userRef.update({
-                username: newUsername,
-                country: newCountry
-            }).then(() => {
+            // به‌روزرسانی در JSONBin
+            const data = await getData();
+            const users = data.users || [];
+            const userIndex = users.findIndex(u => u.email === currentUser.email);
+
+            if (userIndex !== -1) {
+                users[userIndex].username = newUsername;
                 if (newPassword) {
-                    userRef.update({ password: newPassword });
+                    users[userIndex].password = newPassword;
                 }
+                users[userIndex].country = newCountry;
 
-                const userIndex = users.findIndex(u => u.email === currentUser.email);
-                if (userIndex !== -1) {
-                    users[userIndex].username = newUsername;
-                    if (newPassword) {
-                        users[userIndex].password = newPassword;
-                    }
-                    users[userIndex].country = newCountry;
-                    saveUsers(users);
-                }
+                await updateData({ ...data, users: users });
+            }
 
-                const updatedUser = { ...currentUser, username: newUsername, country: newCountry };
+            // به‌روزرسانی localStorage
+            const userIdx = usersList.findIndex(u => u.email === currentUser.email);
+            if (userIdx !== -1) {
+                usersList[userIdx].username = newUsername;
                 if (newPassword) {
-                    updatedUser.password = newPassword;
+                    usersList[userIdx].password = newPassword;
                 }
-                localStorage.setItem('hoi4-current-user', JSON.stringify(updatedUser));
-                updateUIForUser();
-                updateDashboardUI();
+                usersList[userIdx].country = newCountry;
+                saveUsers(usersList);
+            }
 
-                settingsSuccess.classList.add('show');
-                settingsError.classList.remove('show');
-                setTimeout(() => {
-                    settingsSuccess.classList.remove('show');
-                    closeSettings();
-                }, 2000);
-            }).catch((error) => {
-                console.error('Error updating user:', error);
-                settingsError.textContent = '❌ خطا در ذخیره تغییرات!';
-                settingsError.classList.add('show');
-            });
+            const updatedUser = { ...currentUser, username: newUsername, country: newCountry };
+            if (newPassword) {
+                updatedUser.password = newPassword;
+            }
+            localStorage.setItem('hoi4-current-user', JSON.stringify(updatedUser));
+            updateUIForUser();
+            updateDashboardUI();
+
+            settingsSuccess.classList.add('show');
+            settingsError.classList.remove('show');
+            setTimeout(() => {
+                settingsSuccess.classList.remove('show');
+                closeSettings();
+            }, 2000);
         });
 
         // ============================================================
@@ -3228,10 +3211,18 @@
         const currentUser = JSON.parse(localStorage.getItem('hoi4-current-user'));
         if (currentUser) {
             updateUIForUser();
-            database.ref('users/' + currentUser.username).update({
-                online: true,
-                lastSeen: firebase.database.ServerValue.TIMESTAMP
-            });
+            // آپدیت آنلاین
+            (async () => {
+                const data = await getData();
+                const users = data.users || [];
+                const updatedUsers = users.map(u => {
+                    if (u.username === currentUser.username) {
+                        return { ...u, online: true };
+                    }
+                    return u;
+                });
+                await updateData({ ...data, users: updatedUsers });
+            })();
         }
 
         document.addEventListener('keydown', function(e) {
@@ -3241,7 +3232,7 @@
             }
         });
 
-        console.log('🔥 Firebase Chat is ready!');
+        console.log('🔥 JSONBin Chat is ready!');
     </script>
 
 </body>
