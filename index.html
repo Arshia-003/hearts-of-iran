@@ -2157,8 +2157,13 @@
             return adminList.includes(username) || isOwner(username);
         }
 
-        function canManageUsers(username) {
-            return isOwner(username);
+        // ===== مدیریت کاربران با سطوح دسترسی =====
+        function canManageUsers(adminUsername, targetUsername) {
+            if (isOwner(adminUsername)) return true; // مدیر همه رو میتونه حذف کنه
+            if (isAdmin(adminUsername) && !isAdmin(targetUsername) && adminUsername !== targetUsername) {
+                return true; // ادمین فقط کاربرای عادی رو میتونه حذف کنه
+            }
+            return false;
         }
 
         function canManageMessages(username) {
@@ -2489,13 +2494,11 @@
                 const usersRef = database.ref('users');
                 usersRef.orderByChild('username').equalTo(loginIdentifier).once('value').then((snapshot) => {
                     let userData = null;
-                    let userKey = null;
 
                     snapshot.forEach((childSnapshot) => {
                         const data = childSnapshot.val();
                         if (data.username === loginIdentifier || data.email === loginIdentifier) {
                             userData = data;
-                            userKey = childSnapshot.key;
                         }
                     });
 
@@ -2506,7 +2509,6 @@
                                 const data = childSnapshot.val();
                                 if (data.email === loginIdentifier) {
                                     userData = data;
-                                    userKey = childSnapshot.key;
                                 }
                             });
 
@@ -2535,11 +2537,9 @@
                 });
 
                 function loginSuccess(userData) {
-                    // ذخیره در localStorage
                     localStorage.setItem('hoi4-current-user', JSON.stringify(userData));
                     updateUIForUser();
 
-                    // به‌روزرسانی آنلاین در Firebase
                     database.ref('users/' + userData.username).update({
                         online: true,
                         lastSeen: firebase.database.ServerValue.TIMESTAMP
@@ -2576,7 +2576,6 @@
                     return;
                 }
 
-                // چک کردن تکراری بودن در Firebase
                 const usersRef = database.ref('users');
                 let isDuplicate = false;
 
@@ -2604,7 +2603,6 @@
                         return;
                     }
 
-                    // ذخیره در Firebase
                     const newUser = {
                         username: username,
                         email: email,
@@ -2616,7 +2614,6 @@
                     };
 
                     database.ref('users/' + username).set(newUser).then(() => {
-                        // ذخیره در localStorage
                         const users = getUsers();
                         users.push({ username, email, password, country });
                         saveUsers(users);
@@ -2624,7 +2621,6 @@
                         localStorage.setItem('hoi4-current-user', JSON.stringify(newUser));
                         updateUIForUser();
 
-                        // آنلاین کردن
                         database.ref('users/' + username).update({
                             online: true
                         });
@@ -2738,13 +2734,11 @@
             const currentUser = JSON.parse(localStorage.getItem('hoi4-current-user'));
             if (!currentUser) return;
 
-            // آپدیت وضعیت آنلاین
             database.ref('users/' + currentUser.username).update({
                 online: true,
                 lastSeen: firebase.database.ServerValue.TIMESTAMP
             });
 
-            // لیست کاربران از Firebase
             const usersRef = database.ref('users');
             usersRef.off('value');
             usersRef.on('value', function(snapshot) {
@@ -2757,7 +2751,6 @@
                     return;
                 }
 
-                // تبدیل به آرایه
                 const allUsers = [];
                 const onlineUsers = [];
 
@@ -2771,14 +2764,12 @@
                     }
                 }
 
-                // ذخیره آنلاین‌ها
                 saveOnlineUsers(onlineUsers);
 
                 let html = '';
                 const onlineList = allUsers.filter(u => onlineUsers.includes(u.username));
                 const offlineList = allUsers.filter(u => !onlineUsers.includes(u.username));
 
-                // مرتب‌سازی آنلاین‌ها: مدیر اول، سپس ادمین‌ها
                 onlineList.sort((a, b) => {
                     const roleA = getUserRole(a.username);
                     const roleB = getUserRole(b.username);
@@ -2871,7 +2862,7 @@
         };
 
         // ============================================================
-        // ADMIN PANEL
+        // ADMIN PANEL (با مدیریت کامل)
         // ============================================================
         window.openAdminPanel = function() {
             const currentUser = JSON.parse(localStorage.getItem('hoi4-current-user'));
@@ -2928,6 +2919,9 @@
                         roleClass = 'admin'; } else { roleLabel = 'کاربر';
                         roleClass = 'user'; }
 
+                    // بررسی دسترسی برای حذف
+                    const canDelete = canManageUsers(currentUser.username, u.username);
+
                     html += `
                         <tr>
                             <td><strong>${u.username}</strong> ${role === 'owner' ? '⭐' : ''}</td>
@@ -2936,8 +2930,8 @@
                             <td>${u.date || 'نامشخص'}</td>
                             <td><span class="role-badge ${roleClass}">${roleLabel}</span></td>
                             <td>
-                                ${!isCurrentUser ? `
-                                    ${role !== 'owner' ? `
+                                ${!isCurrentUser && canDelete ? `
+                                    ${role !== 'owner' && isOwner(currentUser.username) ? `
                                         <button class="action-btn ${role === 'admin' ? 'remove-admin' : 'make-admin'}" 
                                                 onclick="${role === 'admin' ? `removeAdmin('${u.username}')` : `makeAdmin('${u.username}')`}">
                                             ${role === 'admin' ? '⬇️ حذف ادمین' : '👑 ادمین کن'}
@@ -2945,7 +2939,9 @@
                                     ` : ''}
                                     <button class="action-btn delete" onclick="deleteUser('${u.username}')">🗑️ حذف</button>
                                 ` : `
-                                    <span style="color:var(--text-secondary); font-size:0.8rem;">خودتان</span>
+                                    <span style="color:var(--text-secondary); font-size:0.8rem;">
+                                        ${isCurrentUser ? 'خودتان' : 'دسترسی ندارید'}
+                                    </span>
                                 `}
                             </td>
                         </tr>
@@ -2962,13 +2958,19 @@
         }
 
         window.deleteUser = function(username) {
-            if (!confirm(`آیا از حذف کاربر "${username}" مطمئن هستید؟`)) return;
-
             const currentUser = JSON.parse(localStorage.getItem('hoi4-current-user'));
+
+            if (!canManageUsers(currentUser.username, username)) {
+                alert('شما دسترسی حذف این کاربر را ندارید!');
+                return;
+            }
+
             if (username === currentUser.username) {
                 alert('نمیتوانید خودتان را حذف کنید!');
                 return;
             }
+
+            if (!confirm(`آیا از حذف کاربر "${username}" مطمئن هستید؟`)) return;
 
             if (isOwner(username)) {
                 alert('نمیتوانید مدیر اصلی را حذف کنید!');
@@ -3180,7 +3182,6 @@
                 return;
             }
 
-            // به‌روزرسانی در Firebase
             const userRef = database.ref('users/' + currentUser.username);
             userRef.update({
                 username: newUsername,
@@ -3190,7 +3191,6 @@
                     userRef.update({ password: newPassword });
                 }
 
-                // به‌روزرسانی localStorage
                 const userIndex = users.findIndex(u => u.email === currentUser.email);
                 if (userIndex !== -1) {
                     users[userIndex].username = newUsername;
