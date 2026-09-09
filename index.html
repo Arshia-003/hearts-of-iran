@@ -91,7 +91,6 @@
             z-index: -1;
             border-radius: 50%;
         }
-
         .shape-1 {
             width: 350px;
             height: 350px;
@@ -254,9 +253,6 @@
             margin-bottom: 12px;
         }
 
-        /* ============================================================
-           NAVBAR
-           ============================================================ */
         nav {
             background: var(--bg-secondary);
             padding: 12px 25px;
@@ -379,7 +375,6 @@
             display: flex;
         }
 
-        /* دکمه چت روم در نوار */
         .chat-btn-nav {
             background: var(--bg-card);
             color: var(--text-primary);
@@ -452,9 +447,6 @@
             border-radius: 10px;
         }
 
-        /* ============================================================
-           REGISTER / LOGIN
-           ============================================================ */
         .register-section {
             display: none;
             animation: slideDown 0.4s ease;
@@ -593,9 +585,6 @@
             box-shadow: 0 0 30px rgba(245, 215, 123, 0.4);
         }
 
-        /* ============================================================
-           DASHBOARD
-           ============================================================ */
         .dashboard {
             display: none;
             animation: slideDown 0.4s ease;
@@ -726,9 +715,6 @@
             font-size: 0.8rem;
         }
 
-        /* ============================================================
-           CHAT ROOM
-           ============================================================ */
         .chat-room {
             display: none;
             animation: slideDown 0.4s ease;
@@ -1015,9 +1001,6 @@
             cursor: not-allowed;
         }
 
-        /* ============================================================
-           ADMIN PANEL
-           ============================================================ */
         .admin-panel {
             display: none;
             animation: slideDown 0.4s ease;
@@ -1146,9 +1129,6 @@
             border: 1px solid var(--border-color);
         }
 
-        /* ============================================================
-           LOGOUT OVERLAY
-           ============================================================ */
         .logout-overlay {
             display: none;
             position: fixed;
@@ -1229,9 +1209,6 @@
             box-shadow: 0 0 20px rgba(184, 134, 11, 0.2);
         }
 
-        /* ============================================================
-           SETTINGS OVERLAY
-           ============================================================ */
         .settings-overlay {
             display: none;
             position: fixed;
@@ -1294,9 +1271,6 @@
             color: var(--gold);
         }
 
-        /* ============================================================
-           FACTION CARDS
-           ============================================================ */
         .factions {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -1378,9 +1352,6 @@
             margin-top: 4px;
         }
 
-        /* ============================================================
-           EVENT CARDS
-           ============================================================ */
         .event-cards {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -1501,9 +1472,6 @@
             transform: scale(1.05);
         }
 
-        /* ============================================================
-           ABOUT / FOOTER
-           ============================================================ */
         .about-section {
             background: var(--bg-card);
             padding: 25px 30px;
@@ -1560,9 +1528,6 @@
             display: none;
         }
 
-        /* ============================================================
-           RESPONSIVE
-           ============================================================ */
         @media (max-width: 768px) {
             .factions {
                 grid-template-columns: repeat(2, 1fr);
@@ -1742,18 +1707,12 @@
 </head>
 <body>
 
-    <!-- ============================================================
-    SHAPES
-    ============================================================ -->
     <div class="shape shape-1"></div>
     <div class="shape shape-2"></div>
     <div class="shape shape-3"></div>
     <div class="shape shape-4"></div>
     <div class="shape shape-5"></div>
 
-    <!-- ============================================================
-    HEADER
-    ============================================================ -->
     <header class="hero">
         <div class="badge">🎖️ استراتژی بی‌نهایت</div>
         <h1>Hearts of Iran</h1>
@@ -1763,9 +1722,6 @@
         </div>
     </header>
 
-    <!-- ============================================================
-    NAVBAR
-    ============================================================ -->
     <nav>
         <div class="nav-container">
             <div class="nav-left">
@@ -1790,9 +1746,7 @@
 
     <main class="container">
 
-        <!-- ============================================================
-        HOME SECTION
-        ============================================================ -->
+        <!-- ===== HOME SECTION ===== -->
         <div id="homeSection" class="home-section">
             <div class="animate-on-load about-section">
                 <p>
@@ -1954,9 +1908,7 @@
             </div>
         </div>
 
-        <!-- ============================================================
-        REGISTER / LOGIN
-        ============================================================ -->
+        <!-- ===== REGISTER / LOGIN ===== -->
         <div id="registerSection" class="register-section">
             <div class="form-box animate-on-load">
                 <h2 id="authTitle">📝 ساخت اکانت جدید</h2>
@@ -2005,9 +1957,7 @@
             </div>
         </div>
 
-        <!-- ============================================================
-        DASHBOARD
-        ============================================================ -->
+        <!-- ===== DASHBOARD ===== -->
         <div id="dashboardSection" class="dashboard">
             <div class="dashboard-bg" id="dashboardBg"></div>
 
@@ -2037,9 +1987,7 @@
             </div>
         </div>
 
-        <!-- ============================================================
-        CHAT ROOM
-        ============================================================ -->
+        <!-- ===== CHAT ROOM ===== -->
         <div id="chatSection" class="chat-room">
             <div class="chat-container">
                 <div class="chat-users" id="chatUsersList">
@@ -2065,9 +2013,7 @@
             </div>
         </div>
 
-        <!-- ============================================================
-        ADMIN PANEL
-        ============================================================ -->
+        <!-- ===== ADMIN PANEL ===== -->
         <div id="adminPanel" class="admin-panel">
             <div class="admin-header">
                 <h2>🛡️ پنل مدیریت</h2>
@@ -2085,9 +2031,7 @@
 
     </main>
 
-    <!-- ============================================================
-    LOGOUT OVERLAY
-    ============================================================ -->
+    <!-- ===== LOGOUT OVERLAY ===== -->
     <div class="logout-overlay" id="logoutOverlay">
         <div class="logout-box">
             <span class="logout-icon">😞</span>
@@ -2100,9 +2044,7 @@
         </div>
     </div>
 
-    <!-- ============================================================
-    SETTINGS OVERLAY
-    ============================================================ -->
+    <!-- ===== SETTINGS OVERLAY ===== -->
     <div class="settings-overlay" id="settingsOverlay" onclick="closeSettings()"></div>
     <div class="settings-panel" id="settingsPanel">
         <div class="form-box animate-on-load">
@@ -2152,492 +2094,613 @@
         <p style="margin-top:8px; font-size:0.8rem; color:var(--text-secondary); opacity:0.5;">نسخه نهایی</p>
     </footer>
 
+    <!-- ============================================================
+    FIREBASE + JAVASCRIPT
+    ============================================================ -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js">
+    </script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js">
+    </script>
+
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        // ============================================================
+        // FIREBASE CONFIG (با آدرس دیتابیس شما)
+        // ============================================================
+        const firebaseConfig = {
+            apiKey: "AIzaSyBDtmnlLlvEth9GLxgShvKpPcfF4AZahRU",
+            authDomain: "hoi4-chat.firebaseapp.com",
+            databaseURL: "https://hoi4-chat-default-rtdb.firebaseio.com",
+            projectId: "hoi4-chat",
+            storageBucket: "hoi4-chat.firebasestorage.app",
+            messagingSenderId: "919716344773",
+            appId: "1:919716344773:web:b29192ccb2247db796d1ac"
+        };
 
-            // ============================================================
-            // ROLES & ADMIN LIST
-            // ============================================================
-            const ownerUsername = 'ArshiaT';
-            let adminList = [];
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
 
-            function loadAdminList() {
-                try {
-                    const saved = localStorage.getItem('hoi4-admin-list');
-                    if (saved) {
-                        adminList = JSON.parse(saved);
-                    } else {
-                        adminList = [];
-                        saveAdminList();
-                    }
-                } catch {
-                    adminList = [];
-                }
-            }
+        // ============================================================
+        // ROLES & ADMIN LIST
+        // ============================================================
+        const ownerUsername = 'ArshiaT';
+        let adminList = [];
 
-            function saveAdminList() {
-                localStorage.setItem('hoi4-admin-list', JSON.stringify(adminList));
-            }
-
-            function getUserRole(username) {
-                if (username === ownerUsername) return 'owner';
-                if (adminList.includes(username)) return 'admin';
-                return 'user';
-            }
-
-            function isOwner(username) {
-                return username === ownerUsername;
-            }
-
-            function isAdmin(username) {
-                return adminList.includes(username) || isOwner(username);
-            }
-
-            function canManageUsers(username) {
-                return isOwner(username);
-            }
-
-            function canManageMessages(username) {
-                return isAdmin(username);
-            }
-
-            loadAdminList();
-
-            // ============================================================
-            // THEME TOGGLE
-            // ============================================================
-            const themeToggleNav = document.getElementById('themeToggleNav');
-            const themeIconNav = document.getElementById('themeIconNav');
-            const themeLabelNav = document.getElementById('themeLabelNav');
-            let currentTheme = localStorage.getItem('hoi4-theme') || 'dark';
-
-            function applyTheme(theme) {
-                document.documentElement.setAttribute('data-theme', theme);
-                currentTheme = theme;
-                localStorage.setItem('hoi4-theme', theme);
-                if (theme === 'light') {
-                    themeIconNav.textContent = '☀️';
-                    themeLabelNav.textContent = 'روشن';
+        function loadAdminList() {
+            try {
+                const saved = localStorage.getItem('hoi4-admin-list');
+                if (saved) {
+                    adminList = JSON.parse(saved);
                 } else {
-                    themeIconNav.textContent = '🌙';
-                    themeLabelNav.textContent = 'تاریک';
+                    adminList = [];
+                    saveAdminList();
                 }
+            } catch {
+                adminList = [];
             }
+        }
 
-            applyTheme(currentTheme);
+        function saveAdminList() {
+            localStorage.setItem('hoi4-admin-list', JSON.stringify(adminList));
+        }
 
-            themeToggleNav.addEventListener('click', function() {
-                const nextTheme = currentTheme === 'dark' ? 'light' : 'dark';
-                applyTheme(nextTheme);
-            });
+        function getUserRole(username) {
+            if (username === ownerUsername) return 'owner';
+            if (adminList.includes(username)) return 'admin';
+            return 'user';
+        }
 
-            // ============================================================
-            // NAVIGATION
-            // ============================================================
-            const navLinks = document.querySelectorAll('nav a[data-target]');
-            const homeSection = document.getElementById('homeSection');
-            const registerSection = document.getElementById('registerSection');
-            const dashboardSection = document.getElementById('dashboardSection');
-            const chatSection = document.getElementById('chatSection');
-            const adminPanel = document.getElementById('adminPanel');
-            const registerBtnNav = document.getElementById('registerBtnNav');
-            const userBtnNav = document.getElementById('userBtnNav');
-            const chatBtnNav = document.getElementById('chatBtnNav');
+        function isOwner(username) {
+            return username === ownerUsername;
+        }
 
-            function showSection(section) {
-                homeSection.classList.add('hidden');
-                registerSection.classList.remove('active');
-                dashboardSection.classList.remove('active');
-                chatSection.classList.remove('active');
-                adminPanel.classList.remove('active');
+        function isAdmin(username) {
+            return adminList.includes(username) || isOwner(username);
+        }
 
-                if (section === 'home') {
-                    homeSection.classList.remove('hidden');
-                } else if (section === 'register') {
-                    registerSection.classList.add('active');
-                } else if (section === 'dashboard') {
-                    dashboardSection.classList.add('active');
-                    updateDashboardUI();
-                } else if (section === 'chat') {
-                    chatSection.classList.add('active');
-                    loadChatUsers();
-                    loadMessages();
-                } else if (section === 'admin') {
-                    adminPanel.classList.add('active');
-                    loadAdminUsers();
-                }
+        function canManageUsers(username) {
+            return isOwner(username);
+        }
+
+        function canManageMessages(username) {
+            return isAdmin(username);
+        }
+
+        loadAdminList();
+
+        // ============================================================
+        // THEME TOGGLE
+        // ============================================================
+        const themeToggleNav = document.getElementById('themeToggleNav');
+        const themeIconNav = document.getElementById('themeIconNav');
+        const themeLabelNav = document.getElementById('themeLabelNav');
+        let currentTheme = localStorage.getItem('hoi4-theme') || 'dark';
+
+        function applyTheme(theme) {
+            document.documentElement.setAttribute('data-theme', theme);
+            currentTheme = theme;
+            localStorage.setItem('hoi4-theme', theme);
+            if (theme === 'light') {
+                themeIconNav.textContent = '☀️';
+                themeLabelNav.textContent = 'روشن';
+            } else {
+                themeIconNav.textContent = '🌙';
+                themeLabelNav.textContent = 'تاریک';
             }
+        }
 
-            navLinks.forEach(link => {
-                link.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    const target = this.dataset.target;
+        applyTheme(currentTheme);
 
-                    navLinks.forEach(l => l.classList.remove('active'));
-                    this.classList.add('active');
+        themeToggleNav.addEventListener('click', function() {
+            const nextTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            applyTheme(nextTheme);
+        });
 
-                    if (target === 'home') {
-                        showSection('home');
-                        window.scrollTo({ top: 0, behavior: 'smooth' });
-                    } else if (target === 'events') {
-                        showSection('home');
-                        setTimeout(() => {
-                            document.getElementById('eventsSection').scrollIntoView({ behavior: 'smooth' });
-                        }, 100);
-                    }
-                });
-            });
+        // ============================================================
+        // NAVIGATION
+        // ============================================================
+        const navLinks = document.querySelectorAll('nav a[data-target]');
+        const homeSection = document.getElementById('homeSection');
+        const registerSection = document.getElementById('registerSection');
+        const dashboardSection = document.getElementById('dashboardSection');
+        const chatSection = document.getElementById('chatSection');
+        const adminPanel = document.getElementById('adminPanel');
+        const registerBtnNav = document.getElementById('registerBtnNav');
+        const userBtnNav = document.getElementById('userBtnNav');
+        const chatBtnNav = document.getElementById('chatBtnNav');
 
-            registerBtnNav.addEventListener('click', function() {
-                showSection('register');
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            });
+        function showSection(section) {
+            homeSection.classList.add('hidden');
+            registerSection.classList.remove('active');
+            dashboardSection.classList.remove('active');
+            chatSection.classList.remove('active');
+            adminPanel.classList.remove('active');
 
-            userBtnNav.addEventListener('click', function() {
-                const currentUser = JSON.parse(localStorage.getItem('hoi4-current-user'));
-                if (currentUser) {
-                    showSection('dashboard');
+            if (section === 'home') {
+                homeSection.classList.remove('hidden');
+            } else if (section === 'register') {
+                registerSection.classList.add('active');
+            } else if (section === 'dashboard') {
+                dashboardSection.classList.add('active');
+                updateDashboardUI();
+            } else if (section === 'chat') {
+                chatSection.classList.add('active');
+                loadChatUsers();
+                loadMessages();
+            } else if (section === 'admin') {
+                adminPanel.classList.add('active');
+                loadAdminUsers();
+            }
+        }
+
+        navLinks.forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = this.dataset.target;
+
+                navLinks.forEach(l => l.classList.remove('active'));
+                this.classList.add('active');
+
+                if (target === 'home') {
+                    showSection('home');
                     window.scrollTo({ top: 0, behavior: 'smooth' });
+                } else if (target === 'events') {
+                    showSection('home');
+                    setTimeout(() => {
+                        document.getElementById('eventsSection').scrollIntoView({ behavior: 'smooth' });
+                    }, 100);
                 }
             });
+        });
 
-            chatBtnNav.addEventListener('click', function() {
-                const currentUser = JSON.parse(localStorage.getItem('hoi4-current-user'));
-                if (!currentUser) {
-                    alert('لطفاً ابتدا وارد شوید!');
+        registerBtnNav.addEventListener('click', function() {
+            showSection('register');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        userBtnNav.addEventListener('click', function() {
+            const currentUser = JSON.parse(localStorage.getItem('hoi4-current-user'));
+            if (currentUser) {
+                showSection('dashboard');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        });
+
+        chatBtnNav.addEventListener('click', function() {
+            const currentUser = JSON.parse(localStorage.getItem('hoi4-current-user'));
+            if (!currentUser) {
+                alert('لطفاً ابتدا وارد شوید!');
+                return;
+            }
+            showSection('chat');
+            if (window.chatInterval) clearInterval(window.chatInterval);
+            window.chatInterval = setInterval(() => {
+                if (document.getElementById('chatSection').classList.contains('active')) {
+                    loadChatUsers();
+                }
+            }, 5000);
+        });
+
+        // ============================================================
+        // EVENT TOGGLES
+        // ============================================================
+        document.querySelectorAll('.event-toggle').forEach((btn) => {
+            btn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                const detail = this.parentElement.querySelector('.detail-hidden');
+                if (detail) {
+                    detail.classList.toggle('show');
+                    this.textContent = detail.classList.contains('show') ? '✕' : 'بیشتر بدانید';
+                }
+            });
+        });
+
+        // ============================================================
+        // SWITCH BETWEEN REGISTER & LOGIN
+        // ============================================================
+        let isLoginMode = false;
+        const switchBtn = document.getElementById('switchAuthBtn');
+        const authTitle = document.getElementById('authTitle');
+        const registerFields = document.getElementById('registerFields');
+        const loginFields = document.getElementById('loginFields');
+        const countryLabel = document.getElementById('countryLabel');
+        const countrySelect = document.getElementById('country');
+        const authSubmitBtn = document.getElementById('authSubmitBtn');
+        const successMsg = document.getElementById('successMsg');
+        const loginSuccessMsg = document.getElementById('loginSuccessMsg');
+
+        switchBtn.addEventListener('click', function() {
+            isLoginMode = !isLoginMode;
+
+            if (isLoginMode) {
+                authTitle.textContent = '🔐 ورود به حساب کاربری';
+                registerFields.style.display = 'none';
+                loginFields.style.display = 'block';
+                countryLabel.style.display = 'none';
+                countrySelect.style.display = 'none';
+                authSubmitBtn.textContent = '🚪 ورود';
+                switchBtn.textContent = 'حساب کاربری ندارید؟ ثبت‌نام کنید';
+                switchBtn.classList.add('login-btn');
+                successMsg.classList.remove('show');
+                loginSuccessMsg.classList.remove('show');
+            } else {
+                authTitle.textContent = '📝 ساخت اکانت جدید';
+                registerFields.style.display = 'block';
+                loginFields.style.display = 'none';
+                countryLabel.style.display = 'block';
+                countrySelect.style.display = 'block';
+                authSubmitBtn.textContent = '⚡ ساخت اکانت';
+                switchBtn.textContent = 'آیا از قبل حساب کاربری دارید؟ وارد شوید';
+                switchBtn.classList.remove('login-btn');
+                successMsg.classList.remove('show');
+                loginSuccessMsg.classList.remove('show');
+            }
+        });
+
+        // ============================================================
+        // REGISTER / LOGIN SYSTEM
+        // ============================================================
+        const form = document.getElementById('registerForm');
+        const usernameInput = document.getElementById('username');
+        const emailInput = document.getElementById('email');
+        const loginUsernameInput = document.getElementById('loginUsername');
+        const passwordInput = document.getElementById('password');
+        const usernameError = document.getElementById('usernameError');
+        const emailError = document.getElementById('emailError');
+        const loginUsernameError = document.getElementById('loginUsernameError');
+        const passwordError = document.getElementById('passwordError');
+
+        const validDomains = [
+            'gmail.com', 'yahoo.com', 'outlook.com', 'hotmail.com',
+            'protonmail.com', 'mail.com', 'yandex.com', 'aol.com',
+            'icloud.com', 'zoho.com', 'gmx.com', 'tutanota.com'
+        ];
+
+        function isValidEmail(email) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) return false;
+            const domain = email.split('@')[1];
+            return validDomains.some(d => domain.toLowerCase() === d.toLowerCase());
+        }
+
+        function validateField(input, errorEl, condition, errorMsg) {
+            if (!condition) {
+                input.classList.add('error');
+                input.classList.remove('success');
+                errorEl.textContent = errorMsg;
+                errorEl.classList.add('show');
+                return false;
+            } else {
+                input.classList.remove('error');
+                input.classList.add('success');
+                errorEl.classList.remove('show');
+                return true;
+            }
+        }
+
+        usernameInput.addEventListener('input', function() {
+            validateField(this, usernameError, this.value.trim().length >= 3, 'نام کاربری باید حداقل ۳ کاراکتر باشد.');
+        });
+
+        emailInput.addEventListener('input', function() {
+            validateField(this, emailError, isValidEmail(this.value.trim()), 'لطفاً یک ایمیل واقعی و معتبر وارد کنید.');
+        });
+
+        passwordInput.addEventListener('input', function() {
+            validateField(this, passwordError, this.value.length >= 6, 'رمز عبور باید حداقل ۶ کاراکتر باشد.');
+        });
+
+        loginUsernameInput.addEventListener('input', function() {
+            validateField(this, loginUsernameError, this.value.trim().length > 0, 'لطفاً نام کاربری یا ایمیل خود را وارد کنید.');
+        });
+
+        function getUsers() {
+            try { return JSON.parse(localStorage.getItem('hoi4-users')) || []; } catch { return []; }
+        }
+
+        function saveUsers(users) {
+            localStorage.setItem('hoi4-users', JSON.stringify(users));
+        }
+
+        // ============================================================
+        // DASHBOARD
+        // ============================================================
+        const flagMap = {
+            'آلمان': 'germany-flag.png',
+            'بریتانیا': 'uk-flag.png',
+            'آمریکا': 'usa-flag.png',
+            'ژاپن': 'japan-flag.png',
+            'شوروی': 'soviet-flag.png',
+            'ایتالیا': 'italy-flag.png',
+            'فرانسه': 'france-flag.png'
+        };
+
+        const bgMap = {
+            'آلمان': 'germany-bg.jpg',
+            'بریتانیا': 'uk-bg.jpg',
+            'آمریکا': 'usa-bg.jpg',
+            'ژاپن': 'japan-bg.jpg',
+            'شوروی': 'soviet-bg.jpg',
+            'ایتالیا': 'italy-bg.jpg',
+            'فرانسه': 'france-bg.jpg'
+        };
+
+        function updateDashboardUI() {
+            const currentUser = JSON.parse(localStorage.getItem('hoi4-current-user'));
+            if (currentUser) {
+                document.getElementById('dashboardUsername').textContent = currentUser.username;
+                const country = currentUser.country;
+                document.getElementById('countryBadge').textContent = `🎖️ کشور مورد علاقه: ${country}`;
+                document.getElementById('countryFlag').src = `images/${flagMap[country] || 'germany-flag.png'}`;
+                const bgElement = document.getElementById('dashboardBg');
+                bgElement.style.backgroundImage = `url('images/${bgMap[country] || 'germany-bg.jpg'}')`;
+            }
+        }
+
+        function updateUIForUser() {
+            const currentUser = JSON.parse(localStorage.getItem('hoi4-current-user'));
+            if (currentUser) {
+                registerBtnNav.style.display = 'none';
+                userBtnNav.classList.add('show');
+                userBtnNav.textContent = `👤 ${currentUser.username}`;
+                chatBtnNav.classList.add('show');
+                updateAdminButton();
+            } else {
+                registerBtnNav.style.display = 'flex';
+                userBtnNav.classList.remove('show');
+                chatBtnNav.classList.remove('show');
+            }
+        }
+
+        function updateAdminButton() {
+            const currentUser = JSON.parse(localStorage.getItem('hoi4-current-user'));
+            const btn = document.getElementById('adminPanelBtn');
+            if (currentUser && isOwner(currentUser.username)) {
+                btn.style.display = 'block';
+            } else {
+                btn.style.display = 'none';
+            }
+        }
+
+        updateUIForUser();
+
+        // ============================================================
+        // SUBMIT REGISTER / LOGIN
+        // ============================================================
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            if (isLoginMode) {
+                const loginIdentifier = loginUsernameInput.value.trim();
+                const password = passwordInput.value;
+
+                const isLoginValid = loginIdentifier.length > 0;
+                const isPasswordValid = password.length >= 6;
+
+                validateField(loginUsernameInput, loginUsernameError, isLoginValid, 'لطفاً نام کاربری یا ایمیل خود را وارد کنید.');
+                validateField(passwordInput, passwordError, isPasswordValid, 'رمز عبور باید حداقل ۶ کاراکتر باشد.');
+
+                if (!isLoginValid || !isPasswordValid) {
+                    loginSuccessMsg.classList.remove('show');
                     return;
                 }
-                showSection('chat');
-                if (window.chatInterval) clearInterval(window.chatInterval);
-                window.chatInterval = setInterval(() => {
-                    if (document.getElementById('chatSection').classList.contains('active')) {
-                        loadChatUsers();
-                    }
-                }, 10000);
-            });
 
-            // ============================================================
-            // EVENT TOGGLES
-            // ============================================================
-            document.querySelectorAll('.event-toggle').forEach((btn) => {
-                btn.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    const detail = this.parentElement.querySelector('.detail-hidden');
-                    if (detail) {
-                        detail.classList.toggle('show');
-                        this.textContent = detail.classList.contains('show') ? '✕' : 'بیشتر بدانید';
-                    }
-                });
-            });
+                const users = getUsers();
+                const foundUser = users.find(u =>
+                    (u.username.toLowerCase() === loginIdentifier.toLowerCase() ||
+                        u.email.toLowerCase() === loginIdentifier.toLowerCase()) &&
+                    u.password === password
+                );
 
-            // ============================================================
-            // SWITCH BETWEEN REGISTER & LOGIN (درست شده)
-            // ============================================================
-            let isLoginMode = false;
-            const switchBtn = document.getElementById('switchAuthBtn');
-            const authTitle = document.getElementById('authTitle');
-            const registerFields = document.getElementById('registerFields');
-            const loginFields = document.getElementById('loginFields');
-            const countryLabel = document.getElementById('countryLabel');
-            const countrySelect = document.getElementById('country');
-            const authSubmitBtn = document.getElementById('authSubmitBtn');
-            const successMsg = document.getElementById('successMsg');
-            const loginSuccessMsg = document.getElementById('loginSuccessMsg');
-
-            switchBtn.addEventListener('click', function() {
-                isLoginMode = !isLoginMode;
-
-                if (isLoginMode) {
-                    authTitle.textContent = '🔐 ورود به حساب کاربری';
-                    registerFields.style.display = 'none';
-                    loginFields.style.display = 'block';
-                    countryLabel.style.display = 'none';
-                    countrySelect.style.display = 'none';
-                    authSubmitBtn.textContent = '🚪 ورود';
-                    switchBtn.textContent = 'حساب کاربری ندارید؟ ثبت‌نام کنید';
-                    switchBtn.classList.add('login-btn');
-                    successMsg.classList.remove('show');
+                if (!foundUser) {
+                    loginUsernameInput.classList.add('error');
+                    loginUsernameError.textContent = 'نام کاربری، ایمیل یا رمز عبور اشتباه است!';
+                    loginUsernameError.classList.add('show');
                     loginSuccessMsg.classList.remove('show');
-                } else {
-                    authTitle.textContent = '📝 ساخت اکانت جدید';
-                    registerFields.style.display = 'block';
-                    loginFields.style.display = 'none';
-                    countryLabel.style.display = 'block';
-                    countrySelect.style.display = 'block';
-                    authSubmitBtn.textContent = '⚡ ساخت اکانت';
-                    switchBtn.textContent = 'آیا از قبل حساب کاربری دارید؟ وارد شوید';
-                    switchBtn.classList.remove('login-btn');
-                    successMsg.classList.remove('show');
+                    return;
+                }
+
+                localStorage.setItem('hoi4-current-user', JSON.stringify(foundUser));
+                updateUIForUser();
+                loginSuccessMsg.style.display = 'block';
+                loginSuccessMsg.classList.add('show');
+                loginSuccessMsg.textContent = '✅ ورود با موفقیت انجام شد!';
+
+                setTimeout(() => {
                     loginSuccessMsg.classList.remove('show');
+                    loginSuccessMsg.style.display = 'none';
+                    showSection('dashboard');
+                }, 1500);
+
+            } else {
+                const username = usernameInput.value.trim();
+                const email = emailInput.value.trim();
+                const password = passwordInput.value;
+                const country = document.getElementById('country').value;
+
+                const isUsernameValid = username.length >= 3;
+                const isEmailValid = isValidEmail(email);
+                const isPasswordValid = password.length >= 6;
+
+                validateField(usernameInput, usernameError, isUsernameValid, 'نام کاربری باید حداقل ۳ کاراکتر باشد.');
+                validateField(emailInput, emailError, isEmailValid, 'لطفاً یک ایمیل واقعی و معتبر وارد کنید.');
+                validateField(passwordInput, passwordError, isPasswordValid, 'رمز عبور باید حداقل ۶ کاراکتر باشد.');
+
+                if (!isUsernameValid || !isEmailValid || !isPasswordValid) {
+                    successMsg.classList.remove('show');
+                    return;
                 }
-            });
 
-            // ============================================================
-            // REGISTER / LOGIN SYSTEM
-            // ============================================================
-            const form = document.getElementById('registerForm');
-            const usernameInput = document.getElementById('username');
-            const emailInput = document.getElementById('email');
-            const loginUsernameInput = document.getElementById('loginUsername');
-            const passwordInput = document.getElementById('password');
-            const usernameError = document.getElementById('usernameError');
-            const emailError = document.getElementById('emailError');
-            const loginUsernameError = document.getElementById('loginUsernameError');
-            const passwordError = document.getElementById('passwordError');
+                const users = getUsers();
 
-            const validDomains = [
-                'gmail.com', 'yahoo.com', 'outlook.com', 'hotmail.com',
-                'protonmail.com', 'mail.com', 'yandex.com', 'aol.com',
-                'icloud.com', 'zoho.com', 'gmx.com', 'tutanota.com'
-            ];
-
-            function isValidEmail(email) {
-                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                if (!emailRegex.test(email)) return false;
-                const domain = email.split('@')[1];
-                return validDomains.some(d => domain.toLowerCase() === d.toLowerCase());
-            }
-
-            function validateField(input, errorEl, condition, errorMsg) {
-                if (!condition) {
-                    input.classList.add('error');
-                    input.classList.remove('success');
-                    errorEl.textContent = errorMsg;
-                    errorEl.classList.add('show');
-                    return false;
-                } else {
-                    input.classList.remove('error');
-                    input.classList.add('success');
-                    errorEl.classList.remove('show');
-                    return true;
+                if (users.some(u => u.username.toLowerCase() === username.toLowerCase())) {
+                    usernameInput.classList.add('error');
+                    usernameError.textContent = 'این نام کاربری قبلاً ثبت‌نام شده است!';
+                    usernameError.classList.add('show');
+                    successMsg.classList.remove('show');
+                    return;
                 }
+
+                if (users.some(u => u.email.toLowerCase() === email.toLowerCase())) {
+                    emailInput.classList.add('error');
+                    emailError.textContent = 'این ایمیل قبلاً ثبت‌نام شده است!';
+                    emailError.classList.add('show');
+                    successMsg.classList.remove('show');
+                    return;
+                }
+
+                const newUser = { username, email, password, country, date: new Date().toLocaleDateString('fa-IR') };
+                users.push(newUser);
+                saveUsers(users);
+                localStorage.setItem('hoi4-current-user', JSON.stringify(newUser));
+                updateUIForUser();
+
+                successMsg.classList.add('show');
+                form.reset();
+                document.querySelectorAll('.form-box input').forEach(el => el.classList.remove('success', 'error'));
+                document.querySelectorAll('.error-msg').forEach(el => el.classList.remove('show'));
+
+                setTimeout(() => {
+                    successMsg.classList.remove('show');
+                    showSection('dashboard');
+                }, 1500);
+            }
+        });
+
+        // ============================================================
+        // ============================================================
+        // CHAT SYSTEM (با Firebase)
+        // ============================================================
+        // ============================================================
+
+        function sendMessage() {
+            const input = document.getElementById('chatInput');
+            const text = input.value.trim();
+            if (!text) return;
+
+            const currentUser = JSON.parse(localStorage.getItem('hoi4-current-user'));
+            if (!currentUser) {
+                alert('لطفاً ابتدا وارد شوید!');
+                return;
             }
 
-            usernameInput.addEventListener('input', function() {
-                validateField(this, usernameError, this.value.trim().length >= 3, 'نام کاربری باید حداقل ۳ کاراکتر باشد.');
-            });
-
-            emailInput.addEventListener('input', function() {
-                validateField(this, emailError, isValidEmail(this.value.trim()), 'لطفاً یک ایمیل واقعی و معتبر وارد کنید.');
-            });
-
-            passwordInput.addEventListener('input', function() {
-                validateField(this, passwordError, this.value.length >= 6, 'رمز عبور باید حداقل ۶ کاراکتر باشد.');
-            });
-
-            loginUsernameInput.addEventListener('input', function() {
-                validateField(this, loginUsernameError, this.value.trim().length > 0, 'لطفاً نام کاربری یا ایمیل خود را وارد کنید.');
-            });
-
-            function getUsers() {
-                try { return JSON.parse(localStorage.getItem('hoi4-users')) || []; } catch { return []; }
+            const timedOutUsers = getTimedOutUsers();
+            if (timedOutUsers.includes(currentUser.username)) {
+                alert('⏰ شما توسط ادمین تایم‌اوت شده‌اید و نمیتوانید پیام بفرستید!');
+                return;
             }
 
-            function saveUsers(users) {
-                localStorage.setItem('hoi4-users', JSON.stringify(users));
-            }
-
-            // ============================================================
-            // DASHBOARD
-            // ============================================================
-            const flagMap = {
-                'آلمان': 'germany-flag.png',
-                'بریتانیا': 'uk-flag.png',
-                'آمریکا': 'usa-flag.png',
-                'ژاپن': 'japan-flag.png',
-                'شوروی': 'soviet-flag.png',
-                'ایتالیا': 'italy-flag.png',
-                'فرانسه': 'france-flag.png'
+            const message = {
+                username: currentUser.username,
+                text: text,
+                time: new Date().toLocaleTimeString('fa-IR', { hour: '2-digit', minute: '2-digit' }),
+                timestamp: firebase.database.ServerValue.TIMESTAMP
             };
 
-            const bgMap = {
-                'آلمان': 'germany-bg.jpg',
-                'بریتانیا': 'uk-bg.jpg',
-                'آمریکا': 'usa-bg.jpg',
-                'ژاپن': 'japan-bg.jpg',
-                'شوروی': 'soviet-bg.jpg',
-                'ایتالیا': 'italy-bg.jpg',
-                'فرانسه': 'france-bg.jpg'
-            };
+            // ارسال به Firebase
+            const messagesRef = database.ref('messages');
+            messagesRef.push(message).then(() => {
+                input.value = '';
+            }).catch((error) => {
+                console.error('Error sending message:', error);
+                alert('خطا در ارسال پیام!');
+            });
+        }
 
-            function updateDashboardUI() {
+        function loadMessages() {
+            const messagesRef = database.ref('messages');
+            messagesRef.off('child_added'); // حذف لیسنر قبلی
+
+            messagesRef.orderByChild('timestamp').limitToLast(50).on('child_added', function(snapshot) {
+                const msg = snapshot.val();
+                const container = document.getElementById('chatMessages');
                 const currentUser = JSON.parse(localStorage.getItem('hoi4-current-user'));
-                if (currentUser) {
-                    document.getElementById('dashboardUsername').textContent = currentUser.username;
-                    const country = currentUser.country;
-                    document.getElementById('countryBadge').textContent = `🎖️ کشور مورد علاقه: ${country}`;
-                    document.getElementById('countryFlag').src = `images/${flagMap[country] || 'germany-flag.png'}`;
-                    const bgElement = document.getElementById('dashboardBg');
-                    bgElement.style.backgroundImage = `url('images/${bgMap[country] || 'germany-bg.jpg'}')`;
+
+                // حذف پیام "هنوز پیامی..."
+                const emptyMsg = container.querySelector('div[style]');
+                if (emptyMsg && emptyMsg.textContent.includes('هنوز پیامی ارسال نشده است')) {
+                    container.innerHTML = '';
                 }
-            }
 
-            function updateUIForUser() {
-                const currentUser = JSON.parse(localStorage.getItem('hoi4-current-user'));
-                if (currentUser) {
-                    registerBtnNav.style.display = 'none';
-                    userBtnNav.classList.add('show');
-                    userBtnNav.textContent = `👤 ${currentUser.username}`;
-                    chatBtnNav.classList.add('show');
-                    updateAdminButton();
-                } else {
-                    registerBtnNav.style.display = 'flex';
-                    userBtnNav.classList.remove('show');
-                    chatBtnNav.classList.remove('show');
-                }
-            }
+                const isOwn = msg.username === currentUser.username;
+                const canModerate = canManageMessages(currentUser.username);
 
-            function updateAdminButton() {
-                const currentUser = JSON.parse(localStorage.getItem('hoi4-current-user'));
-                const btn = document.getElementById('adminPanelBtn');
-                if (currentUser && isOwner(currentUser.username)) {
-                    btn.style.display = 'block';
-                } else {
-                    btn.style.display = 'none';
-                }
-            }
+                const msgDiv = document.createElement('div');
+                msgDiv.className = `message ${isOwn ? 'own' : ''}`;
+                msgDiv.innerHTML = `
+                    <div class="msg-user">${msg.username}</div>
+                    <div class="msg-text">${msg.text}</div>
+                    <div class="msg-time">${msg.time}</div>
+                    ${canModerate && !isOwn ? `
+                        <div class="msg-actions">
+                            <button class="delete-msg" onclick="deleteMessage('${snapshot.key}')">🗑️ حذف</button>
+                            <button class="timeout-msg" onclick="timeoutUser('${msg.username}')">⏰ تایم‌اوت</button>
+                        </div>
+                    ` : ''}
+                `;
 
-            updateUIForUser();
+                container.appendChild(msgDiv);
+                container.scrollTop = container.scrollHeight;
+            });
+        }
 
-            // ============================================================
-            // SUBMIT REGISTER / LOGIN
-            // ============================================================
-            form.addEventListener('submit', function(e) {
-                e.preventDefault();
+        window.deleteMessage = function(messageKey) {
+            if (!confirm('آیا از حذف این پیام مطمئن هستید؟')) return;
 
-                if (isLoginMode) {
-                    // ===== LOGIN =====
-                    const loginIdentifier = loginUsernameInput.value.trim();
-                    const password = passwordInput.value;
+            const messagesRef = database.ref('messages/' + messageKey);
+            messagesRef.remove().then(() => {
+                // پیام از دیتابیس حذف شد
+            }).catch((error) => {
+                console.error('Error deleting message:', error);
+                alert('خطا در حذف پیام!');
+            });
+        };
 
-                    const isLoginValid = loginIdentifier.length > 0;
-                    const isPasswordValid = password.length >= 6;
+        // ============================================================
+        // CHAT USERS (با Firebase)
+        // ============================================================
+        function loadChatUsers() {
+            const currentUser = JSON.parse(localStorage.getItem('hoi4-current-user'));
+            if (!currentUser) return;
 
-                    validateField(loginUsernameInput, loginUsernameError, isLoginValid, 'لطفاً نام کاربری یا ایمیل خود را وارد کنید.');
-                    validateField(passwordInput, passwordError, isPasswordValid, 'رمز عبور باید حداقل ۶ کاراکتر باشد.');
-
-                    if (!isLoginValid || !isPasswordValid) {
-                        loginSuccessMsg.classList.remove('show');
-                        return;
-                    }
-
-                    const users = getUsers();
-                    const foundUser = users.find(u =>
-                        (u.username.toLowerCase() === loginIdentifier.toLowerCase() ||
-                            u.email.toLowerCase() === loginIdentifier.toLowerCase()) &&
-                        u.password === password
-                    );
-
-                    if (!foundUser) {
-                        loginUsernameInput.classList.add('error');
-                        loginUsernameError.textContent = 'نام کاربری، ایمیل یا رمز عبور اشتباه است!';
-                        loginUsernameError.classList.add('show');
-                        loginSuccessMsg.classList.remove('show');
-                        return;
-                    }
-
-                    localStorage.setItem('hoi4-current-user', JSON.stringify(foundUser));
-                    updateUIForUser();
-                    loginSuccessMsg.style.display = 'block';
-                    loginSuccessMsg.classList.add('show');
-                    loginSuccessMsg.textContent = '✅ ورود با موفقیت انجام شد!';
-
-                    setTimeout(() => {
-                        loginSuccessMsg.classList.remove('show');
-                        loginSuccessMsg.style.display = 'none';
-                        showSection('dashboard');
-                    }, 1500);
-
-                } else {
-                    // ===== REGISTER =====
-                    const username = usernameInput.value.trim();
-                    const email = emailInput.value.trim();
-                    const password = passwordInput.value;
-                    const country = document.getElementById('country').value;
-
-                    const isUsernameValid = username.length >= 3;
-                    const isEmailValid = isValidEmail(email);
-                    const isPasswordValid = password.length >= 6;
-
-                    validateField(usernameInput, usernameError, isUsernameValid, 'نام کاربری باید حداقل ۳ کاراکتر باشد.');
-                    validateField(emailInput, emailError, isEmailValid, 'لطفاً یک ایمیل واقعی و معتبر وارد کنید.');
-                    validateField(passwordInput, passwordError, isPasswordValid, 'رمز عبور باید حداقل ۶ کاراکتر باشد.');
-
-                    if (!isUsernameValid || !isEmailValid || !isPasswordValid) {
-                        successMsg.classList.remove('show');
-                        return;
-                    }
-
-                    const users = getUsers();
-
-                    if (users.some(u => u.username.toLowerCase() === username.toLowerCase())) {
-                        usernameInput.classList.add('error');
-                        usernameError.textContent = 'این نام کاربری قبلاً ثبت‌نام شده است!';
-                        usernameError.classList.add('show');
-                        successMsg.classList.remove('show');
-                        return;
-                    }
-
-                    if (users.some(u => u.email.toLowerCase() === email.toLowerCase())) {
-                        emailInput.classList.add('error');
-                        emailError.textContent = 'این ایمیل قبلاً ثبت‌نام شده است!';
-                        emailError.classList.add('show');
-                        successMsg.classList.remove('show');
-                        return;
-                    }
-
-                    const newUser = { username, email, password, country, date: new Date().toLocaleDateString('fa-IR') };
-                    users.push(newUser);
-                    saveUsers(users);
-                    localStorage.setItem('hoi4-current-user', JSON.stringify(newUser));
-                    updateUIForUser();
-
-                    successMsg.classList.add('show');
-                    form.reset();
-                    document.querySelectorAll('.form-box input').forEach(el => el.classList.remove('success', 'error'));
-                    document.querySelectorAll('.error-msg').forEach(el => el.classList.remove('show'));
-
-                    setTimeout(() => {
-                        successMsg.classList.remove('show');
-                        showSection('dashboard');
-                    }, 1500);
-                }
+            // آپدیت وضعیت آنلاین
+            const userStatusRef = database.ref('users/' + currentUser.username);
+            userStatusRef.update({
+                online: true,
+                lastSeen: firebase.database.ServerValue.TIMESTAMP
             });
 
-            // ============================================================
-            // CHAT SYSTEM
-            // ============================================================
-            function getChatMessages() {
-                try { return JSON.parse(localStorage.getItem('hoi4-chat-messages')) || []; } catch { return []; }
-            }
+            // وقتی کاربر میره، آفلاین بشه
+            window.addEventListener('beforeunload', function() {
+                userStatusRef.update({ online: false });
+            });
 
-            function saveChatMessages(messages) {
-                localStorage.setItem('hoi4-chat-messages', JSON.stringify(messages));
-            }
-
-            function getOnlineUsers() {
-                try { return JSON.parse(localStorage.getItem('hoi4-online-users')) || []; } catch { return []; }
-            }
-
-            function saveOnlineUsers(users) {
-                localStorage.setItem('hoi4-online-users', JSON.stringify(users));
-            }
-
-            function loadChatUsers() {
-                const currentUser = JSON.parse(localStorage.getItem('hoi4-current-user'));
-                if (!currentUser) return;
-
-                const allUsers = getUsers();
-                let onlineUsers = getOnlineUsers();
-
-                if (!onlineUsers.includes(currentUser.username)) {
-                    onlineUsers.push(currentUser.username);
-                    saveOnlineUsers(onlineUsers);
-                }
-
+            // لیست کاربران رو از Firebase بگیر
+            const usersRef = database.ref('users');
+            usersRef.off('value');
+            usersRef.on('value', function(snapshot) {
+                const usersData = snapshot.val();
                 const container = document.getElementById('usersListContainer');
-                let html = '';
 
+                if (!usersData) {
+                    container.innerHTML =
+                        `<div style="text-align:center; color:var(--text-secondary); padding:20px;">هیچ کاربری آنلاین نیست</div>`;
+                    return;
+                }
+
+                // گرفتن لیست کاربران از localStorage
+                const allUsers = getUsers();
+                const onlineUsers = [];
+
+                for (const [username, data] of Object.entries(usersData)) {
+                    if (data.online === true) {
+                        onlineUsers.push(username);
+                    }
+                }
+
+                // ذخیره آنلاین‌ها در localStorage
+                saveOnlineUsers(onlineUsers);
+
+                let html = '';
                 const onlineList = allUsers.filter(u => onlineUsers.includes(u.username));
                 const offlineList = allUsers.filter(u => !onlineUsers.includes(u.username));
 
@@ -2688,460 +2751,397 @@
                 }
 
                 if (allUsers.length === 0) {
-                    html = `<div style="text-align:center; color:var(--text-secondary); padding:20px;">هیچ کاربری ثبت‌نام نکرده است</div>`;
+                    html =
+                        `<div style="text-align:center; color:var(--text-secondary); padding:20px;">هیچ کاربری ثبت‌نام نکرده است</div>`;
                 }
 
                 container.innerHTML = html;
+            });
+        }
+
+        // ============================================================
+        // HELPER FUNCTIONS
+        // ============================================================
+        function getOnlineUsers() {
+            try { return JSON.parse(localStorage.getItem('hoi4-online-users')) || []; } catch { return []; }
+        }
+
+        function saveOnlineUsers(users) {
+            localStorage.setItem('hoi4-online-users', JSON.stringify(users));
+        }
+
+        function getTimedOutUsers() {
+            try { return JSON.parse(localStorage.getItem('hoi4-timedout-users')) || []; } catch { return []; }
+        }
+
+        function saveTimedOutUsers(users) {
+            localStorage.setItem('hoi4-timedout-users', JSON.stringify(users));
+        }
+
+        window.timeoutUser = function(username) {
+            if (!confirm(`آیا میخواهید "${username}" را ۵ دقیقه تایم‌اوت کنید؟`)) return;
+
+            const timedOut = getTimedOutUsers();
+            if (!timedOut.includes(username)) {
+                timedOut.push(username);
+                saveTimedOutUsers(timedOut);
             }
 
-            function loadMessages() {
-                const messages = getChatMessages();
-                const container = document.getElementById('chatMessages');
-                const currentUser = JSON.parse(localStorage.getItem('hoi4-current-user'));
+            alert(`⏰ "${username}" به مدت ۵ دقیقه تایم‌اوت شد!`);
 
-                if (messages.length === 0) {
-                    container.innerHTML =
-                        `<div style="text-align:center; color:var(--text-secondary); padding:40px 0;">هنوز پیامی ارسال نشده است</div>`;
-                    return;
-                }
+            setTimeout(() => {
+                const newList = getTimedOutUsers().filter(u => u !== username);
+                saveTimedOutUsers(newList);
+            }, 300000);
+        };
 
-                let html = '';
-                messages.forEach((msg, index) => {
-                    const isOwn = msg.username === currentUser.username;
-                    const canModerate = canManageMessages(currentUser.username);
-                    html += `
-                        <div class="message ${isOwn ? 'own' : ''}" data-msg-index="${index}">
-                            <div class="msg-user">${msg.username}</div>
-                            <div class="msg-text">${msg.text}</div>
-                            <div class="msg-time">${msg.time}</div>
-                            ${canModerate && !isOwn ? `
-                                <div class="msg-actions">
-                                    <button class="delete-msg" onclick="deleteMessage(${index})">🗑️ حذف</button>
-                                    <button class="timeout-msg" onclick="timeoutUser('${msg.username}')">⏰ تایم‌اوت</button>
-                                </div>
-                            ` : ''}
-                        </div>
-                    `;
-                });
+        // ============================================================
+        // ADMIN PANEL
+        // ============================================================
+        window.openAdminPanel = function() {
+            const currentUser = JSON.parse(localStorage.getItem('hoi4-current-user'));
+            if (!currentUser || !isOwner(currentUser.username)) {
+                alert('شما دسترسی مدیر ندارید!');
+                return;
+            }
+            showSection('admin');
+        };
 
-                container.innerHTML = html;
-                container.scrollTop = container.scrollHeight;
+        window.closeAdminPanel = function() {
+            showSection('dashboard');
+        };
+
+        function loadAdminUsers() {
+            const users = getUsers();
+            const container = document.getElementById('adminUsersList');
+            const currentUser = JSON.parse(localStorage.getItem('hoi4-current-user'));
+
+            if (users.length === 0) {
+                container.innerHTML = '<p style="color:var(--text-secondary);">هیچ کاربری ثبت‌نام نکرده است.</p>';
+                return;
             }
 
-            function sendMessage() {
-                const input = document.getElementById('chatInput');
-                const text = input.value.trim();
-                if (!text) return;
-
-                const currentUser = JSON.parse(localStorage.getItem('hoi4-current-user'));
-                if (!currentUser) {
-                    alert('لطفاً ابتدا وارد شوید!');
-                    return;
-                }
-
-                const timedOutUsers = getTimedOutUsers();
-                if (timedOutUsers.includes(currentUser.username)) {
-                    alert('⏰ شما توسط ادمین تایم‌اوت شده‌اید و نمیتوانید پیام بفرستید!');
-                    return;
-                }
-
-                const messages = getChatMessages();
-                messages.push({
-                    username: currentUser.username,
-                    text: text,
-                    time: new Date().toLocaleTimeString('fa-IR', { hour: '2-digit', minute: '2-digit' })
-                });
-                saveChatMessages(messages);
-
-                input.value = '';
-                loadMessages();
-
-                setTimeout(() => {
-                    document.getElementById('chatMessages').scrollTop = document.getElementById('chatMessages')
-                        .scrollHeight;
-                }, 50);
-            }
-
-            // ============================================================
-            // ADMIN CHAT ACTIONS
-            // ============================================================
-            window.deleteMessage = function(index) {
-                if (!confirm('آیا از حذف این پیام مطمئن هستید؟')) return;
-
-                const messages = getChatMessages();
-                messages.splice(index, 1);
-                saveChatMessages(messages);
-                loadMessages();
-            };
-
-            function getTimedOutUsers() {
-                try { return JSON.parse(localStorage.getItem('hoi4-timedout-users')) || []; } catch { return []; }
-            }
-
-            function saveTimedOutUsers(users) {
-                localStorage.setItem('hoi4-timedout-users', JSON.stringify(users));
-            }
-
-            window.timeoutUser = function(username) {
-                if (!confirm(`آیا میخواهید "${username}" را ۵ دقیقه تایم‌اوت کنید؟`)) return;
-
-                const timedOut = getTimedOutUsers();
-                if (!timedOut.includes(username)) {
-                    timedOut.push(username);
-                    saveTimedOutUsers(timedOut);
-                }
-
-                alert(`⏰ "${username}" به مدت ۵ دقیقه تایم‌اوت شد!`);
-
-                setTimeout(() => {
-                    const newList = getTimedOutUsers().filter(u => u !== username);
-                    saveTimedOutUsers(newList);
-                }, 300000);
-            };
-
-            // ============================================================
-            // ADMIN PANEL
-            // ============================================================
-            window.openAdminPanel = function() {
-                const currentUser = JSON.parse(localStorage.getItem('hoi4-current-user'));
-                if (!currentUser || !isOwner(currentUser.username)) {
-                    alert('شما دسترسی مدیر ندارید!');
-                    return;
-                }
-                showSection('admin');
-            };
-
-            window.closeAdminPanel = function() {
-                showSection('dashboard');
-            };
-
-            function loadAdminUsers() {
-                const users = getUsers();
-                const container = document.getElementById('adminUsersList');
-                const currentUser = JSON.parse(localStorage.getItem('hoi4-current-user'));
-
-                if (users.length === 0) {
-                    container.innerHTML = '<p style="color:var(--text-secondary);">هیچ کاربری ثبت‌نام نکرده است.</p>';
-                    return;
-                }
-
-                let html = `
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>نام کاربری</th>
-                                <th>ایمیل</th>
-                                <th>کشور</th>
-                                <th>تاریخ ثبت</th>
-                                <th>نقش</th>
-                                <th>عملیات</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                `;
-
-                users.forEach(u => {
-                    const role = getUserRole(u.username);
-                    const isCurrentUser = u.username === currentUser.username;
-                    let roleLabel = '';
-                    let roleClass = '';
-                    if (role === 'owner') { roleLabel = 'مدیر';
-                        roleClass = 'owner'; } else if (role === 'admin') { roleLabel = 'ادمین';
-                        roleClass = 'admin'; } else { roleLabel = 'کاربر';
-                        roleClass = 'user'; }
-
-                    html += `
+            let html = `
+                <table>
+                    <thead>
                         <tr>
-                            <td><strong>${u.username}</strong> ${role === 'owner' ? '⭐' : ''}</td>
-                            <td>${u.email}</td>
-                            <td>${u.country}</td>
-                            <td>${u.date || 'نامشخص'}</td>
-                            <td><span class="role-badge ${roleClass}">${roleLabel}</span></td>
-                            <td>
-                                ${!isCurrentUser ? `
-                                    ${role !== 'owner' ? `
-                                        <button class="action-btn ${role === 'admin' ? 'remove-admin' : 'make-admin'}" 
-                                                onclick="${role === 'admin' ? `removeAdmin('${u.username}')` : `makeAdmin('${u.username}')`}">
-                                            ${role === 'admin' ? '⬇️ حذف ادمین' : '👑 ادمین کن'}
-                                        </button>
-                                    ` : ''}
-                                    <button class="action-btn delete" onclick="deleteUser('${u.username}')">🗑️ حذف</button>
-                                ` : `
-                                    <span style="color:var(--text-secondary); font-size:0.8rem;">خودتان</span>
-                                `}
-                            </td>
+                            <th>نام کاربری</th>
+                            <th>ایمیل</th>
+                            <th>کشور</th>
+                            <th>تاریخ ثبت</th>
+                            <th>نقش</th>
+                            <th>عملیات</th>
                         </tr>
-                    `;
-                });
+                    </thead>
+                    <tbody>
+            `;
+
+            users.forEach(u => {
+                const role = getUserRole(u.username);
+                const isCurrentUser = u.username === currentUser.username;
+                let roleLabel = '';
+                let roleClass = '';
+                if (role === 'owner') { roleLabel = 'مدیر';
+                    roleClass = 'owner'; } else if (role === 'admin') { roleLabel = 'ادمین';
+                    roleClass = 'admin'; } else { roleLabel = 'کاربر';
+                    roleClass = 'user'; }
 
                 html += `
-                        </tbody>
-                    </table>
+                    <tr>
+                        <td><strong>${u.username}</strong> ${role === 'owner' ? '⭐' : ''}</td>
+                        <td>${u.email}</td>
+                        <td>${u.country}</td>
+                        <td>${u.date || 'نامشخص'}</td>
+                        <td><span class="role-badge ${roleClass}">${roleLabel}</span></td>
+                        <td>
+                            ${!isCurrentUser ? `
+                                ${role !== 'owner' ? `
+                                    <button class="action-btn ${role === 'admin' ? 'remove-admin' : 'make-admin'}" 
+                                            onclick="${role === 'admin' ? `removeAdmin('${u.username}')` : `makeAdmin('${u.username}')`}">
+                                        ${role === 'admin' ? '⬇️ حذف ادمین' : '👑 ادمین کن'}
+                                    </button>
+                                ` : ''}
+                                <button class="action-btn delete" onclick="deleteUser('${u.username}')">🗑️ حذف</button>
+                            ` : `
+                                <span style="color:var(--text-secondary); font-size:0.8rem;">خودتان</span>
+                            `}
+                        </td>
+                    </tr>
                 `;
+            });
 
-                container.innerHTML = html;
+            html += `
+                    </tbody>
+                </table>
+            `;
+
+            container.innerHTML = html;
+        }
+
+        window.deleteUser = function(username) {
+            if (!confirm(`آیا از حذف کاربر "${username}" مطمئن هستید؟`)) return;
+
+            const currentUser = JSON.parse(localStorage.getItem('hoi4-current-user'));
+            if (username === currentUser.username) {
+                alert('نمیتوانید خودتان را حذف کنید!');
+                return;
             }
 
-            window.deleteUser = function(username) {
-                if (!confirm(`آیا از حذف کاربر "${username}" مطمئن هستید؟`)) return;
-
-                const currentUser = JSON.parse(localStorage.getItem('hoi4-current-user'));
-                if (username === currentUser.username) {
-                    alert('نمیتوانید خودتان را حذف کنید!');
-                    return;
-                }
-
-                if (isOwner(username)) {
-                    alert('نمیتوانید مدیر اصلی را حذف کنید!');
-                    return;
-                }
-
-                let users = getUsers();
-                users = users.filter(u => u.username !== username);
-                saveUsers(users);
-
-                let online = getOnlineUsers();
-                online = online.filter(u => u !== username);
-                saveOnlineUsers(online);
-
-                adminList = adminList.filter(u => u !== username);
-                saveAdminList();
-
-                const timedOut = getTimedOutUsers().filter(u => u !== username);
-                saveTimedOutUsers(timedOut);
-
-                loadAdminUsers();
-                loadChatUsers();
-                alert(`✅ کاربر "${username}" با موفقیت حذف شد!`);
-            };
-
-            window.makeAdmin = function(username) {
-                if (!confirm(`آیا میخواهید "${username}" را ادمین کنید؟`)) return;
-
-                if (isOwner(username)) {
-                    alert('این کاربر مدیر اصلی است!');
-                    return;
-                }
-
-                if (!adminList.includes(username)) {
-                    adminList.push(username);
-                    saveAdminList();
-                }
-                loadAdminUsers();
-                loadChatUsers();
-                alert(`✅ "${username}" به لیست ادمین‌ها اضافه شد!`);
-            };
-
-            window.removeAdmin = function(username) {
-                if (!confirm(`آیا میخواهید ادمین بودن "${username}" را لغو کنید؟`)) return;
-
-                if (isOwner(username)) {
-                    alert('نمیتوانید مدیر اصلی را تغییر دهید!');
-                    return;
-                }
-
-                adminList = adminList.filter(u => u !== username);
-                saveAdminList();
-                loadAdminUsers();
-                loadChatUsers();
-                alert(`✅ ادمین بودن "${username}" لغو شد!`);
-            };
-
-            // ============================================================
-            // CLOSE CHAT
-            // ============================================================
-            window.closeChat = function() {
-                const currentUser = JSON.parse(localStorage.getItem('hoi4-current-user'));
-                if (currentUser) {
-                    const onlineUsers = getOnlineUsers();
-                    const newOnline = onlineUsers.filter(u => u !== currentUser.username);
-                    saveOnlineUsers(newOnline);
-                }
-                if (window.chatInterval) {
-                    clearInterval(window.chatInterval);
-                    window.chatInterval = null;
-                }
-                showSection('dashboard');
-            };
-
-            document.getElementById('sendChatBtn').addEventListener('click', sendMessage);
-            document.getElementById('chatInput').addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') {
-                    sendMessage();
-                }
-            });
-
-            // ============================================================
-            // LOGOUT
-            // ============================================================
-            function handleLogout() {
-                const currentUser = JSON.parse(localStorage.getItem('hoi4-current-user'));
-                if (currentUser) {
-                    const onlineUsers = getOnlineUsers();
-                    const newOnline = onlineUsers.filter(u => u !== currentUser.username);
-                    saveOnlineUsers(newOnline);
-                }
-                if (window.chatInterval) {
-                    clearInterval(window.chatInterval);
-                    window.chatInterval = null;
-                }
-                localStorage.removeItem('hoi4-current-user');
-                updateUIForUser();
-                showSection('home');
-                document.getElementById('logoutOverlay').classList.remove('active');
-                alert('✅ شما با موفقیت خارج شدید!');
+            if (isOwner(username)) {
+                alert('نمیتوانید مدیر اصلی را حذف کنید!');
+                return;
             }
 
-            window.openLogout = function() {
-                const currentUser = JSON.parse(localStorage.getItem('hoi4-current-user'));
-                if (!currentUser) {
-                    alert('لطفاً ابتدا وارد شوید!');
-                    return;
-                }
-                document.getElementById('logoutOverlay').classList.add('active');
-            };
+            let users = getUsers();
+            users = users.filter(u => u.username !== username);
+            saveUsers(users);
 
-            document.getElementById('logoutConfirmBtn').addEventListener('click', function() {
-                handleLogout();
-            });
+            // حذف از Firebase
+            database.ref('users/' + username).remove();
 
-            document.getElementById('logoutCancelBtn').addEventListener('click', function() {
-                document.getElementById('logoutOverlay').classList.remove('active');
-            });
+            const onlineUsers = getOnlineUsers().filter(u => u !== username);
+            saveOnlineUsers(onlineUsers);
 
-            document.getElementById('logoutOverlay').addEventListener('click', function(e) {
-                if (e.target === this) {
-                    this.classList.remove('active');
-                }
-            });
+            adminList = adminList.filter(u => u !== username);
+            saveAdminList();
 
-            // ============================================================
-            // SETTINGS
-            // ============================================================
-            window.openSettings = function() {
-                const currentUser = JSON.parse(localStorage.getItem('hoi4-current-user'));
-                if (!currentUser) {
-                    alert('لطفاً ابتدا وارد شوید!');
-                    return;
-                }
-                document.getElementById('settingsOverlay').classList.add('active');
-                document.getElementById('settingsPanel').classList.add('active');
-                document.getElementById('settingsUsername').value = currentUser.username;
-                document.getElementById('settingsCountry').value = currentUser.country;
-                document.getElementById('settingsPassword').value = '';
-                document.getElementById('settingsSuccess').classList.remove('show');
-                document.getElementById('settingsError').classList.remove('show');
-                document.getElementById('settingsUsernameError').classList.remove('show');
-                document.getElementById('settingsPasswordError').classList.remove('show');
-            };
+            const timedOut = getTimedOutUsers().filter(u => u !== username);
+            saveTimedOutUsers(timedOut);
 
-            window.closeSettings = function() {
-                document.getElementById('settingsOverlay').classList.remove('active');
-                document.getElementById('settingsPanel').classList.remove('active');
-            };
+            loadAdminUsers();
+            loadChatUsers();
+            alert(`✅ کاربر "${username}" با موفقیت حذف شد!`);
+        };
 
-            // ============================================================
-            // SETTINGS FORM
-            // ============================================================
-            const settingsForm = document.getElementById('settingsForm');
-            const settingsUsername = document.getElementById('settingsUsername');
-            const settingsPassword = document.getElementById('settingsPassword');
-            const settingsCountry = document.getElementById('settingsCountry');
-            const settingsUsernameError = document.getElementById('settingsUsernameError');
-            const settingsPasswordError = document.getElementById('settingsPasswordError');
-            const settingsSuccess = document.getElementById('settingsSuccess');
-            const settingsError = document.getElementById('settingsError');
+        window.makeAdmin = function(username) {
+            if (!confirm(`آیا میخواهید "${username}" را ادمین کنید؟`)) return;
 
-            settingsForm.addEventListener('submit', function(e) {
-                e.preventDefault();
+            if (isOwner(username)) {
+                alert('این کاربر مدیر اصلی است!');
+                return;
+            }
 
-                const currentUser = JSON.parse(localStorage.getItem('hoi4-current-user'));
-                if (!currentUser) {
-                    alert('لطفاً ابتدا وارد شوید!');
-                    return;
-                }
+            if (!adminList.includes(username)) {
+                adminList.push(username);
+                saveAdminList();
+            }
+            loadAdminUsers();
+            loadChatUsers();
+            alert(`✅ "${username}" به لیست ادمین‌ها اضافه شد!`);
+        };
 
-                const newUsername = settingsUsername.value.trim();
-                const newPassword = settingsPassword.value.trim();
-                const newCountry = settingsCountry.value;
+        window.removeAdmin = function(username) {
+            if (!confirm(`آیا میخواهید ادمین بودن "${username}" را لغو کنید؟`)) return;
 
-                let hasError = false;
-                let users = getUsers();
+            if (isOwner(username)) {
+                alert('نمیتوانید مدیر اصلی را تغییر دهید!');
+                return;
+            }
 
-                if (newUsername.length < 3) {
-                    settingsUsernameError.textContent = 'نام کاربری باید حداقل ۳ کاراکتر باشد.';
-                    settingsUsernameError.classList.add('show');
-                    hasError = true;
-                } else if (newUsername !== currentUser.username &&
-                    users.some(u => u.username.toLowerCase() === newUsername.toLowerCase())) {
-                    settingsUsernameError.textContent = 'این نام کاربری قبلاً ثبت شده است!';
-                    settingsUsernameError.classList.add('show');
-                    hasError = true;
-                } else {
-                    settingsUsernameError.classList.remove('show');
-                }
+            adminList = adminList.filter(u => u !== username);
+            saveAdminList();
+            loadAdminUsers();
+            loadChatUsers();
+            alert(`✅ ادمین بودن "${username}" لغو شد!`);
+        };
 
-                if (newPassword && newPassword.length < 6) {
-                    settingsPasswordError.textContent = 'رمز عبور باید حداقل ۶ کاراکتر باشد.';
-                    settingsPasswordError.classList.add('show');
-                    hasError = true;
-                } else {
-                    settingsPasswordError.classList.remove('show');
-                }
-
-                if (hasError) {
-                    settingsSuccess.classList.remove('show');
-                    settingsError.classList.remove('show');
-                    return;
-                }
-
-                const userIndex = users.findIndex(u => u.email === currentUser.email);
-                if (userIndex !== -1) {
-                    users[userIndex].username = newUsername;
-                    if (newPassword) {
-                        users[userIndex].password = newPassword;
-                    }
-                    users[userIndex].country = newCountry;
-                    saveUsers(users);
-
-                    const updatedUser = { ...currentUser, username: newUsername, country: newCountry };
-                    if (newPassword) {
-                        updatedUser.password = newPassword;
-                    }
-                    localStorage.setItem('hoi4-current-user', JSON.stringify(updatedUser));
-                    updateUIForUser();
-                    updateDashboardUI();
-
-                    settingsSuccess.classList.add('show');
-                    settingsError.classList.remove('show');
-                    setTimeout(() => {
-                        settingsSuccess.classList.remove('show');
-                        closeSettings();
-                    }, 2000);
-                }
-            });
-
-            // ============================================================
-            // CHECK USER ON LOAD
-            // ============================================================
+        // ============================================================
+        // CLOSE CHAT
+        // ============================================================
+        window.closeChat = function() {
             const currentUser = JSON.parse(localStorage.getItem('hoi4-current-user'));
             if (currentUser) {
-                updateUIForUser();
-                const onlineUsers = getOnlineUsers();
-                if (!onlineUsers.includes(currentUser.username)) {
-                    onlineUsers.push(currentUser.username);
-                    saveOnlineUsers(onlineUsers);
-                }
+                // آفلاین کردن در Firebase
+                database.ref('users/' + currentUser.username).update({ online: false });
+                const onlineUsers = getOnlineUsers().filter(u => u !== currentUser.username);
+                saveOnlineUsers(onlineUsers);
+            }
+            if (window.chatInterval) {
+                clearInterval(window.chatInterval);
+                window.chatInterval = null;
+            }
+            showSection('dashboard');
+        };
+
+        document.getElementById('sendChatBtn').addEventListener('click', sendMessage);
+        document.getElementById('chatInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+
+        // ============================================================
+        // LOGOUT
+        // ============================================================
+        function handleLogout() {
+            const currentUser = JSON.parse(localStorage.getItem('hoi4-current-user'));
+            if (currentUser) {
+                // آفلاین کردن در Firebase
+                database.ref('users/' + currentUser.username).update({ online: false });
+                const onlineUsers = getOnlineUsers().filter(u => u !== currentUser.username);
+                saveOnlineUsers(onlineUsers);
+            }
+            if (window.chatInterval) {
+                clearInterval(window.chatInterval);
+                window.chatInterval = null;
+            }
+            localStorage.removeItem('hoi4-current-user');
+            updateUIForUser();
+            showSection('home');
+            document.getElementById('logoutOverlay').classList.remove('active');
+            alert('✅ شما با موفقیت خارج شدید!');
+        }
+
+        window.openLogout = function() {
+            const currentUser = JSON.parse(localStorage.getItem('hoi4-current-user'));
+            if (!currentUser) {
+                alert('لطفاً ابتدا وارد شوید!');
+                return;
+            }
+            document.getElementById('logoutOverlay').classList.add('active');
+        };
+
+        document.getElementById('logoutConfirmBtn').addEventListener('click', function() {
+            handleLogout();
+        });
+
+        document.getElementById('logoutCancelBtn').addEventListener('click', function() {
+            document.getElementById('logoutOverlay').classList.remove('active');
+        });
+
+        document.getElementById('logoutOverlay').addEventListener('click', function(e) {
+            if (e.target === this) {
+                this.classList.remove('active');
+            }
+        });
+
+        // ============================================================
+        // SETTINGS
+        // ============================================================
+        window.openSettings = function() {
+            const currentUser = JSON.parse(localStorage.getItem('hoi4-current-user'));
+            if (!currentUser) {
+                alert('لطفاً ابتدا وارد شوید!');
+                return;
+            }
+            document.getElementById('settingsOverlay').classList.add('active');
+            document.getElementById('settingsPanel').classList.add('active');
+            document.getElementById('settingsUsername').value = currentUser.username;
+            document.getElementById('settingsCountry').value = currentUser.country;
+            document.getElementById('settingsPassword').value = '';
+            document.getElementById('settingsSuccess').classList.remove('show');
+            document.getElementById('settingsError').classList.remove('show');
+            document.getElementById('settingsUsernameError').classList.remove('show');
+            document.getElementById('settingsPasswordError').classList.remove('show');
+        };
+
+        window.closeSettings = function() {
+            document.getElementById('settingsOverlay').classList.remove('active');
+            document.getElementById('settingsPanel').classList.remove('active');
+        };
+
+        // ============================================================
+        // SETTINGS FORM
+        // ============================================================
+        const settingsForm = document.getElementById('settingsForm');
+        const settingsUsername = document.getElementById('settingsUsername');
+        const settingsPassword = document.getElementById('settingsPassword');
+        const settingsCountry = document.getElementById('settingsCountry');
+        const settingsUsernameError = document.getElementById('settingsUsernameError');
+        const settingsPasswordError = document.getElementById('settingsPasswordError');
+        const settingsSuccess = document.getElementById('settingsSuccess');
+        const settingsError = document.getElementById('settingsError');
+
+        settingsForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const currentUser = JSON.parse(localStorage.getItem('hoi4-current-user'));
+            if (!currentUser) {
+                alert('لطفاً ابتدا وارد شوید!');
+                return;
             }
 
-            document.addEventListener('keydown', function(e) {
-                if (e.key === 'Escape') {
-                    closeSettings();
-                    document.getElementById('logoutOverlay').classList.remove('active');
-                }
-            });
+            const newUsername = settingsUsername.value.trim();
+            const newPassword = settingsPassword.value.trim();
+            const newCountry = settingsCountry.value;
 
+            let hasError = false;
+            let users = getUsers();
+
+            if (newUsername.length < 3) {
+                settingsUsernameError.textContent = 'نام کاربری باید حداقل ۳ کاراکتر باشد.';
+                settingsUsernameError.classList.add('show');
+                hasError = true;
+            } else if (newUsername !== currentUser.username &&
+                users.some(u => u.username.toLowerCase() === newUsername.toLowerCase())) {
+                settingsUsernameError.textContent = 'این نام کاربری قبلاً ثبت شده است!';
+                settingsUsernameError.classList.add('show');
+                hasError = true;
+            } else {
+                settingsUsernameError.classList.remove('show');
+            }
+
+            if (newPassword && newPassword.length < 6) {
+                settingsPasswordError.textContent = 'رمز عبور باید حداقل ۶ کاراکتر باشد.';
+                settingsPasswordError.classList.add('show');
+                hasError = true;
+            } else {
+                settingsPasswordError.classList.remove('show');
+            }
+
+            if (hasError) {
+                settingsSuccess.classList.remove('show');
+                settingsError.classList.remove('show');
+                return;
+            }
+
+            const userIndex = users.findIndex(u => u.email === currentUser.email);
+            if (userIndex !== -1) {
+                users[userIndex].username = newUsername;
+                if (newPassword) {
+                    users[userIndex].password = newPassword;
+                }
+                users[userIndex].country = newCountry;
+                saveUsers(users);
+
+                const updatedUser = { ...currentUser, username: newUsername, country: newCountry };
+                if (newPassword) {
+                    updatedUser.password = newPassword;
+                }
+                localStorage.setItem('hoi4-current-user', JSON.stringify(updatedUser));
+                updateUIForUser();
+                updateDashboardUI();
+
+                settingsSuccess.classList.add('show');
+                settingsError.classList.remove('show');
+                setTimeout(() => {
+                    settingsSuccess.classList.remove('show');
+                    closeSettings();
+                }, 2000);
+            }
         });
+
+        // ============================================================
+        // CHECK USER ON LOAD
+        // ============================================================
+        const currentUser = JSON.parse(localStorage.getItem('hoi4-current-user'));
+        if (currentUser) {
+            updateUIForUser();
+            // کاربر رو آنلاین کن
+            database.ref('users/' + currentUser.username).update({
+                online: true,
+                lastSeen: firebase.database.ServerValue.TIMESTAMP
+            });
+        }
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeSettings();
+                document.getElementById('logoutOverlay').classList.remove('active');
+            }
+        });
+
+        console.log('🔥 Firebase Chat is ready!');
     </script>
 
 </body>
