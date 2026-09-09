@@ -5,305 +5,736 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Hearts of Iran</title>
     <style>
+        /* ============================================================
+           RESET & BASE
+           ============================================================ */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
+
+        :root {
+            --bg-primary: #0b0e14;
+            --bg-secondary: #141a22;
+            --bg-card: #181f29;
+            --text-primary: #ddd;
+            --text-secondary: #b0b8c5;
+            --gold: #b8860b;
+            --gold-light: #f5d77b;
+            --border-color: #2e3a48;
+            --shadow: 0 8px 30px rgba(0, 0, 0, 0.7);
+            --transition: 0.3s ease;
+            --online-green: #44ff88;
+            --offline-gray: #666;
+            --radius: 16px;
+        }
+
+        [data-theme="light"] {
+            --bg-primary: #f0ede8;
+            --bg-secondary: #e8e3da;
+            --bg-card: #dcd5ca;
+            --text-primary: #1a1a1a;
+            --text-secondary: #3a3a3a;
+            --border-color: #b8a99a;
+            --shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+        }
+
         body {
-            font-family: 'Tahoma', sans-serif;
-            background: #0b0e14;
-            color: #ddd;
-            padding: 20px;
-            text-align: center;
-            direction: rtl;
+            font-family: 'Tahoma', 'Vazirmatn', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.8;
+            transition: background var(--transition), color var(--transition);
             min-height: 100vh;
+            padding: 20px;
         }
+
+        /* ============================================================
+           SCROLLBAR
+           ============================================================ */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg-secondary);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--gold);
+            border-radius: 10px;
+        }
+
+        /* ============================================================
+           CONTAINER
+           ============================================================ */
         .container {
-            max-width: 900px;
+            max-width: 1100px;
             margin: 0 auto;
-            background: #141a22;
+            background: var(--bg-secondary);
             padding: 30px;
-            border-radius: 16px;
-            border: 1px solid #b8860b;
+            border-radius: var(--radius);
+            border: 2px solid var(--gold);
+            box-shadow: var(--shadow);
+            position: relative;
+            overflow: hidden;
         }
-        h1 {
-            color: #b8860b;
-            font-size: 2.5rem;
+
+        .container::before {
+            content: '⚔️';
+            position: absolute;
+            font-size: 80px;
+            right: -20px;
+            bottom: -20px;
+            opacity: 0.04;
+            transform: rotate(-15deg);
+            pointer-events: none;
+        }
+
+        .container::after {
+            content: '✈️';
+            position: absolute;
+            font-size: 60px;
+            left: -15px;
+            top: -15px;
+            opacity: 0.04;
+            transform: rotate(15deg);
+            pointer-events: none;
+        }
+
+        /* ============================================================
+           HEADER
+           ============================================================ */
+        .header {
+            text-align: center;
+            border-bottom: 2px solid var(--gold);
+            padding-bottom: 20px;
+            margin-bottom: 25px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header h1 {
+            font-size: 2.8rem;
             font-weight: 900;
-            letter-spacing: 2px;
-            text-shadow: 0 0 30px rgba(184, 134, 11, 0.3);
+            background: linear-gradient(45deg, var(--gold-light), var(--gold));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 4px;
+            text-shadow: 0 0 30px rgba(184, 134, 11, 0.2);
         }
-        .subtitle {
-            color: #b0b8c5;
-            margin-bottom: 20px;
+
+        .header .subtitle {
+            color: var(--text-secondary);
             font-size: 1.1rem;
+            margin-top: 5px;
+            letter-spacing: 2px;
         }
-        .tab {
+
+        .header .badge {
+            display: inline-block;
+            background: var(--gold);
+            color: #0b0e14;
+            padding: 4px 20px;
+            border-radius: 40px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            margin-top: 8px;
+            animation: pulseGlow 2s infinite;
+        }
+
+        @keyframes pulseGlow {
+            0%,
+            100% {
+                box-shadow: 0 0 10px var(--gold);
+            }
+            50% {
+                box-shadow: 0 0 30px var(--gold-light);
+            }
+        }
+
+        /* ============================================================
+           THEME TOGGLE
+           ============================================================ */
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            z-index: 10;
+            background: var(--bg-card);
+            color: var(--text-primary);
+            border: 2px solid var(--gold);
+            border-radius: 50px;
+            padding: 6px 14px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all var(--transition);
+            font-weight: 700;
+            font-family: inherit;
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.05);
+            border-color: var(--gold-light);
+            box-shadow: 0 0 20px var(--gold);
+        }
+
+        /* ============================================================
+           TABS
+           ============================================================ */
+        .tabs {
             display: flex;
             gap: 10px;
             justify-content: center;
             flex-wrap: wrap;
             margin-bottom: 25px;
+            position: relative;
+            z-index: 1;
         }
-        .tab button {
-            background: #2e3a48;
-            color: #ddd;
-            border: none;
+
+        .tabs button {
+            background: var(--bg-card);
+            color: var(--text-secondary);
+            border: 2px solid var(--border-color);
             padding: 10px 22px;
             border-radius: 30px;
             font-size: 0.95rem;
             cursor: pointer;
             font-weight: 700;
-            transition: all 0.3s ease;
+            transition: all var(--transition);
+            font-family: inherit;
         }
-        .tab button:hover {
+
+        .tabs button:hover {
             transform: scale(1.05);
+            border-color: var(--gold);
+            color: var(--gold);
         }
-        .tab button.active {
-            background: #b8860b;
+
+        .tabs button.active {
+            background: var(--gold);
             color: #0b0e14;
+            border-color: var(--gold);
         }
-        button {
-            background: #b8860b;
-            color: #0b0e14;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 30px;
-            font-size: 1rem;
-            cursor: pointer;
-            font-weight: 700;
-            transition: all 0.3s ease;
+
+        .tabs button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
         }
-        button:hover {
-            background: #f5d77b;
-            transform: scale(1.05);
+
+        /* ============================================================
+           TAB CONTENT
+           ============================================================ */
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.4s ease;
+            position: relative;
+            z-index: 1;
         }
-        input,
-        select {
-            width: 100%;
-            padding: 12px 16px;
-            margin: 8px 0;
-            background: #0b0e14;
-            border: 2px solid #2e3a48;
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(15px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ============================================================
+           HOME TAB
+           ============================================================ */
+        .home-box {
+            background: var(--bg-card);
+            padding: 30px;
+            border-radius: var(--radius);
+            border: 1px solid var(--border-color);
+            text-align: center;
+            box-shadow: var(--shadow);
+        }
+
+        .home-box p {
+            color: var(--text-secondary);
+            font-size: 1.05rem;
+            line-height: 2.2;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .home-box strong {
+            color: var(--gold);
+        }
+
+        .home-box .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        .home-box .features .feature-item {
+            background: var(--bg-primary);
+            padding: 15px;
             border-radius: 12px;
-            color: #ddd;
-            font-size: 1rem;
-            transition: all 0.3s ease;
+            border: 1px solid var(--border-color);
+            transition: all var(--transition);
         }
-        input:focus,
-        select:focus {
-            border-color: #b8860b;
-            outline: none;
-            box-shadow: 0 0 20px rgba(184, 134, 11, 0.2);
+
+        .home-box .features .feature-item:hover {
+            border-color: var(--gold);
+            transform: translateY(-3px);
         }
-        .hidden {
-            display: none !important;
+
+        .home-box .features .feature-item .icon {
+            font-size: 2rem;
+            display: block;
+            margin-bottom: 5px;
         }
+
+        .home-box .features .feature-item span {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        /* ============================================================
+           FORM BOX
+           ============================================================ */
         .form-box {
             max-width: 450px;
             margin: 0 auto;
-            background: #0b0e14;
-            padding: 25px;
-            border-radius: 16px;
-            border: 1px solid #2e3a48;
+            background: var(--bg-card);
+            padding: 30px;
+            border-radius: var(--radius);
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow);
         }
+
         .form-box h2 {
-            color: #b8860b;
+            color: var(--gold);
+            text-align: center;
             margin-bottom: 20px;
             font-size: 1.5rem;
         }
-        .form-box button[type="submit"] {
-            width: 100%;
+
+        .form-box label {
+            display: block;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
             margin-top: 10px;
+            font-weight: 700;
+        }
+
+        .form-box input,
+        .form-box select {
+            width: 100%;
+            padding: 12px 16px;
+            margin: 6px 0 4px;
+            background: var(--bg-primary);
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            color: var(--text-primary);
+            font-size: 1rem;
+            transition: all var(--transition);
+            font-family: inherit;
+        }
+
+        .form-box input:focus,
+        .form-box select:focus {
+            border-color: var(--gold);
+            outline: none;
+            box-shadow: 0 0 20px rgba(184, 134, 11, 0.15);
+        }
+
+        .form-box input.error {
+            border-color: #ff4444;
+        }
+
+        .form-box input.success {
+            border-color: #44ff88;
+        }
+
+        .form-box .form-btn {
+            width: 100%;
+            margin-top: 15px;
             padding: 14px;
             font-size: 1.1rem;
-        }
-        .switch-btn {
-            background: transparent !important;
-            color: #b8860b !important;
-            border: 1px solid #b8860b !important;
-            margin-top: 15px;
-            width: 100%;
-        }
-        .switch-btn:hover {
-            background: #b8860b !important;
-            color: #0b0e14 !important;
-        }
-        .success-msg {
-            color: #44ff88;
-            margin-top: 12px;
+            background: var(--gold);
+            color: #0b0e14;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
             font-weight: 700;
+            transition: all var(--transition);
+            font-family: inherit;
         }
-        .error-msg {
+
+        .form-box .form-btn:hover {
+            background: var(--gold-light);
+            transform: scale(1.02);
+            box-shadow: 0 0 30px rgba(245, 215, 123, 0.3);
+        }
+
+        .form-box .error-msg {
             color: #ff4444;
-            margin-top: 12px;
-            font-weight: 700;
+            font-size: 0.85rem;
+            margin-top: 4px;
+            display: none;
         }
+
+        .form-box .error-msg.show {
+            display: block;
+        }
+
+        .form-box .success-msg {
+            color: #44ff88;
+            font-size: 0.95rem;
+            margin-top: 12px;
+            display: none;
+            font-weight: 700;
+            text-align: center;
+        }
+
+        .form-box .success-msg.show {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .switch-btn {
+            width: 100%;
+            margin-top: 15px;
+            padding: 12px;
+            background: transparent !important;
+            color: var(--gold) !important;
+            border: 2px solid var(--gold) !important;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 700;
+            transition: all var(--transition);
+            font-family: inherit;
+            font-size: 0.95rem;
+        }
+
+        .switch-btn:hover {
+            background: var(--gold) !important;
+            color: #0b0e14 !important;
+            transform: scale(1.02);
+        }
+
+        /* ============================================================
+           CHAT
+           ============================================================ */
         .chat-container {
             display: flex;
             gap: 20px;
             flex-wrap: wrap;
         }
+
         .chat-users {
             flex: 1;
             min-width: 200px;
-            background: #0b0e14;
-            padding: 15px;
-            border-radius: 12px;
-            border: 1px solid #2e3a48;
-            max-height: 400px;
+            max-height: 450px;
             overflow-y: auto;
+            background: var(--bg-card);
+            padding: 15px;
+            border-radius: var(--radius);
+            border: 1px solid var(--border-color);
         }
-        .chat-users h3 {
-            color: #b8860b;
-            font-size: 1rem;
-            margin-bottom: 12px;
+
+        .chat-users::-webkit-scrollbar {
+            width: 4px;
+        }
+        .chat-users::-webkit-scrollbar-thumb {
+            background: var(--gold);
+            border-radius: 10px;
+        }
+
+        .chat-users .users-title {
+            color: var(--gold);
+            font-weight: 700;
             text-align: center;
-            border-bottom: 2px solid #2e3a48;
+            border-bottom: 2px solid var(--border-color);
             padding-bottom: 10px;
+            margin-bottom: 12px;
+            font-size: 1rem;
         }
-        .chat-messages {
-            flex: 2;
-            min-width: 250px;
-            background: #0b0e14;
-            padding: 15px;
-            border-radius: 12px;
-            border: 1px solid #2e3a48;
-            max-height: 400px;
-            overflow-y: auto;
-            text-align: right;
-        }
-        .chat-messages .empty-msg {
-            color: #666;
-            text-align: center;
-            padding: 40px 0;
-        }
+
         .user-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 8px 12px;
-            border-bottom: 1px solid #2e3a48;
+            border-bottom: 1px solid var(--border-color);
             font-size: 0.9rem;
+            transition: var(--transition);
+            border-radius: 6px;
         }
+
+        .user-item:hover {
+            background: var(--bg-primary);
+        }
+
         .user-item:last-child {
             border-bottom: none;
         }
+
+        .user-item .user-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
         .user-item .status-dot {
-            display: inline-block;
             width: 10px;
             height: 10px;
             border-radius: 50%;
-            margin-left: 8px;
+            flex-shrink: 0;
         }
+
         .user-item .status-dot.online {
-            background: #44ff88;
+            background: var(--online-green);
             box-shadow: 0 0 10px rgba(68, 255, 136, 0.3);
         }
+
         .user-item .status-dot.offline {
-            background: #666;
+            background: var(--offline-gray);
         }
+
         .user-item .badge {
-            background: #b8860b;
-            color: #0b0e14;
             padding: 2px 12px;
             border-radius: 20px;
             font-size: 0.7rem;
             font-weight: 700;
+            background: var(--gold);
+            color: #0b0e14;
         }
+
         .user-item .badge.offline-badge {
-            background: #444;
-            color: #888;
+            background: var(--bg-primary);
+            color: var(--text-secondary);
         }
+
+        .chat-messages-wrapper {
+            flex: 2;
+            min-width: 250px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-messages {
+            flex: 1;
+            max-height: 350px;
+            overflow-y: auto;
+            background: var(--bg-card);
+            padding: 15px;
+            border-radius: var(--radius);
+            border: 1px solid var(--border-color);
+            min-height: 300px;
+        }
+
+        .chat-messages::-webkit-scrollbar {
+            width: 4px;
+        }
+        .chat-messages::-webkit-scrollbar-thumb {
+            background: var(--gold);
+            border-radius: 10px;
+        }
+
+        .chat-messages .empty-msg {
+            color: var(--text-secondary);
+            text-align: center;
+            padding: 40px 0;
+            opacity: 0.5;
+        }
+
         .message {
             padding: 10px 14px;
             border-radius: 14px;
             margin: 6px 0;
-            border: 1px solid #2e3a48;
-            background: #181f29;
+            border: 1px solid var(--border-color);
+            background: var(--bg-primary);
             max-width: 85%;
+            word-wrap: break-word;
+            animation: fadeIn 0.3s ease;
         }
+
         .message.own {
-            background: #b8860b;
+            background: var(--gold);
             color: #0b0e14;
-            border-color: #f5d77b;
+            border-color: var(--gold-light);
             margin-right: auto;
             text-align: left;
         }
+
         .message .msg-user {
             font-weight: 700;
             font-size: 0.85rem;
-            color: #b8860b;
+            color: var(--gold);
+            margin-bottom: 2px;
         }
+
         .message.own .msg-user {
             color: #0b0e14;
         }
+
+        .message .msg-text {
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
         .message .msg-time {
-            color: #888;
+            color: var(--text-secondary);
             font-size: 0.7rem;
             margin-top: 4px;
+            opacity: 0.6;
+            text-align: left;
         }
+
         .message.own .msg-time {
             color: #0b0e14;
             opacity: 0.7;
         }
+
         .chat-input-area {
             display: flex;
             gap: 10px;
-            margin-top: 15px;
+            margin-top: 12px;
         }
+
         .chat-input-area input {
             flex: 1;
-            margin: 0;
+            padding: 12px 16px;
+            background: var(--bg-primary);
+            border: 2px solid var(--border-color);
+            border-radius: 30px;
+            color: var(--text-primary);
+            font-size: 0.95rem;
+            transition: all var(--transition);
+            font-family: inherit;
         }
-        .chat-input-area button {
-            width: auto;
+
+        .chat-input-area input:focus {
+            border-color: var(--gold);
+            outline: none;
+            box-shadow: 0 0 20px rgba(184, 134, 11, 0.15);
+        }
+
+        .chat-input-area input::placeholder {
+            color: var(--text-secondary);
+            opacity: 0.5;
+        }
+
+        .chat-input-area .send-btn {
             padding: 12px 20px;
+            border: none;
+            border-radius: 30px;
+            background: var(--gold);
+            color: #0b0e14;
             font-size: 1.2rem;
+            cursor: pointer;
+            transition: all var(--transition);
+            font-weight: 700;
+            font-family: inherit;
         }
+
+        .chat-input-area .send-btn:hover {
+            background: var(--gold-light);
+            transform: scale(1.05);
+            box-shadow: 0 0 30px rgba(245, 215, 123, 0.3);
+        }
+
+        /* ============================================================
+           DASHBOARD
+           ============================================================ */
         .dashboard-box {
-            background: #0b0e14;
-            padding: 25px;
-            border-radius: 16px;
-            border: 1px solid #2e3a48;
             max-width: 400px;
             margin: 0 auto;
+            background: var(--bg-card);
+            padding: 30px;
+            border-radius: var(--radius);
+            border: 1px solid var(--border-color);
+            text-align: center;
+            box-shadow: var(--shadow);
         }
+
         .dashboard-box h2 {
-            color: #b8860b;
+            color: var(--gold);
+            font-size: 1.5rem;
             margin-bottom: 10px;
         }
+
         .dashboard-box p {
-            color: #b0b8c5;
-            margin-bottom: 20px;
+            color: var(--text-secondary);
             font-size: 1.1rem;
+            margin-bottom: 20px;
         }
-        .dashboard-box button {
+
+        .dashboard-box p strong {
+            color: var(--gold);
+        }
+
+        .dashboard-box .logout-btn {
             width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 30px;
+            background: #ff4444;
+            color: #fff;
+            font-size: 1rem;
+            cursor: pointer;
+            font-weight: 700;
+            transition: all var(--transition);
+            font-family: inherit;
         }
-        .home-box {
-            background: #0b0e14;
-            padding: 25px;
-            border-radius: 16px;
-            border: 1px solid #2e3a48;
+
+        .dashboard-box .logout-btn:hover {
+            transform: scale(1.02);
+            background: #ff6666;
+            box-shadow: 0 0 30px rgba(255, 68, 68, 0.3);
         }
-        .home-box p {
-            color: #b0b8c5;
-            line-height: 2;
-            font-size: 1.05rem;
+
+        .dashboard-box .user-country {
+            display: inline-block;
+            background: var(--gold);
+            color: #0b0e14;
+            padding: 4px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            margin-top: 5px;
         }
-        .home-box strong {
-            color: #b8860b;
-        }
+
+        /* ============================================================
+           DIVIDER
+           ============================================================ */
         .divider {
             border: none;
-            border-top: 2px solid #2e3a48;
-            margin: 15px 0;
+            border-top: 2px solid var(--border-color);
+            margin: 12px 0;
+            opacity: 0.5;
         }
-        @media (max-width: 650px) {
+
+        /* ============================================================
+           RESPONSIVE
+           ============================================================ */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
             .container {
                 padding: 15px;
+            }
+            .header h1 {
+                font-size: 2rem;
+            }
+            .tabs button {
+                font-size: 0.8rem;
+                padding: 8px 14px;
             }
             .chat-container {
                 flex-direction: column;
@@ -311,12 +742,56 @@
             .chat-users {
                 max-height: 200px;
             }
-            h1 {
-                font-size: 1.8rem;
+            .home-box .features {
+                grid-template-columns: 1fr 1fr;
             }
-            .tab button {
-                font-size: 0.8rem;
-                padding: 8px 14px;
+            .theme-toggle {
+                top: 10px;
+                left: 10px;
+                font-size: 0.75rem;
+                padding: 4px 10px;
+            }
+            .form-box {
+                padding: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 10px;
+            }
+            .header h1 {
+                font-size: 1.6rem;
+            }
+            .home-box .features {
+                grid-template-columns: 1fr;
+            }
+            .tabs {
+                gap: 5px;
+            }
+            .tabs button {
+                font-size: 0.7rem;
+                padding: 6px 10px;
+            }
+            .chat-messages {
+                min-height: 200px;
+                max-height: 250px;
+            }
+            .chat-input-area {
+                flex-wrap: wrap;
+            }
+            .chat-input-area input {
+                width: 100%;
+            }
+            .chat-input-area .send-btn {
+                width: 100%;
+                justify-content: center;
+            }
+            .theme-toggle {
+                top: 8px;
+                left: 8px;
+                font-size: 0.7rem;
+                padding: 3px 8px;
             }
         }
     </style>
@@ -324,93 +799,165 @@
 <body>
 
     <div class="container">
-        <h1>🎖️ Hearts of Iran</h1>
-        <div class="subtitle">چت روم با JSONBin</div>
 
-        <!-- ===== TABS ===== -->
-        <div class="tab">
-            <button class="active" data-tab="home">🏠 خانه</button>
-            <button data-tab="register">📝 ثبت‌نام / ورود</button>
-            <button data-tab="chat" id="chatTabBtn" style="display:none;">💬 چت روم</button>
-            <button data-tab="dashboard" id="dashboardTabBtn" style="display:none;">👤 پنل کاربری</button>
-        </div>
+        <!-- ============================================================
+        THEME TOGGLE
+        ============================================================ -->
+        <button class="theme-toggle" id="themeToggle">
+            <span id="themeIcon">🌙</span>
+            <span id="themeLabel">تاریک</span>
+        </button>
 
-        <!-- ===== HOME TAB ===== -->
-        <div id="tab-home" class="tab-content">
-            <div class="home-box">
-                <p>
-                    به <strong>Hearts of Iran</strong> خوش آمدید! 🎉<br />
-                    این یک چت روم ساده است که با <strong style="color:#b8860b;">JSONBin</strong> کار میکنه.<br />
-                    ثبت‌نام کن و با بقیه کاربران چت کن!<br /><br />
-                    <span style="color:#666; font-size:0.9rem;">💡 برای شروع، روی دکمه "ثبت‌نام / ورود" کلیک کن.</span>
-                </p>
+        <!-- ============================================================
+        HEADER
+        ============================================================ -->
+        <div class="header">
+            <div class="badge">🎖️ استراتژی بی‌نهایت</div>
+            <h1>Hearts of Iran</h1>
+            <div class="subtitle">جنگ جهانی دوم را از نو بنویس...</div>
+            <div style="margin-top:8px; font-size:1.3rem; letter-spacing:8px;">
+                🛩️ 🚢 🚀
             </div>
         </div>
 
-        <!-- ===== REGISTER TAB ===== -->
-        <div id="tab-register" class="tab-content hidden">
+        <!-- ============================================================
+        TABS
+        ============================================================ -->
+        <div class="tabs">
+            <button class="active" data-tab="home">🏠 خانه</button>
+            <button data-tab="register">📝 ثبت‌نام / ورود</button>
+            <button data-tab="chat" id="chatTabBtn" disabled>💬 چت روم</button>
+            <button data-tab="dashboard" id="dashboardTabBtn" disabled>👤 پنل کاربری</button>
+        </div>
+
+        <!-- ============================================================
+        TAB: HOME
+        ============================================================ -->
+        <div id="tab-home" class="tab-content active">
+            <div class="home-box">
+                <p>
+                    به <strong>Hearts of Iran</strong> خوش آمدید! 🎉<br />
+                    این یک چت روم ساخته شده با <strong>JSONBin</strong> است.<br />
+                    ثبت‌نام کنید، وارد شوید و با سایر کاربران گفت‌وگو کنید.
+                </p>
+                <div class="features">
+                    <div class="feature-item">
+                        <span class="icon">💬</span>
+                        <span>چت زنده</span>
+                    </div>
+                    <div class="feature-item">
+                        <span class="icon">👥</span>
+                        <span>کاربران آنلاین</span>
+                    </div>
+                    <div class="feature-item">
+                        <span class="icon">🔐</span>
+                        <span>ثبت‌نام امن</span>
+                    </div>
+                    <div class="feature-item">
+                        <span class="icon">🌐</span>
+                        <span>متصل به ابر</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================================
+        TAB: REGISTER / LOGIN
+        ============================================================ -->
+        <div id="tab-register" class="tab-content">
             <div class="form-box">
                 <h2 id="authTitle">📝 ساخت اکانت جدید</h2>
                 <form id="registerForm">
                     <div id="registerFields">
-                        <input type="text" id="username" placeholder="👤 نام کاربری (حداقل ۳ کاراکتر)" required />
-                        <input type="email" id="email" placeholder="✉️ ایمیل" required />
+                        <label>👤 نام کاربری (حداقل ۳ کاراکتر)</label>
+                        <input type="text" id="username" placeholder="مثال: General_Patton" required />
+                        <div class="error-msg" id="usernameError">نام کاربری باید حداقل ۳ کاراکتر باشد.</div>
+
+                        <label>✉️ ایمیل معتبر</label>
+                        <input type="email" id="email" placeholder="your@email.com" required />
+                        <div class="error-msg" id="emailError">لطفاً یک ایمیل معتبر وارد کنید.</div>
                     </div>
-                    <div id="loginFields" class="hidden">
-                        <input type="text" id="loginUsername" placeholder="👤 نام کاربری یا ایمیل" />
+
+                    <div id="loginFields" style="display:none;">
+                        <label>👤 نام کاربری یا ایمیل</label>
+                        <input type="text" id="loginUsername" placeholder="نام کاربری یا ایمیل خود را وارد کنید" />
+                        <div class="error-msg" id="loginUsernameError">لطفاً نام کاربری یا ایمیل خود را وارد کنید.</div>
                     </div>
-                    <input type="password" id="password" placeholder="🔒 رمز عبور (حداقل ۶ کاراکتر)" required />
+
+                    <label>🔒 رمز عبور (حداقل ۶ کاراکتر)</label>
+                    <input type="password" id="password" placeholder="********" required />
+                    <div class="error-msg" id="passwordError">رمز عبور باید حداقل ۶ کاراکتر باشد.</div>
+
+                    <label>🎖️ کشور مورد علاقه</label>
                     <select id="country">
-                        <option value="آلمان">🎖️ آلمان</option>
-                        <option value="بریتانیا">🎖️ بریتانیا</option>
-                        <option value="آمریکا">🎖️ آمریکا</option>
-                        <option value="شوروی">🎖️ شوروی</option>
-                        <option value="ژاپن">🎖️ ژاپن</option>
-                        <option value="ایتالیا">🎖️ ایتالیا</option>
-                        <option value="فرانسه">🎖️ فرانسه</option>
+                        <option value="آلمان">آلمان</option>
+                        <option value="بریتانیا">بریتانیا</option>
+                        <option value="آمریکا">آمریکا</option>
+                        <option value="شوروی">شوروی</option>
+                        <option value="ژاپن">ژاپن</option>
+                        <option value="ایتالیا">ایتالیا</option>
+                        <option value="فرانسه">فرانسه</option>
                     </select>
-                    <button type="submit" id="authSubmitBtn">⚡ ساخت اکانت</button>
-                    <div id="successMsg" class="success-msg hidden">✅ موفق!</div>
-                    <div id="errorMsg" class="error-msg hidden">❌ خطا!</div>
+
+                    <button type="submit" class="form-btn" id="authSubmitBtn">⚡ ساخت اکانت</button>
+                    <div class="success-msg" id="successMsg">✅ اکانت شما با موفقیت ساخته شد!</div>
+                    <div class="success-msg" id="loginSuccessMsg" style="display:none;">✅ ورود با موفقیت انجام شد!</div>
                 </form>
+
                 <button class="switch-btn" id="switchAuthBtn">
-                    آیا از قبل حساب دارید؟ وارد شوید
+                    آیا از قبل حساب کاربری دارید؟ وارد شوید
                 </button>
             </div>
         </div>
 
-        <!-- ===== CHAT TAB ===== -->
-        <div id="tab-chat" class="tab-content hidden">
+        <!-- ============================================================
+        TAB: CHAT
+        ============================================================ -->
+        <div id="tab-chat" class="tab-content">
             <div class="chat-container">
+                <!-- لیست کاربران -->
                 <div class="chat-users">
-                    <h3>👥 کاربران آنلاین</h3>
+                    <div class="users-title">👥 کاربران آنلاین</div>
                     <div id="usersList">
-                        <div style="color:#666; text-align:center; padding:20px;">در حال بارگذاری...</div>
+                        <div style="color:var(--text-secondary); text-align:center; padding:20px; opacity:0.5;">
+                            در حال بارگذاری...
+                        </div>
                     </div>
                 </div>
-                <div>
+
+                <!-- پیام‌ها -->
+                <div class="chat-messages-wrapper">
                     <div class="chat-messages" id="chatMessages">
                         <div class="empty-msg">هنوز پیامی ارسال نشده است</div>
                     </div>
                     <div class="chat-input-area">
                         <input type="text" id="chatInput" placeholder="پیام خود را بنویسید..." />
-                        <button id="sendBtn">📤</button>
+                        <button class="send-btn" id="sendBtn">📤</button>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- ===== DASHBOARD TAB ===== -->
-        <div id="tab-dashboard" class="tab-content hidden">
+        <!-- ============================================================
+        TAB: DASHBOARD
+        ============================================================ -->
+        <div id="tab-dashboard" class="tab-content">
             <div class="dashboard-box">
                 <h2>👤 پنل کاربری</h2>
-                <p>خوش آمدید، <strong id="dashboardUsername" style="color:#b8860b;">کاربر</strong>!</p>
-                <button onclick="logout()">🚪 خروج از حساب</button>
+                <p>
+                    خوش آمدید، <strong id="dashboardUsername">کاربر</strong>!
+                </p>
+                <div class="user-country" id="dashboardCountry">🎖️ کشور مورد علاقه: آلمان</div>
+                <div class="divider"></div>
+                <button class="logout-btn" id="logoutBtn">🚪 خروج از حساب</button>
             </div>
         </div>
 
     </div>
 
+    <!-- ============================================================
+    JAVASCRIPT
+    ============================================================ -->
     <script>
         // ============================================================
         // JSONBin CONFIG
@@ -455,14 +1002,6 @@
         }
 
         // ============================================================
-        // STATE
-        // ============================================================
-        let currentUser = null;
-        let isLoginMode = false;
-        let chatInterval = null;
-        let userInterval = null;
-
-        // ============================================================
         // DOM REFS
         // ============================================================
         const $ = id => document.getElementById(id);
@@ -472,7 +1011,43 @@
             chat: $('tab-chat'),
             dashboard: $('tab-dashboard')
         };
-        const tabBtns = document.querySelectorAll('.tab button[data-tab]');
+        const tabBtns = document.querySelectorAll('.tabs button[data-tab]');
+
+        // ============================================================
+        // STATE
+        // ============================================================
+        let currentUser = null;
+        let isLoginMode = false;
+        let chatInterval = null;
+        let userInterval = null;
+
+        // ============================================================
+        // THEME TOGGLE
+        // ============================================================
+        const themeToggle = $('themeToggle');
+        const themeIcon = $('themeIcon');
+        const themeLabel = $('themeLabel');
+        let currentTheme = localStorage.getItem('hoi4-theme') || 'dark';
+
+        function applyTheme(theme) {
+            document.documentElement.setAttribute('data-theme', theme);
+            currentTheme = theme;
+            localStorage.setItem('hoi4-theme', theme);
+            if (theme === 'light') {
+                themeIcon.textContent = '☀️';
+                themeLabel.textContent = 'روشن';
+            } else {
+                themeIcon.textContent = '🌙';
+                themeLabel.textContent = 'تاریک';
+            }
+        }
+
+        applyTheme(currentTheme);
+
+        themeToggle.addEventListener('click', function() {
+            const nextTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            applyTheme(nextTheme);
+        });
 
         // ============================================================
         // TAB SYSTEM
@@ -480,23 +1055,39 @@
         function showTab(name) {
             // مخفی کردن همه
             Object.keys(tabs).forEach(key => {
-                tabs[key].classList.toggle('hidden', key !== name);
+                tabs[key].classList.toggle('active', key === name);
             });
             // آپدیت دکمه‌ها
             tabBtns.forEach(btn => {
                 btn.classList.toggle('active', btn.dataset.tab === name);
             });
-            // آپدیت دکمه چت و پنل
-            const isLoggedIn = !!currentUser;
-            $('chatTabBtn').style.display = isLoggedIn ? 'inline-block' : 'none';
-            $('dashboardTabBtn').style.display = isLoggedIn ? 'inline-block' : 'none';
 
-            if (name === 'chat' && isLoggedIn) {
-                loadChatUsers();
-                loadMessages();
-                startIntervals();
+            if (name === 'chat') {
+                if (currentUser) {
+                    loadChatUsers();
+                    loadMessages();
+                    startIntervals();
+                }
             } else {
                 stopIntervals();
+            }
+        }
+
+        function updateTabs() {
+            const isLoggedIn = !!currentUser;
+            const chatBtn = $('chatTabBtn');
+            const dashboardBtn = $('dashboardTabBtn');
+
+            if (isLoggedIn) {
+                chatBtn.disabled = false;
+                dashboardBtn.disabled = false;
+            } else {
+                chatBtn.disabled = true;
+                dashboardBtn.disabled = true;
+                // اگه توی چت یا پنل هستیم، برو به خانه
+                if (tabs.chat.classList.contains('active') || tabs.dashboard.classList.contains('active')) {
+                    showTab('home');
+                }
             }
         }
 
@@ -506,10 +1097,10 @@
         function startIntervals() {
             stopIntervals();
             chatInterval = setInterval(() => {
-                if (!$('tab-chat').classList.contains('hidden')) loadMessages();
+                if (tabs.chat.classList.contains('active')) loadMessages();
             }, 5000);
             userInterval = setInterval(() => {
-                if (!$('tab-chat').classList.contains('hidden')) loadChatUsers();
+                if (tabs.chat.classList.contains('active')) loadChatUsers();
             }, 10000);
         }
 
@@ -519,6 +1110,24 @@
             chatInterval = null;
             userInterval = null;
         }
+
+        // ============================================================
+        // TAB BUTTONS
+        // ============================================================
+        tabBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                const tabName = this.dataset.tab;
+                if (tabName === 'chat' && !currentUser) {
+                    alert('لطفاً ابتدا وارد شوید!');
+                    return;
+                }
+                if (tabName === 'dashboard' && !currentUser) {
+                    alert('لطفاً ابتدا وارد شوید!');
+                    return;
+                }
+                showTab(tabName);
+            });
+        });
 
         // ============================================================
         // AUTH SWITCH
@@ -533,21 +1142,23 @@
 
             if (isLoginMode) {
                 title.textContent = '🔐 ورود به حساب کاربری';
-                regFields.classList.add('hidden');
-                loginFields.classList.remove('hidden');
+                regFields.style.display = 'none';
+                loginFields.style.display = 'block';
                 submitBtn.textContent = '🚪 ورود';
                 countrySelect.style.display = 'none';
-                this.textContent = 'حساب ندارید؟ ثبت‌نام کنید';
+                this.textContent = 'حساب کاربری ندارید؟ ثبت‌نام کنید';
             } else {
                 title.textContent = '📝 ساخت اکانت جدید';
-                regFields.classList.remove('hidden');
-                loginFields.classList.add('hidden');
+                regFields.style.display = 'block';
+                loginFields.style.display = 'none';
                 submitBtn.textContent = '⚡ ساخت اکانت';
                 countrySelect.style.display = 'block';
-                this.textContent = 'آیا از قبل حساب دارید؟ وارد شوید';
+                this.textContent = 'آیا از قبل حساب کاربری دارید؟ وارد شوید';
             }
-            $('successMsg').classList.add('hidden');
-            $('errorMsg').classList.add('hidden');
+            $('successMsg').classList.remove('show');
+            $('loginSuccessMsg').classList.remove('show');
+            document.querySelectorAll('.form-box .error-msg').forEach(el => el.classList.remove('show'));
+            document.querySelectorAll('.form-box input').forEach(el => el.classList.remove('error', 'success'));
         });
 
         // ============================================================
@@ -555,32 +1166,50 @@
         // ============================================================
         $('registerForm').addEventListener('submit', async function(e) {
             e.preventDefault();
+
             const successMsg = $('successMsg');
-            const errorMsg = $('errorMsg');
-            successMsg.classList.add('hidden');
-            errorMsg.classList.add('hidden');
+            const loginSuccessMsg = $('loginSuccessMsg');
+            successMsg.classList.remove('show');
+            loginSuccessMsg.classList.remove('show');
+
+            // پاک کردن خطاهای قبلی
+            document.querySelectorAll('.form-box .error-msg').forEach(el => el.classList.remove('show'));
+            document.querySelectorAll('.form-box input').forEach(el => el.classList.remove('error', 'success'));
 
             if (isLoginMode) {
                 // ===== LOGIN =====
                 const identifier = $('loginUsername').value.trim();
                 const password = $('password').value;
+                let hasError = false;
 
-                if (!identifier || password.length < 6) {
-                    errorMsg.textContent = '❌ لطفاً اطلاعات را کامل وارد کنید!';
-                    errorMsg.classList.remove('hidden');
-                    return;
+                if (!identifier) {
+                    $('loginUsernameError').textContent = 'لطفاً نام کاربری یا ایمیل خود را وارد کنید.';
+                    $('loginUsernameError').classList.add('show');
+                    $('loginUsername').classList.add('error');
+                    hasError = true;
                 }
+
+                if (password.length < 6) {
+                    $('passwordError').textContent = 'رمز عبور باید حداقل ۶ کاراکتر باشد.';
+                    $('passwordError').classList.add('show');
+                    $('password').classList.add('error');
+                    hasError = true;
+                }
+
+                if (hasError) return;
 
                 const data = await getData();
                 const users = data.users || [];
                 const found = users.find(u =>
-                    (u.username === identifier || u.email === identifier) &&
+                    (u.username.toLowerCase() === identifier.toLowerCase() ||
+                        u.email.toLowerCase() === identifier.toLowerCase()) &&
                     u.password === password
                 );
 
                 if (!found) {
-                    errorMsg.textContent = '❌ نام کاربری، ایمیل یا رمز عبور اشتباه است!';
-                    errorMsg.classList.remove('hidden');
+                    $('loginUsernameError').textContent = 'نام کاربری، ایمیل یا رمز عبور اشتباه است!';
+                    $('loginUsernameError').classList.add('show');
+                    $('loginUsername').classList.add('error');
                     return;
                 }
 
@@ -594,8 +1223,9 @@
                 });
                 await updateData({ ...data, users: updatedUsers });
 
-                successMsg.textContent = '✅ ورود با موفقیت انجام شد!';
-                successMsg.classList.remove('hidden');
+                loginSuccessMsg.style.display = 'block';
+                loginSuccessMsg.textContent = '✅ ورود با موفقیت انجام شد!';
+                loginSuccessMsg.classList.add('show');
                 updateUI();
                 showTab('chat');
                 this.reset();
@@ -606,24 +1236,48 @@
                 const email = $('email').value.trim();
                 const password = $('password').value;
                 const country = $('country').value;
+                let hasError = false;
 
-                if (username.length < 3 || !email || password.length < 6) {
-                    errorMsg.textContent = '❌ لطفاً اطلاعات را کامل و درست وارد کنید!';
-                    errorMsg.classList.remove('hidden');
-                    return;
+                if (username.length < 3) {
+                    $('usernameError').classList.add('show');
+                    $('username').classList.add('error');
+                    hasError = true;
+                } else {
+                    $('username').classList.add('success');
                 }
+
+                if (!email || !email.includes('@') || !email.includes('.')) {
+                    $('emailError').textContent = 'لطفاً یک ایمیل معتبر وارد کنید.';
+                    $('emailError').classList.add('show');
+                    $('email').classList.add('error');
+                    hasError = true;
+                } else {
+                    $('email').classList.add('success');
+                }
+
+                if (password.length < 6) {
+                    $('passwordError').classList.add('show');
+                    $('password').classList.add('error');
+                    hasError = true;
+                } else {
+                    $('password').classList.add('success');
+                }
+
+                if (hasError) return;
 
                 const data = await getData();
                 const users = data.users || [];
 
-                if (users.some(u => u.username === username)) {
-                    errorMsg.textContent = '❌ این نام کاربری قبلاً ثبت شده است!';
-                    errorMsg.classList.remove('hidden');
+                if (users.some(u => u.username.toLowerCase() === username.toLowerCase())) {
+                    $('usernameError').textContent = 'این نام کاربری قبلاً ثبت شده است!';
+                    $('usernameError').classList.add('show');
+                    $('username').classList.add('error');
                     return;
                 }
-                if (users.some(u => u.email === email)) {
-                    errorMsg.textContent = '❌ این ایمیل قبلاً ثبت شده است!';
-                    errorMsg.classList.remove('hidden');
+                if (users.some(u => u.email.toLowerCase() === email.toLowerCase())) {
+                    $('emailError').textContent = 'این ایمیل قبلاً ثبت شده است!';
+                    $('emailError').classList.add('show');
+                    $('email').classList.add('error');
                     return;
                 }
 
@@ -642,8 +1296,8 @@
                 currentUser = newUser;
                 localStorage.setItem('hoi4-user', JSON.stringify(newUser));
 
-                successMsg.textContent = '✅ ثبت‌نام با موفقیت انجام شد!';
-                successMsg.classList.remove('hidden');
+                successMsg.textContent = '✅ اکانت شما با موفقیت ساخته شد!';
+                successMsg.classList.add('show');
                 updateUI();
                 showTab('chat');
                 this.reset();
@@ -654,23 +1308,17 @@
         // UI UPDATE
         // ============================================================
         function updateUI() {
-            const isLoggedIn = !!currentUser;
-            if (isLoggedIn) {
+            if (currentUser) {
                 $('dashboardUsername').textContent = currentUser.username;
+                $('dashboardCountry').textContent = `🎖️ کشور مورد علاقه: ${currentUser.country}`;
             }
-            // دکمه چت و پنل
-            $('chatTabBtn').style.display = isLoggedIn ? 'inline-block' : 'none';
-            $('dashboardTabBtn').style.display = isLoggedIn ? 'inline-block' : 'none';
-            // اگه لاگین نیست و توی چت هستیم، برو به خانه
-            if (!isLoggedIn && !$('tab-chat').classList.contains('hidden')) {
-                showTab('home');
-            }
+            updateTabs();
         }
 
         // ============================================================
         // LOGOUT
         // ============================================================
-        window.logout = async function() {
+        async function logout() {
             if (currentUser) {
                 const data = await getData();
                 const users = data.users || [];
@@ -686,7 +1334,9 @@
             updateUI();
             showTab('home');
             alert('✅ شما با موفقیت خارج شدید!');
-        };
+        }
+
+        $('logoutBtn').addEventListener('click', logout);
 
         // ============================================================
         // CHAT USERS
@@ -698,7 +1348,8 @@
                 const container = $('usersList');
 
                 if (users.length === 0) {
-                    container.innerHTML = '<div style="color:#666; text-align:center; padding:20px;">هیچ کاربری ثبت‌نام نکرده است</div>';
+                    container.innerHTML =
+                        '<div style="color:var(--text-secondary); text-align:center; padding:20px; opacity:0.5;">هیچ کاربری ثبت‌نام نکرده است</div>';
                     return;
                 }
 
@@ -710,10 +1361,10 @@
                     onlineUsers.forEach(u => {
                         html += `
                             <div class="user-item">
-                                <span>
+                                <div class="user-info">
                                     <span class="status-dot online"></span>
                                     ${u.username}
-                                </span>
+                                </div>
                                 <span class="badge">آنلاین</span>
                             </div>
                         `;
@@ -726,17 +1377,18 @@
                     offlineUsers.forEach(u => {
                         html += `
                             <div class="user-item">
-                                <span>
+                                <div class="user-info">
                                     <span class="status-dot offline"></span>
                                     ${u.username}
-                                </span>
+                                </div>
                                 <span class="badge offline-badge">آفلاین</span>
                             </div>
                         `;
                     });
                 }
 
-                container.innerHTML = html || '<div style="color:#666; text-align:center; padding:20px;">هیچ کاربری ثبت‌نام نکرده است</div>';
+                container.innerHTML = html ||
+                    '<div style="color:var(--text-secondary); text-align:center; padding:20px; opacity:0.5;">هیچ کاربری ثبت‌نام نکرده است</div>';
             } catch (e) {
                 console.error('❌ خطا در بارگذاری کاربران:', e);
             }
@@ -762,7 +1414,7 @@
                     html += `
                         <div class="message ${isOwn ? 'own' : ''}">
                             <div class="msg-user">${msg.username}</div>
-                            <div>${msg.text}</div>
+                            <div class="msg-text">${msg.text}</div>
                             <div class="msg-time">${msg.time}</div>
                         </div>
                     `;
@@ -781,8 +1433,9 @@
         async function sendMessage() {
             const input = $('chatInput');
             const text = input.value.trim();
-            if (!text || !currentUser) {
-                if (!currentUser) alert('لطفاً ابتدا وارد شوید!');
+            if (!text) return;
+            if (!currentUser) {
+                alert('لطفاً ابتدا وارد شوید!');
                 return;
             }
 
@@ -808,20 +1461,6 @@
         $('sendBtn').addEventListener('click', sendMessage);
         $('chatInput').addEventListener('keypress', function(e) {
             if (e.key === 'Enter') sendMessage();
-        });
-
-        // ============================================================
-        // TAB BUTTONS
-        // ============================================================
-        tabBtns.forEach(btn => {
-            btn.addEventListener('click', function() {
-                const tabName = this.dataset.tab;
-                if (tabName === 'chat' && !currentUser) {
-                    alert('لطفاً ابتدا وارد شوید!');
-                    return;
-                }
-                showTab(tabName);
-            });
         });
 
         // ============================================================
