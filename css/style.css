@@ -78,7 +78,6 @@ nav {
     display: flex;
     align-items: center;
     gap: 8px;
-    animation: slideInFromRight 0.6s ease;
 }
 
 .nav-center {
@@ -145,9 +144,7 @@ nav a.active { color: var(--gold-light); background: var(--bg-card); border-radi
     transition: left 0.5s ease;
 }
 
-.register-btn-nav:hover::before {
-    left: 100%;
-}
+.register-btn-nav:hover::before { left: 100%; }
 
 .register-btn-nav:hover {
     transform: scale(1.08);
@@ -186,18 +183,14 @@ nav a.active { color: var(--gold-light); background: var(--bg-card); border-radi
     transition: left 0.5s ease;
 }
 
-.user-btn-nav:hover::before {
-    left: 100%;
-}
+.user-btn-nav:hover::before { left: 100%; }
 
 .user-btn-nav:hover {
     transform: scale(1.08);
     box-shadow: 0 0 25px var(--gold), 0 0 50px rgba(184, 134, 11, 0.5);
 }
 
-.user-btn-nav.show {
-    display: flex;
-}
+.user-btn-nav.show { display: flex; }
 
 .chat-btn-nav {
     background: var(--bg-card);
@@ -229,9 +222,7 @@ nav a.active { color: var(--gold-light); background: var(--bg-card); border-radi
     transition: left 0.5s ease;
 }
 
-.chat-btn-nav:hover::before {
-    left: 100%;
-}
+.chat-btn-nav:hover::before { left: 100%; }
 
 .chat-btn-nav:hover {
     transform: scale(1.08);
@@ -240,9 +231,7 @@ nav a.active { color: var(--gold-light); background: var(--bg-card); border-radi
     box-shadow: 0 0 25px var(--gold), 0 0 50px rgba(184, 134, 11, 0.4);
 }
 
-.chat-btn-nav.show {
-    display: flex;
-}
+.chat-btn-nav.show { display: flex; }
 
 .theme-toggle-nav {
     background: var(--bg-card);
@@ -274,9 +263,7 @@ nav a.active { color: var(--gold-light); background: var(--bg-card); border-radi
     transition: left 0.5s ease;
 }
 
-.theme-toggle-nav:hover::before {
-    left: 100%;
-}
+.theme-toggle-nav:hover::before { left: 100%; }
 
 .theme-toggle-nav:hover {
     transform: scale(1.08);
@@ -317,9 +304,7 @@ nav a.active { color: var(--gold-light); background: var(--bg-card); border-radi
     transition: left 0.6s ease;
 }
 
-.btn:hover::before {
-    left: 100%;
-}
+.btn:hover::before { left: 100%; }
 
 .btn:hover {
     transform: scale(1.03);
@@ -420,43 +405,23 @@ label { font-weight: 700; color: var(--gold); font-size: 0.95rem; display: block
    ANIMATIONS
    ============================================================ */
 @keyframes pulseButton {
-    0%, 100% {
-        box-shadow: 0 0 0 0 rgba(184, 134, 11, 0.7);
-    }
-    50% {
-        box-shadow: 0 0 0 10px rgba(184, 134, 11, 0);
-    }
+    0%, 100% { box-shadow: 0 0 0 0 rgba(184, 134, 11, 0.7); }
+    50% { box-shadow: 0 0 0 10px rgba(184, 134, 11, 0); }
 }
 
 @keyframes pulseGlow {
-    0%, 100% {
-        box-shadow: 0 0 20px var(--gold);
-    }
-    50% {
-        box-shadow: 0 0 50px var(--gold-light);
-    }
-}
-
-@keyframes slideInFromRight {
-    from {
-        opacity: 0;
-        transform: translateX(30px);
-    }
-    to {
-        opacity: 1;
-        transform: translateX(0);
-    }
+    0%, 100% { box-shadow: 0 0 20px var(--gold); }
+    50% { box-shadow: 0 0 50px var(--gold-light); }
 }
 
 @keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(30px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideDown {
+    from { opacity: 0; transform: translateY(-30px) scale(0.95); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
 }
 
 /* ============================================================
