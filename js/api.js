@@ -121,7 +121,7 @@ async function logoutUser() {
 }
 
 // ============================================================
-// UI UPDATE FOR USER (مشترک بین صفحه اصلی و چت)
+// UI UPDATE FOR USER
 // ============================================================
 function updateUIForUser() {
     const registerBtnNav = $('registerBtnNav');
