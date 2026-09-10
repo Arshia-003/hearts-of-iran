@@ -15,10 +15,10 @@ async function getData() {
         });
         if (!res.ok) throw new Error('HTTP ' + res.status);
         const data = await res.json();
-        return data.record || { messages: [], users: [] };
+        return data.record || { messages: [], users: [], admins: [], theme: 'dark' };
     } catch (e) {
         console.error('❌ خطا در دریافت:', e);
-        return { messages: [], users: [] };
+        return { messages: [], users: [], admins: [], theme: 'dark' };
     }
 }
 
@@ -41,6 +41,21 @@ async function updateData(data) {
 }
 
 // ============================================================
+// SESSION MANAGEMENT (فقط برای لاگین)
+// ============================================================
+function saveSession(username) {
+    sessionStorage.setItem('hoi4-session', username);
+}
+
+function getSession() {
+    return sessionStorage.getItem('hoi4-session');
+}
+
+function clearSession() {
+    sessionStorage.removeItem('hoi4-session');
+}
+
+// ============================================================
 // DOM REFS
 // ============================================================
 const $ = id => document.getElementById(id);
@@ -60,57 +75,21 @@ let currentUser = null;
 let isLoginMode = false;
 let chatInterval = null;
 let userInterval = null;
+let globalData = { users: [], messages: [], admins: [], theme: 'dark' };
 
 // ============================================================
-// ROLES & ADMIN LIST
+// THEME
 // ============================================================
-const ownerUsername = 'ArshiaT';
-let adminList = [];
-
-function loadAdminList() {
-    try {
-        const saved = localStorage.getItem('hoi4-admin-list');
-        adminList = saved ? JSON.parse(saved) : [];
-    } catch {
-        adminList = [];
-    }
+async function loadTheme() {
+    const data = await getData();
+    const theme = data.theme || 'dark';
+    applyTheme(theme);
 }
-
-function saveAdminList() {
-    localStorage.setItem('hoi4-admin-list', JSON.stringify(adminList));
-}
-
-function getUserRole(username) {
-    if (username === ownerUsername) return 'owner';
-    if (adminList.includes(username)) return 'admin';
-    return 'user';
-}
-
-function isOwner(username) { return username === ownerUsername; }
-function isAdmin(username) { return adminList.includes(username) || isOwner(username); }
-
-function canManageUsers(adminUsername, targetUsername) {
-    if (isOwner(adminUsername)) return true;
-    if (isAdmin(adminUsername) && !isAdmin(targetUsername) && adminUsername !== targetUsername) return true;
-    return false;
-}
-
-function canManageMessages(username) { return isAdmin(username); }
-
-loadAdminList();
-
-// ============================================================
-// THEME TOGGLE
-// ============================================================
-const themeToggleNav = $('themeToggleNav');
-const themeIconNav = $('themeIconNav');
-const themeLabelNav = $('themeLabelNav');
-let currentTheme = localStorage.getItem('hoi4-theme') || 'dark';
 
 function applyTheme(theme) {
     document.documentElement.setAttribute('data-theme', theme);
-    currentTheme = theme;
-    localStorage.setItem('hoi4-theme', theme);
+    const themeIconNav = $('themeIconNav');
+    const themeLabelNav = $('themeLabelNav');
     if (theme === 'light') {
         themeIconNav.textContent = '☀️';
         themeLabelNav.textContent = 'روشن';
@@ -120,8 +99,16 @@ function applyTheme(theme) {
     }
 }
 
-applyTheme(currentTheme);
-themeToggleNav.addEventListener('click', () => applyTheme(currentTheme === 'dark' ? 'light' : 'dark'));
+$('themeToggleNav').addEventListener('click', async function() {
+    const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
+    const nextTheme = currentTheme === 'dark' ? 'light' : 'dark';
+    applyTheme(nextTheme);
+    
+    // ذخیره توی JSONBin
+    const data = await getData();
+    data.theme = nextTheme;
+    await updateData(data);
+});
 
 // ============================================================
 // NAVIGATION
@@ -332,7 +319,7 @@ function updateUIForUser() {
 
 function updateAdminButton() {
     const btn = $('adminPanelBtn');
-    if (currentUser && isOwner(currentUser.username)) {
+    if (currentUser && currentUser.username === 'ArshiaT') {
         btn.style.display = 'block';
     } else {
         btn.style.display = 'none';
@@ -374,8 +361,9 @@ form.addEventListener('submit', async function(e) {
             return;
         }
 
+        // ذخیره در session
         currentUser = found;
-        localStorage.setItem('hoi4-user', JSON.stringify(found));
+        saveSession(found.username);
 
         // آپدیت آنلاین در JSONBin
         const updatedUsers = users.map(u => u.username === found.username ? { ...u, online: true } : u);
@@ -439,7 +427,7 @@ form.addEventListener('submit', async function(e) {
         await updateData({ ...data, users });
 
         currentUser = newUser;
-        localStorage.setItem('hoi4-user', JSON.stringify(newUser));
+        saveSession(newUser.username);
 
         successMsg.textContent = '✅ اکانت شما با موفقیت ساخته شد!';
         successMsg.classList.add('show');
@@ -462,13 +450,14 @@ async function sendMessage() {
     if (!text) return;
     if (!currentUser) { alert('لطفاً ابتدا وارد شوید!'); return; }
 
-    const timedOut = getTimedOutUsers();
+    // چک تایم‌اوت
+    const data = await getData();
+    const timedOut = data.timedOut || [];
     if (timedOut.includes(currentUser.username)) {
         alert('⏰ شما توسط ادمین تایم‌اوت شده‌اید و نمی‌توانید پیام بفرستید!');
         return;
     }
 
-    const data = await getData();
     const messages = data.messages || [];
 
     messages.push({
@@ -496,7 +485,7 @@ async function loadMessages() {
     let html = '';
     messages.forEach((msg, index) => {
         const isOwn = currentUser && msg.username === currentUser.username;
-        const canModerate = currentUser && canManageMessages(currentUser.username);
+        const canModerate = currentUser && (currentUser.username === 'ArshiaT' || (data.admins || []).includes(currentUser.username));
         html += `
             <div class="message ${isOwn ? 'own' : ''}">
                 <div class="msg-user">${msg.username}</div>
@@ -522,6 +511,7 @@ async function loadChatUsers() {
     const data = await getData();
     const users = data.users || [];
     const container = $('usersListContainer');
+    const admins = data.admins || [];
 
     // آپدیت آنلاین کاربر جاری
     const updatedUsers = users.map(u => u.username === currentUser.username ? { ...u, online: true } : u);
@@ -532,8 +522,8 @@ async function loadChatUsers() {
 
     // مرتب‌سازی آنلاین‌ها
     onlineList.sort((a, b) => {
-        const roleA = getUserRole(a.username);
-        const roleB = getUserRole(b.username);
+        const roleA = a.username === 'ArshiaT' ? 'owner' : (admins.includes(a.username) ? 'admin' : 'user');
+        const roleB = b.username === 'ArshiaT' ? 'owner' : (admins.includes(b.username) ? 'admin' : 'user');
         if (roleA === 'owner') return -1;
         if (roleB === 'owner') return 1;
         if (roleA === 'admin' && roleB !== 'admin') return -1;
@@ -545,7 +535,7 @@ async function loadChatUsers() {
 
     if (onlineList.length > 0) {
         onlineList.forEach(u => {
-            const role = getUserRole(u.username);
+            const role = u.username === 'ArshiaT' ? 'owner' : (admins.includes(u.username) ? 'admin' : 'user');
             let roleLabel = '';
             if (role === 'owner') roleLabel = '<span class="user-role owner">مدیر</span>';
             else if (role === 'admin') roleLabel = '<span class="user-role admin">ادمین</span>';
@@ -565,7 +555,7 @@ async function loadChatUsers() {
 
     if (offlineList.length > 0) {
         offlineList.forEach(u => {
-            const role = getUserRole(u.username);
+            const role = u.username === 'ArshiaT' ? 'owner' : (admins.includes(u.username) ? 'admin' : 'user');
             let roleLabel = '';
             if (role === 'owner') roleLabel = '<span class="user-role owner">مدیر</span>';
             else if (role === 'admin') roleLabel = '<span class="user-role admin">ادمین</span>';
@@ -618,25 +608,19 @@ window.deleteMessage = async function(index) {
     loadMessages();
 };
 
-function getTimedOutUsers() {
-    try { return JSON.parse(localStorage.getItem('hoi4-timedout-users')) || []; } catch { return []; }
-}
-
-function saveTimedOutUsers(users) {
-    localStorage.setItem('hoi4-timedout-users', JSON.stringify(users));
-}
-
-window.timeoutUser = function(username) {
+window.timeoutUser = async function(username) {
     if (!confirm(`آیا میخواهید "${username}" را ۵ دقیقه تایم‌اوت کنید؟`)) return;
-    const timedOut = getTimedOutUsers();
+    const data = await getData();
+    const timedOut = data.timedOut || [];
     if (!timedOut.includes(username)) {
         timedOut.push(username);
-        saveTimedOutUsers(timedOut);
+        await updateData({ ...data, timedOut });
     }
     alert(`⏰ "${username}" به مدت ۵ دقیقه تایم‌اوت شد!`);
-    setTimeout(() => {
-        const newList = getTimedOutUsers().filter(u => u !== username);
-        saveTimedOutUsers(newList);
+    setTimeout(async () => {
+        const freshData = await getData();
+        const newList = (freshData.timedOut || []).filter(u => u !== username);
+        await updateData({ ...freshData, timedOut: newList });
     }, 300000);
 };
 
@@ -644,7 +628,7 @@ window.timeoutUser = function(username) {
 // ADMIN PANEL
 // ============================================================
 window.openAdminPanel = function() {
-    if (!currentUser || !isOwner(currentUser.username)) {
+    if (!currentUser || currentUser.username !== 'ArshiaT') {
         alert('شما دسترسی مدیر ندارید!');
         return;
     }
@@ -658,6 +642,7 @@ window.closeAdminPanel = function() {
 async function loadAdminUsers() {
     const data = await getData();
     const users = data.users || [];
+    const admins = data.admins || [];
     const container = $('adminUsersList');
 
     if (users.length === 0) {
@@ -681,34 +666,35 @@ async function loadAdminUsers() {
     `;
 
     users.forEach(u => {
-        const role = getUserRole(u.username);
+        const isOwnerUser = u.username === 'ArshiaT';
+        const isAdminUser = admins.includes(u.username);
         const isCurrentUser = u.username === currentUser.username;
-        let roleLabel = '', roleClass = '';
-        if (role === 'owner') { roleLabel = 'مدیر'; roleClass = 'owner'; }
-        else if (role === 'admin') { roleLabel = 'ادمین'; roleClass = 'admin'; }
-        else { roleLabel = 'کاربر'; roleClass = 'user'; }
+        
+        let roleLabel = 'کاربر', roleClass = 'user';
+        if (isOwnerUser) { roleLabel = 'مدیر'; roleClass = 'owner'; }
+        else if (isAdminUser) { roleLabel = 'ادمین'; roleClass = 'admin'; }
 
-        const canDelete = canManageUsers(currentUser.username, u.username);
+        // فقط مدیر میتونه حذف کنه
+        const canDelete = currentUser.username === 'ArshiaT' && !isOwnerUser && !isCurrentUser;
 
         html += `
             <tr>
-                <td><strong>${u.username}</strong> ${role === 'owner' ? '⭐' : ''}</td>
+                <td><strong>${u.username}</strong> ${isOwnerUser ? '⭐' : ''}</td>
                 <td>${u.email}</td>
                 <td>${u.country}</td>
                 <td>${u.date || 'نامشخص'}</td>
                 <td><span class="role-badge ${roleClass}">${roleLabel}</span></td>
                 <td>
-                    ${!isCurrentUser && canDelete ? `
-                        ${role !== 'owner' && isOwner(currentUser.username) ? `
-                            <button class="action-btn ${role === 'admin' ? 'remove-admin' : 'make-admin'}" 
-                                    onclick="${role === 'admin' ? `removeAdmin('${u.username}')` : `makeAdmin('${u.username}')`}">
-                                ${role === 'admin' ? '⬇️ حذف ادمین' : '👑 ادمین کن'}
-                            </button>
-                        ` : ''}
+                    ${canDelete ? `
+                        ${!isAdminUser ? `
+                            <button class="action-btn make-admin" onclick="makeAdmin('${u.username}')">👑 ادمین کن</button>
+                        ` : `
+                            <button class="action-btn remove-admin" onclick="removeAdmin('${u.username}')">⬇️ حذف ادمین</button>
+                        `}
                         <button class="action-btn delete" onclick="deleteUser('${u.username}')">🗑️ حذف</button>
                     ` : `
                         <span style="color:var(--text-secondary); font-size:0.8rem;">
-                            ${isCurrentUser ? 'خودتان' : 'دسترسی ندارید'}
+                            ${isCurrentUser ? 'خودتان' : (isOwnerUser ? 'مدیر اصلی' : 'دسترسی ندارید')}
                         </span>
                     `}
                 </td>
@@ -721,93 +707,89 @@ async function loadAdminUsers() {
 }
 
 // ============================================================
-// DELETE USER (اصلاح شده - حذف کامل از دیتابیس)
+// DELETE USER - کاملاً از JSONBin
 // ============================================================
 window.deleteUser = async function(username) {
-    if (!canManageUsers(currentUser.username, username)) {
-        alert('❌ شما دسترسی حذف این کاربر را ندارید!');
+    if (currentUser.username !== 'ArshiaT') {
+        alert('❌ فقط مدیر اصلی می‌تواند کاربران را حذف کند!');
         return;
     }
     if (username === currentUser.username) {
-        alert('❌ نمیتوانید خودتان را حذف کنید!');
+        alert('❌ نمی‌توانید خودتان را حذف کنید!');
+        return;
+    }
+    if (username === 'ArshiaT') {
+        alert('❌ نمی‌توانید مدیر اصلی را حذف کنید!');
         return;
     }
     if (!confirm(`آیا از حذف کامل کاربر "${username}" مطمئن هستید؟`)) return;
-    if (isOwner(username)) {
-        alert('❌ نمیتوانید مدیر اصلی را حذف کنید!');
-        return;
-    }
 
     try {
-        // ===== مرحله ۱: حذف از دیتابیس JSONBin =====
         const data = await getData();
         let users = data.users || [];
-        
-        const userIndex = users.findIndex(u => u.username === username);
-        if (userIndex === -1) {
-            alert('❌ کاربر در دیتابیس پیدا نشد!');
-            return;
-        }
+        let messages = data.messages || [];
+        let admins = data.admins || [];
 
-        // حذف کامل کاربر از آرایه
-        users.splice(userIndex, 1);
-        
+        // حذف کاربر
+        users = users.filter(u => u.username !== username);
+
+        // حذف پیام‌های کاربر
+        messages = messages.filter(m => m.username !== username);
+
+        // حذف از ادمین‌ها
+        admins = admins.filter(a => a !== username);
+
         // ذخیره در JSONBin
-        const result = await updateData({ ...data, users: users });
-        
+        const result = await updateData({ ...data, users, messages, admins });
+
         if (!result) {
-            alert('❌ خطا در حذف کاربر از دیتابیس!');
+            alert('❌ خطا در حذف کاربر!');
             return;
         }
 
-        // ===== مرحله ۲: حذف از لیست ادمین‌ها =====
-        adminList = adminList.filter(u => u !== username);
-        saveAdminList();
-
-        // ===== مرحله ۳: حذف از لیست تایم‌اوت =====
-        const timedOut = getTimedOutUsers().filter(u => u !== username);
-        saveTimedOutUsers(timedOut);
-
-        // ===== مرحله ۴: حذف پیام‌های کاربر از چت =====
-        const freshData = await getData();
-        const messages = freshData.messages || [];
-        const filteredMessages = messages.filter(m => m.username !== username);
-        
-        if (filteredMessages.length !== messages.length) {
-            await updateData({ ...freshData, users: freshData.users, messages: filteredMessages });
-        }
-
-        // ===== مرحله ۵: رفرش کردن پنل مدیریت و چت =====
+        // رفرش پنل
         await loadAdminUsers();
         if (chatSection.classList.contains('active')) {
             await loadChatUsers();
             await loadMessages();
         }
-        
+
         alert(`✅ کاربر "${username}" به طور کامل از دیتابیس حذف شد!`);
     } catch (e) {
-        console.error('❌ خطا در حذف کاربر:', e);
+        console.error('❌ خطا:', e);
         alert('❌ خطا در حذف کاربر!');
     }
 };
 
-window.makeAdmin = function(username) {
-    if (!confirm(`آیا میخواهید "${username}" را ادمین کنید؟`)) return;
-    if (isOwner(username)) { alert('این کاربر مدیر اصلی است!'); return; }
-    if (!adminList.includes(username)) {
-        adminList.push(username);
-        saveAdminList();
+window.makeAdmin = async function(username) {
+    if (currentUser.username !== 'ArshiaT') {
+        alert('❌ فقط مدیر اصلی می‌تواند ادمین تعیین کند!');
+        return;
+    }
+    if (!confirm(`آیا می‌خواهید "${username}" را ادمین کنید؟`)) return;
+    
+    const data = await getData();
+    const admins = data.admins || [];
+    if (!admins.includes(username)) {
+        admins.push(username);
+        await updateData({ ...data, admins });
     }
     loadAdminUsers();
     if (chatSection.classList.contains('active')) loadChatUsers();
     alert(`✅ "${username}" به لیست ادمین‌ها اضافه شد!`);
 };
 
-window.removeAdmin = function(username) {
-    if (!confirm(`آیا میخواهید ادمین بودن "${username}" را لغو کنید؟`)) return;
-    if (isOwner(username)) { alert('نمیتوانید مدیر اصلی را تغییر دهید!'); return; }
-    adminList = adminList.filter(u => u !== username);
-    saveAdminList();
+window.removeAdmin = async function(username) {
+    if (currentUser.username !== 'ArshiaT') {
+        alert('❌ فقط مدیر اصلی می‌تواند ادمین را حذف کند!');
+        return;
+    }
+    if (!confirm(`آیا می‌خواهید ادمین بودن "${username}" را لغو کنید؟`)) return;
+    
+    const data = await getData();
+    let admins = data.admins || [];
+    admins = admins.filter(a => a !== username);
+    await updateData({ ...data, admins });
     loadAdminUsers();
     if (chatSection.classList.contains('active')) loadChatUsers();
     alert(`✅ ادمین بودن "${username}" لغو شد!`);
@@ -842,7 +824,7 @@ async function handleLogout() {
     }
     stopIntervals();
     currentUser = null;
-    localStorage.removeItem('hoi4-user');
+    clearSession();
     updateUIForUser();
     showSection('home');
     $('logoutOverlay').classList.remove('active');
@@ -931,7 +913,6 @@ settingsForm.addEventListener('submit', async function(e) {
 
     // آپدیت در JSONBin
     const idx = usersList.findIndex(u => u.email === currentUser.email);
-
     if (idx !== -1) {
         usersList[idx].username = newUsername;
         if (newPassword) usersList[idx].password = newPassword;
@@ -939,10 +920,18 @@ settingsForm.addEventListener('submit', async function(e) {
         await updateData({ ...data, users: usersList });
     }
 
+    // آپدیت ادمین‌ها اگه اسم عوض شده
+    const admins = data.admins || [];
+    const adminIdx = admins.indexOf(currentUser.username);
+    if (adminIdx !== -1) {
+        admins[adminIdx] = newUsername;
+        await updateData({ ...data, admins });
+    }
+
     const updatedUser = { ...currentUser, username: newUsername, country: newCountry };
     if (newPassword) updatedUser.password = newPassword;
     currentUser = updatedUser;
-    localStorage.setItem('hoi4-user', JSON.stringify(updatedUser));
+    saveSession(newUsername);
 
     updateUIForUser();
     updateDashboardUI();
@@ -958,24 +947,34 @@ settingsForm.addEventListener('submit', async function(e) {
 // ============================================================
 // INIT
 // ============================================================
-const savedUser = localStorage.getItem('hoi4-user');
-if (savedUser) {
-    try {
-        currentUser = JSON.parse(savedUser);
-        // آپدیت آنلاین
-        (async () => {
-            const data = await getData();
-            const users = data.users || [];
-            const updatedUsers = users.map(u => u.username === currentUser.username ? { ...u, online: true } : u);
+async function init() {
+    // لود تم
+    await loadTheme();
+
+    // چک سشن
+    const sessionUsername = getSession();
+    if (sessionUsername) {
+        const data = await getData();
+        const users = data.users || [];
+        const found = users.find(u => u.username === sessionUsername);
+        if (found) {
+            currentUser = found;
+            // آپدیت آنلاین
+            const updatedUsers = users.map(u => u.username === found.username ? { ...u, online: true } : u);
             await updateData({ ...data, users: updatedUsers });
-        })();
-    } catch (e) {
-        currentUser = null;
-        localStorage.removeItem('hoi4-user');
+        } else {
+            clearSession();
+        }
     }
+
+    updateUIForUser();
+    showSection('home');
+
+    console.log('🔥 JSONBin Chat is ready! (بدون localStorage)');
+    console.log('👤 کاربر فعلی:', currentUser ? currentUser.username : 'خیر');
 }
 
-updateUIForUser();
+init();
 
 document.addEventListener('keydown', function(e) {
     if (e.key === 'Escape') {
@@ -983,7 +982,3 @@ document.addEventListener('keydown', function(e) {
         $('logoutOverlay').classList.remove('active');
     }
 });
-
-console.log('🔥 JSONBin Chat is ready!');
-console.log('📦 Bin ID:', BIN_ID);
-console.log('👤 Current User:', currentUser ? currentUser.username : 'خیر');
