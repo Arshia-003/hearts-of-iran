@@ -124,6 +124,8 @@ function initRegisterForm() {
 // LOGIN
 // ============================================================
 async function handleLogin() {
+    console.log('🔐 شروع ورود...');
+
     const loginUsernameInput = $('loginUsername');
     const passwordInput = $('password');
     const loginSuccessMsg = $('loginSuccessMsg');
@@ -169,7 +171,7 @@ async function handleLogin() {
     setTimeout(() => {
         loginSuccessMsg.classList.remove('show');
         loginSuccessMsg.style.display = 'none';
-        // ===== نمایش پنل کاربری توی همین صفحه =====
+        console.log('👤 رفتن به پنل کاربری...');
         showUserPanel();
     }, 1200);
 }
@@ -178,6 +180,8 @@ async function handleLogin() {
 // REGISTER
 // ============================================================
 async function handleRegister() {
+    console.log('📝 شروع ثبت‌نام...');
+
     const usernameInput = $('username');
     const emailInput = $('email');
     const passwordInput = $('password');
@@ -241,7 +245,7 @@ async function handleRegister() {
 
     setTimeout(() => {
         successMsg.classList.remove('show');
-        // ===== نمایش پنل کاربری توی همین صفحه =====
+        console.log('👤 رفتن به پنل کاربری (ثبت‌نام)...');
         showUserPanel();
     }, 1200);
 }
