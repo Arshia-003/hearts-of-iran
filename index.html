@@ -3,9 +3,10 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Hearts of Iran</title>
+    <title>Hearts of Iran | صفحه اصلی</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Vazirmatn:wght@400;700;900&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/home.css" />
 </head>
 <body>
 
@@ -25,7 +26,9 @@
         <div class="badge">🎖️ استراتژی بی‌نهایت</div>
         <h1>Hearts of Iran</h1>
         <div class="subtitle">جنگ جهانی دوم را از نو بنویس...</div>
-        <div class="hero-icons">🛩️ 🚢 🚀</div>
+        <div style="margin-top:15px; font-size:1.5rem; letter-spacing:10px;">
+            🛩️ 🚢 🚀
+        </div>
     </header>
 
     <!-- ============================================================
@@ -34,9 +37,9 @@
     <nav>
         <div class="nav-container">
             <div class="nav-left">
-                <button class="register-btn-nav" id="registerBtnNav">📝 ثبت‌نام / ورود</button>
+                <button class="register-btn-nav" id="registerBtnNav" style="background:var(--gold); color:#0b0e14; border:none; border-radius:50px; padding:6px 18px; font-size:0.9rem; cursor:pointer; font-weight:700; font-family:inherit; display:flex; align-items:center; gap:6px;">📝 ثبت‌نام / ورود</button>
                 <button class="user-btn-nav" id="userBtnNav">👤</button>
-                <button class="chat-btn-nav" id="chatBtnNav">💬 چت روم</button>
+                <button class="user-btn-nav" id="chatBtnNav" style="border:2px solid var(--gold); background:var(--bg-card); color:var(--text-primary);">💬 چت روم</button>
             </div>
             <div class="nav-center">
                 <a href="#" class="active" data-target="home">🏠 خانه</a>
@@ -260,7 +263,7 @@
                         <option value="فرانسه">فرانسه</option>
                     </select>
 
-                    <button type="submit" id="authSubmitBtn">⚡ ساخت اکانت</button>
+                    <button type="submit" class="btn" id="authSubmitBtn">⚡ ساخت اکانت</button>
                     <div class="success-msg" id="successMsg">✅ اکانت شما با موفقیت ساخته شد!</div>
                     <div class="success-msg" id="loginSuccessMsg" style="display:none;">✅ ورود با موفقیت انجام شد!</div>
                 </form>
@@ -273,134 +276,7 @@
             </div>
         </div>
 
-        <!-- ===== DASHBOARD ===== -->
-        <div id="dashboardSection" class="dashboard">
-            <div class="dashboard-bg" id="dashboardBg"></div>
-
-            <div class="welcome-banner animate-on-load">
-                <img src="" alt="پرچم کشور" class="country-flag" id="countryFlag" />
-                <h2>👋 خوش آمدید، <span id="dashboardUsername">کاربر</span>!</h2>
-                <p>به پنل کاربری خود خوش آمدید.</p>
-                <div class="country-badge" id="countryBadge">🎖️ کشور مورد علاقه: آلمان</div>
-            </div>
-
-            <div class="dashboard-grid">
-                <div class="dashboard-card" onclick="openSettings()">
-                    <span class="icon">⚙️</span>
-                    <h4>تنظیمات</h4>
-                    <p>تغییر نام کاربری، رمز عبور و کشور</p>
-                </div>
-                <div class="dashboard-card" onclick="openAdminPanel()" id="adminPanelBtn" style="display:none;">
-                    <span class="icon">🛡️</span>
-                    <h4>پنل مدیریت</h4>
-                    <p>مدیریت کاربران و تنظیمات</p>
-                </div>
-                <div class="dashboard-card" onclick="openLogout()">
-                    <span class="icon">🚪</span>
-                    <h4>خروج از حساب کاربری</h4>
-                    <p>از حساب کاربری خود خارج شوید</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- ===== CHAT ROOM ===== -->
-        <div id="chatSection" class="chat-room">
-            <div class="chat-container">
-                <div class="chat-users" id="chatUsersList">
-                    <div class="users-title">👥 کاربران آنلاین</div>
-                    <div id="usersListContainer">
-                        <!-- توسط جاوااسکریپت پر میشه -->
-                    </div>
-                </div>
-
-                <div class="chat-main">
-                    <div class="chat-header">
-                        <span class="chat-title">💬 چت روم</span>
-                        <button class="chat-close" onclick="closeChat()">✕</button>
-                    </div>
-                    <div class="chat-messages" id="chatMessages">
-                        <!-- توسط جاوااسکریپت پر میشه -->
-                    </div>
-                    <div class="chat-input-area">
-                        <input type="text" id="chatInput" placeholder="پیام خود را بنویسید..." />
-                        <button class="send-btn" id="sendChatBtn">📤</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- ===== ADMIN PANEL ===== -->
-        <div id="adminPanel" class="admin-panel">
-            <div class="admin-header">
-                <h2>🛡️ پنل مدیریت</h2>
-                <p>مدیریت کاربران سایت</p>
-                <button class="close-admin" onclick="closeAdminPanel()">❌ بستن پنل</button>
-            </div>
-
-            <div class="admin-content">
-                <h3>👥 لیست کاربران</h3>
-                <div id="adminUsersList">
-                    <!-- توسط جاوااسکریپت پر میشه -->
-                </div>
-            </div>
-        </div>
-
     </main>
-
-    <!-- ============================================================
-    LOGOUT OVERLAY
-    ============================================================ -->
-    <div class="logout-overlay" id="logoutOverlay">
-        <div class="logout-box">
-            <span class="logout-icon">😞</span>
-            <h3>آیا مطمئن هستید؟</h3>
-            <p>آیا واقعاً می‌خواهید از حساب کاربری خود خارج شوید؟</p>
-            <div class="logout-buttons">
-                <button class="btn-yes" id="logoutConfirmBtn">بله، مطمئنم</button>
-                <button class="btn-no" id="logoutCancelBtn">نه، در این حساب می‌مانم</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- ============================================================
-    SETTINGS OVERLAY
-    ============================================================ -->
-    <div class="settings-overlay" id="settingsOverlay" onclick="closeSettings()"></div>
-    <div class="settings-panel" id="settingsPanel">
-        <div class="form-box animate-on-load">
-            <button class="close-settings" onclick="closeSettings()">✕</button>
-            <h3>⚙️ تنظیمات حساب کاربری</h3>
-
-            <form id="settingsForm">
-                <label>👤 نام کاربری جدید</label>
-                <input type="text" id="settingsUsername" placeholder="نام کاربری جدید" />
-                <div class="error-msg" id="settingsUsernameError">این نام قبلاً ثبت شده یا نامعتبر است.</div>
-
-                <hr class="divider" />
-
-                <label>🔒 رمز عبور جدید (اختیاری)</label>
-                <input type="password" id="settingsPassword" placeholder="رمز عبور جدید (حداقل ۶ کاراکتر)" />
-                <div class="error-msg" id="settingsPasswordError">رمز عبور باید حداقل ۶ کاراکتر باشد.</div>
-
-                <hr class="divider" />
-
-                <label>🎖️ تغییر کشور مورد علاقه</label>
-                <select id="settingsCountry">
-                    <option value="آلمان">آلمان</option>
-                    <option value="بریتانیا">بریتانیا</option>
-                    <option value="آمریکا">آمریکا</option>
-                    <option value="شوروی">شوروی</option>
-                    <option value="ژاپن">ژاپن</option>
-                    <option value="ایتالیا">ایتالیا</option>
-                    <option value="فرانسه">فرانسه</option>
-                </select>
-
-                <button type="submit" style="margin-top:15px;">💾 ذخیره تغییرات</button>
-                <div class="settings-success" id="settingsSuccess">✅ تغییرات با موفقیت ذخیره شد!</div>
-                <div class="settings-error" id="settingsError">❌ خطا در ذخیره تغییرات!</div>
-            </form>
-        </div>
-    </div>
 
     <!-- ============================================================
     FOOTER
@@ -420,7 +296,10 @@
     <!-- ============================================================
     SCRIPTS
     ============================================================ -->
-    <script src="script.js"></script>
+    <script src="js/config.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/home.js"></script>
 
 </body>
 </html>
