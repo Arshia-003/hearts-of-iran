@@ -3,85 +3,114 @@
 // ============================================================
 
 // ============================================================
-// NAVIGATION
+// NAVIGATION - نسخه ساده و مطمئن
 // ============================================================
-function showSection(section) {
-    console.log('📄 showSection:', section);
-
+function showChat() {
+    console.log('💬 نمایش چت');
     const dashboardSection = $('dashboardSection');
     const chatSection = $('chatSection');
     const adminPanel = $('adminPanel');
 
-    if (!dashboardSection || !chatSection || !adminPanel) {
-        console.error('❌ یکی از بخش‌ها پیدا نشد!');
-        return;
-    }
+    if (dashboardSection) dashboardSection.classList.remove('active');
+    if (adminPanel) adminPanel.classList.remove('active');
+    if (chatSection) chatSection.classList.add('active');
 
-    // حذف active از همه
-    dashboardSection.classList.remove('active');
-    chatSection.classList.remove('active');
-    adminPanel.classList.remove('active');
+    loadChatUsers();
+    loadMessages();
+    startIntervals();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
 
-    // اضافه کردن active به بخش موردنظر
-    if (section === 'dashboard') {
-        dashboardSection.classList.add('active');
-        updateDashboardUI();
-    } else if (section === 'chat') {
-        chatSection.classList.add('active');
-        loadChatUsers();
-        loadMessages();
-        startIntervals();
-    } else if (section === 'admin') {
-        adminPanel.classList.add('active');
-        loadAdminUsers();
-    }
+function showDashboard() {
+    console.log('👤 نمایش پنل کاربری');
+    const dashboardSection = $('dashboardSection');
+    const chatSection = $('chatSection');
+    const adminPanel = $('adminPanel');
+
+    if (chatSection) chatSection.classList.remove('active');
+    if (adminPanel) adminPanel.classList.remove('active');
+    if (dashboardSection) dashboardSection.classList.add('active');
+
+    stopIntervals();
+    updateDashboardUI();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function showAdminPanel() {
+    console.log('🛡️ نمایش پنل مدیریت');
+    const dashboardSection = $('dashboardSection');
+    const chatSection = $('chatSection');
+    const adminPanel = $('adminPanel');
+
+    if (chatSection) chatSection.classList.remove('active');
+    if (dashboardSection) dashboardSection.classList.remove('active');
+    if (adminPanel) adminPanel.classList.add('active');
+
+    stopIntervals();
+    loadAdminUsers();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// برای سازگاری با کد قدیمی
+function showSection(section) {
+    if (section === 'chat') showChat();
+    else if (section === 'dashboard') showDashboard();
+    else if (section === 'admin') showAdminPanel();
 }
 
 // ============================================================
-// NAVBAR
+// NAVBAR - دکمه‌ها
 // ============================================================
 function initNavbar() {
-    // دکمه پنل کاربری → میره به پنل
+    // دکمه پنل کاربری
     const userBtnNav = $('userBtnNav');
     if (userBtnNav) {
-        // حذف لیسنرهای قبلی
-        userBtnNav.replaceWith(userBtnNav.cloneNode(true));
-        const newUserBtn = $('userBtnNav');
-        newUserBtn.addEventListener('click', function(e) {
+        userBtnNav.onclick = function(e) {
             e.preventDefault();
             e.stopPropagation();
-            console.log('👤 کلیک روی پنل کاربری');
-            showSection('dashboard');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        });
+            showDashboard();
+        };
     }
 
-    // دکمه چت روم → میره به چت
+    // دکمه چت روم
     const chatBtnNav = $('chatBtnNav');
     if (chatBtnNav) {
-        // حذف لیسنرهای قبلی
-        chatBtnNav.replaceWith(chatBtnNav.cloneNode(true));
-        const newChatBtn = $('chatBtnNav');
-        newChatBtn.addEventListener('click', function(e) {
+        chatBtnNav.onclick = function(e) {
             e.preventDefault();
             e.stopPropagation();
-            console.log('💬 کلیک روی چت روم');
             if (!currentUser) {
                 alert('لطفاً ابتدا وارد شوید!');
                 window.location.href = 'index.html';
                 return;
             }
-            showSection('chat');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        });
+            showChat();
+        };
     }
 
     // دکمه تم
     const themeToggleNav = $('themeToggleNav');
     if (themeToggleNav) {
-        themeToggleNav.replaceWith(themeToggleNav.cloneNode(true));
-        const newThemeBtn = $('themeToggleNav');
-        newThemeBtn.addEventListener('click', toggleTheme);
+        themeToggleNav.onclick = function() {
+            toggleTheme();
+        };
+    }
+
+    // دکمه خانه توی navbar
+    const homeLink = document.querySelector('nav a[data-target="home"]');
+    if (homeLink) {
+        homeLink.onclick = function(e) {
+            e.preventDefault();
+            window.location.href = 'index.html';
+        };
+    }
+
+    // دکمه رویدادها
+    const eventsLink = document.querySelector('nav a[data-target="events"]');
+    if (eventsLink) {
+        eventsLink.onclick = function(e) {
+            e.preventDefault();
+            window.location.href = 'index.html#eventsSection';
+        };
     }
 }
 
@@ -351,7 +380,7 @@ window.closeChat = async function() {
         await setUserOnline(currentUser.username, false);
     }
     stopIntervals();
-    showSection('dashboard');
+    showDashboard();
 };
 
 // ============================================================
@@ -414,10 +443,8 @@ window.closeSettings = function() {
 async function initChat() {
     console.log('🚀 شروع initChat');
 
-    // لود تم
     await loadTheme();
 
-    // چک سشن
     const sessionUsername = getSession();
     if (!sessionUsername) {
         alert('لطفاً ابتدا وارد شوید!');
@@ -441,31 +468,20 @@ async function initChat() {
 
     console.log('👤 کاربر:', currentUser.username);
 
-    // آپدیت UI
     updateUIForUser();
     updateDashboardUI();
-
-    // راه‌اندازی ناوبار (با لیسنرهای جدید)
     initNavbar();
-
-    // راه‌اندازی تنظیمات
     initSettings();
 
-    // رویداد دکمه‌های logout
+    // دکمه‌های logout
     const logoutConfirmBtn = $('logoutConfirmBtn');
     const logoutCancelBtn = $('logoutCancelBtn');
     const logoutOverlay = $('logoutOverlay');
 
-    if (logoutConfirmBtn) {
-        logoutConfirmBtn.replaceWith(logoutConfirmBtn.cloneNode(true));
-        $('logoutConfirmBtn').addEventListener('click', handleLogout);
-    }
-    if (logoutCancelBtn) {
-        logoutCancelBtn.replaceWith(logoutCancelBtn.cloneNode(true));
-        $('logoutCancelBtn').addEventListener('click', () => {
-            if (logoutOverlay) logoutOverlay.classList.remove('active');
-        });
-    }
+    if (logoutConfirmBtn) logoutConfirmBtn.onclick = handleLogout;
+    if (logoutCancelBtn) logoutCancelBtn.onclick = () => {
+        if (logoutOverlay) logoutOverlay.classList.remove('active');
+    };
     if (logoutOverlay) {
         logoutOverlay.addEventListener('click', function(e) {
             if (e.target === this) this.classList.remove('active');
@@ -475,25 +491,19 @@ async function initChat() {
     // دکمه ارسال پیام
     const sendChatBtn = $('sendChatBtn');
     const chatInput = $('chatInput');
-    if (sendChatBtn) {
-        sendChatBtn.replaceWith(sendChatBtn.cloneNode(true));
-        $('sendChatBtn').addEventListener('click', sendMessage);
-    }
+    if (sendChatBtn) sendChatBtn.onclick = sendMessage;
     if (chatInput) {
-        chatInput.replaceWith(chatInput.cloneNode(true));
-        $('chatInput').addEventListener('keypress', e => {
+        chatInput.addEventListener('keypress', e => {
             if (e.key === 'Enter') sendMessage();
         });
     }
 
-    // ===== نمایش چت روم به صورت پیش‌فرض =====
-    console.log('💬 نمایش چت روم');
-    showSection('chat');
+    // نمایش چت به صورت پیش‌فرض
+    showChat();
 
-    // چک کردن خودکار وجود کاربر هر ۳ ثانیه
+    // چک خودکار
     checkInterval = setInterval(checkUserExists, 3000);
 
-    // Escape
     document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape') {
             window.closeSettings();
