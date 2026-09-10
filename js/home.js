@@ -3,21 +3,51 @@
 // ============================================================
 
 // ============================================================
-// NAVIGATION BETWEEN SECTIONS (Home, Register)
+// NAVIGATION BETWEEN SECTIONS
 // ============================================================
 function showSection(section) {
     const homeSection = $('homeSection');
     const registerSection = $('registerSection');
+    const userPanelSection = $('userPanelSection');
 
-    if (!homeSection || !registerSection) return;
+    if (homeSection) homeSection.classList.add('hidden');
+    if (registerSection) registerSection.classList.remove('active');
+    if (userPanelSection) userPanelSection.classList.remove('active');
 
     if (section === 'home') {
-        homeSection.classList.remove('hidden');
-        registerSection.classList.remove('active');
+        if (homeSection) homeSection.classList.remove('hidden');
     } else if (section === 'register') {
-        homeSection.classList.add('hidden');
-        registerSection.classList.add('active');
+        if (registerSection) registerSection.classList.add('active');
+    } else if (section === 'userPanel') {
+        if (userPanelSection) userPanelSection.classList.add('active');
     }
+}
+
+// ============================================================
+// DISPLAY USER PANEL (بعد از لاگین/ثبت‌نام)
+// ============================================================
+function showUserPanel() {
+    const userPanelSection = $('userPanelSection');
+    if (!userPanelSection) {
+        console.error('❌ userPanelSection پیدا نشد!');
+        return;
+    }
+
+    if (currentUser) {
+        const panelUsername = $('panelUsername');
+        const panelCountry = $('panelCountry');
+        const panelFlag = $('panelFlag');
+        const panelBg = $('panelBg');
+
+        if (panelUsername) panelUsername.textContent = currentUser.username;
+        if (panelCountry) panelCountry.textContent = `🎖️ کشور مورد علاقه: ${currentUser.country}`;
+        if (panelFlag) panelFlag.src = `images/${flagMap[currentUser.country] || 'germany-flag.png'}`;
+        if (panelBg) panelBg.style.backgroundImage =
+            `url('images/${bgMap[currentUser.country] || 'germany-bg.jpg'}')`;
+    }
+
+    showSection('userPanel');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 // ============================================================
@@ -51,8 +81,12 @@ function initNavbar() {
     const registerBtnNav = $('registerBtnNav');
     if (registerBtnNav) {
         registerBtnNav.addEventListener('click', () => {
-            showSection('register');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            if (currentUser) {
+                showUserPanel();
+            } else {
+                showSection('register');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
         });
     }
 
@@ -68,7 +102,9 @@ function initNavbar() {
     const userBtnNav = $('userBtnNav');
     if (userBtnNav) {
         userBtnNav.addEventListener('click', () => {
-            window.location.href = 'chat.html';
+            if (currentUser) {
+                showUserPanel();
+            }
         });
     }
 
@@ -80,7 +116,7 @@ function initNavbar() {
 }
 
 // ============================================================
-// EVENT TOGGLES (رویدادهای کلیدی)
+// EVENT TOGGLES
 // ============================================================
 function initEventToggles() {
     document.querySelectorAll('.event-toggle').forEach((btn) => {
@@ -96,7 +132,7 @@ function initEventToggles() {
 }
 
 // ============================================================
-// CHECK SESSION (اگه کاربر لاگین بود، برو به چت)
+// CHECK SESSION
 // ============================================================
 async function checkUserSession() {
     const sessionUsername = getSession();
@@ -108,7 +144,6 @@ async function checkUserSession() {
 
     if (found) {
         currentUser = found;
-        // آپدیت آنلاین
         await setUserOnline(found.username, true);
         return true;
     } else {
@@ -118,35 +153,62 @@ async function checkUserSession() {
 }
 
 // ============================================================
+// LOGOUT FROM PANEL
+// ============================================================
+async function panelLogout() {
+    if (currentUser) {
+        await setUserOnline(currentUser.username, false);
+    }
+    currentUser = null;
+    clearSession();
+    updateUIForUser();
+    showSection('home');
+    alert('✅ شما با موفقیت خارج شدید!');
+}
+
+// ============================================================
+// SETTINGS FROM PANEL
+// ============================================================
+function panelSettings() {
+    if (!currentUser) {
+        alert('لطفاً ابتدا وارد شوید!');
+        return;
+    }
+    const settingsOverlay = $('settingsOverlay');
+    const settingsPanel = $('settingsPanel');
+    if (settingsOverlay) settingsOverlay.classList.add('active');
+    if (settingsPanel) settingsPanel.classList.add('active');
+
+    const settingsUsername = $('settingsUsername');
+    const settingsCountry = $('settingsCountry');
+    const settingsPassword = $('settingsPassword');
+
+    if (settingsUsername) settingsUsername.value = currentUser.username;
+    if (settingsCountry) settingsCountry.value = currentUser.country;
+    if (settingsPassword) settingsPassword.value = '';
+}
+
+// ============================================================
 // INIT HOME PAGE
 // ============================================================
 async function initHome() {
-    // لود تم
     await loadTheme();
-
-    // چک سشن
-    await checkUserSession();
-
-    // آپدیت UI
+    const isLoggedIn = await checkUserSession();
     updateUIForUser();
-
-    // راه‌اندازی ناوبار
     initNavbar();
-
-    // راه‌اندازی رویدادها
     initEventToggles();
-
-    // راه‌اندازی auth
     initAuth();
+    initSettings();
 
-    // نمایش صفحه خانه
-    showSection('home');
+    // اگه کاربر لاگین بود، پنل کاربری نشون بده
+    if (isLoggedIn) {
+        showUserPanel();
+    } else {
+        showSection('home');
+    }
 
     console.log('🔥 Home page is ready!');
     console.log('👤 کاربر فعلی:', currentUser ? currentUser.username : 'خیر');
 }
 
-// ============================================================
-// اجرا وقتی صفحه لود شد
-// ============================================================
 document.addEventListener('DOMContentLoaded', initHome);
