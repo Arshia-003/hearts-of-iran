@@ -203,19 +203,17 @@ function closeSettings() {
 // ============================================================
 async function initHome() {
     await loadTheme();
-    const isLoggedIn = await checkUserSession();
+    await checkUserSession();
     updateUIForUser();
     initNavbar();
     initEventToggles();
     initAuth();
     initSettings();
 
-    // اگه کاربر لاگین بود، پنل کاربری نشون بده
-    if (isLoggedIn) {
-        showUserPanel();
-    } else {
-        showSection('home');
-    }
+    // ============================================================
+    // همیشه صفحه خانه رو نشون بده (نه پنل کاربری)
+    // ============================================================
+    showSection('home');
 
     console.log('🔥 Home page is ready!');
     console.log('👤 کاربر فعلی:', currentUser ? currentUser.username : 'خیر');
