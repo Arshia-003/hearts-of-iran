@@ -11,7 +11,7 @@
 }
 
 #userPanelSection.active {
-    display: block;
+    display: none;
 }
 
 #userPanelSection .dashboard-bg {
