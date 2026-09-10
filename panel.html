@@ -19,7 +19,7 @@
         <div class="nav-container">
             <div class="nav-left">
                 <button class="user-btn-nav show" id="userBtnNav">👤 پنل کاربری</button>
-                <button class="user-btn-nav show" id="chatBtnNav" style="border:2px solid var(--gold); background:var(--bg-card); color:var(--text-primary);">💬 چت روم</button>
+                <button class="chat-btn-nav show" id="chatBtnNav">💬 چت روم</button>
             </div>
             <div class="nav-center">
                 <a href="index.html">🏠 خانه</a>
@@ -49,21 +49,28 @@
             </div>
 
             <div class="dashboard-grid">
+                <!-- چت روم - برای همه کاربران -->
                 <div class="dashboard-card" onclick="window.location.href='chat.html'">
                     <span class="icon">💬</span>
                     <h4>چت روم</h4>
                     <p>گفت‌وگو با سایر کاربران</p>
                 </div>
+
+                <!-- تنظیمات - برای همه کاربران -->
                 <div class="dashboard-card" onclick="openSettings()">
                     <span class="icon">⚙️</span>
                     <h4>تنظیمات</h4>
                     <p>تغییر نام کاربری، رمز عبور و کشور</p>
                 </div>
-                <div class="dashboard-card" onclick="window.location.href='chat.html'">
+
+                <!-- پنل مدیریت - فقط برای مدیر (ArshiaT) -->
+                <div class="dashboard-card" id="adminPanelCard" onclick="window.location.href='chat.html'" style="display:none;">
                     <span class="icon">🛡️</span>
                     <h4>پنل مدیریت</h4>
-                    <p>مدیریت کاربران</p>
+                    <p>مدیریت کاربران و پیام‌ها</p>
                 </div>
+
+                <!-- خروج - برای همه کاربران -->
                 <div class="dashboard-card" onclick="openLogout()">
                     <span class="icon">🚪</span>
                     <h4>خروج از حساب کاربری</h4>
