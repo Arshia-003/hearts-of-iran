@@ -37,26 +37,39 @@ async function initChat() {
     initNavbar();
     initChatSystem();
 
-    // ===== لود کردن چت =====
-    loadChatUsers();
-    loadMessages();
-    startIntervals();
+    // ============================================================
+    // چک کردن پارامتر URL قبل از هر کاری (بدون پرش)
+    // ============================================================
+    const urlParams = new URLSearchParams(window.location.search);
+    const isAdminMode = urlParams.get('admin') === 'true' && currentUser.username === OWNER_USERNAME;
+
+    if (isAdminMode) {
+        // ===== حالت پنل مدیریت =====
+        console.log('🛡️ حالت پنل مدیریت (بدون پرش)');
+
+        const chatSection = $('chatSection');
+        const adminPanel = $('adminPanel');
+
+        // چت رو مخفی کن
+        if (chatSection) chatSection.classList.remove('active');
+
+        // پنل مدیریت رو نشون بده
+        if (adminPanel) adminPanel.classList.add('active');
+
+        // لیست کاربران رو لود کن
+        loadAdminUsers();
+
+    } else {
+        // ===== حالت چت روم =====
+        console.log('💬 حالت چت روم');
+
+        loadChatUsers();
+        loadMessages();
+        startIntervals();
+    }
 
     // ===== چک خودکار وجود کاربر =====
     checkInterval = setInterval(checkUserExists, 3000);
-
-    // ============================================================
-    // چک کردن پارامتر URL برای باز کردن پنل مدیریت
-    // ============================================================
-    const urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.get('admin') === 'true' && currentUser.username === OWNER_USERNAME) {
-        console.log('🛡️ باز کردن پنل مدیریت از طریق URL');
-        setTimeout(function() {
-            if (typeof openAdminPanel === 'function') {
-                openAdminPanel();
-            }
-        }, 500);
-    }
 
     console.log('🔥 Chat page is ready!');
 }
@@ -76,14 +89,14 @@ function initNavbar() {
         });
     }
 
-    // دکمه چت روم → رفرش صفحه
+    // دکمه چت روم → رفرش صفحه (حالت چت)
     const chatBtnNav = $('chatBtnNav');
     if (chatBtnNav) {
         chatBtnNav.addEventListener('click', function(e) {
             e.preventDefault();
             e.stopPropagation();
-            console.log('💬 رفرش چت روم');
-            location.reload();
+            console.log('💬 رفتن به چت روم');
+            window.location.href = 'chat.html';
         });
     }
 
