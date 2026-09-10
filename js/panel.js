@@ -32,9 +32,11 @@ async function initPanel() {
     await setUserOnline(found.username, true);
 
     console.log('👤 کاربر:', currentUser.username);
+    console.log('🛡️ نقش:', currentUser.username === OWNER_USERNAME ? 'مدیر' : 'کاربر');
 
     updateUIForUser();
     updatePanelUI();
+    updateAdminCard();
     initNavbar();
     initSettings();
     initLogout();
@@ -58,6 +60,24 @@ function updatePanelUI() {
     if (panelFlag) panelFlag.src = `images/${flagMap[currentUser.country] || 'germany-flag.png'}`;
     if (panelBg) panelBg.style.backgroundImage =
         `url('images/${bgMap[currentUser.country] || 'germany-bg.jpg'}')`;
+}
+
+// ============================================================
+// ADMIN CARD - فقط برای مدیر نمایش داده میشه
+// ============================================================
+function updateAdminCard() {
+    if (!currentUser) return;
+
+    const adminPanelCard = $('adminPanelCard');
+    if (!adminPanelCard) return;
+
+    if (currentUser.username === OWNER_USERNAME) {
+        adminPanelCard.style.display = 'block';
+        console.log('✅ پنل مدیریت برای مدیر نمایش داده شد');
+    } else {
+        adminPanelCard.style.display = 'none';
+        console.log('❌ پنل مدیریت برای کاربر عادی مخفی شد');
+    }
 }
 
 // ============================================================
@@ -148,6 +168,7 @@ function initSettings() {
         saveSession(newUsername);
 
         updatePanelUI();
+        updateAdminCard();
 
         $('settingsSuccess').classList.add('show');
         setTimeout(() => {
