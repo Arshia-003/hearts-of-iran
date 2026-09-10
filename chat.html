@@ -3,16 +3,16 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Hearts of Iran | پنل کاربری</title>
+    <title>Hearts of Iran | چت روم</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Vazirmatn:wght@400;700;900&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="css/style.css" />
-    <link rel="stylesheet" href="css/panel.css" />
+    <link rel="stylesheet" href="css/chat.css" />
 </head>
 <body>
 
     <header class="hero" style="padding:15px 20px 25px;">
         <h1 style="font-size:1.8rem;">Hearts of Iran</h1>
-        <div class="subtitle" style="font-size:1rem;">پنل کاربری</div>
+        <div class="subtitle" style="font-size:1rem;">چت روم</div>
     </header>
 
     <nav>
@@ -38,98 +38,60 @@
 
     <main class="container">
 
-        <div id="userPanelSection" class="active">
-            <div class="dashboard-bg" id="panelBg"></div>
+        <!-- ============================================================
+        بخش چت روم - فقط این بخش توی این صفحه هست
+        ============================================================ -->
+        <div id="chatSection" class="chat-room active">
+            <div class="chat-container">
 
-            <div class="welcome-banner">
-                <img src="" alt="پرچم کشور" class="country-flag" id="panelFlag" />
-                <h2>👋 خوش آمدید، <span id="panelUsername">کاربر</span>!</h2>
-                <p>به پنل کاربری خود خوش آمدید.</p>
-                <div class="country-badge" id="panelCountry">🎖️ کشور مورد علاقه: آلمان</div>
+                <!-- لیست کاربران -->
+                <div class="chat-users" id="chatUsersList">
+                    <div class="users-title">👥 کاربران آنلاین</div>
+                    <div id="usersListContainer">
+                        <div style="text-align:center; color:var(--text-secondary); padding:20px; opacity:0.5;">
+                            در حال بارگذاری...
+                        </div>
+                    </div>
+                </div>
+
+                <!-- بخش پیام‌ها -->
+                <div class="chat-main">
+                    <div class="chat-header">
+                        <span class="chat-title">💬 چت روم</span>
+                    </div>
+                    <div class="chat-messages" id="chatMessages">
+                        <div style="text-align:center; color:var(--text-secondary); padding:40px 0;">
+                            در حال بارگذاری...
+                        </div>
+                    </div>
+                    <div class="chat-input-area">
+                        <input type="text" id="chatInput" placeholder="پیام خود را بنویسید..." />
+                        <button class="send-btn" id="sendChatBtn">📤</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- ============================================================
+        پنل مدیریت - فقط برای مدیر
+        ============================================================ -->
+        <div id="adminPanel" class="admin-panel">
+            <div class="admin-header">
+                <h2>🛡️ پنل مدیریت</h2>
+                <p>مدیریت کاربران سایت</p>
+                <button class="close-admin" onclick="closeAdminPanel()">❌ بستن پنل</button>
             </div>
 
-            <div class="dashboard-grid">
-                <div class="dashboard-card" onclick="window.location.href='chat.html'">
-                    <span class="icon">💬</span>
-                    <h4>چت روم</h4>
-                    <p>گفت‌وگو با سایر کاربران</p>
-                </div>
-
-                <div class="dashboard-card" onclick="openSettings()">
-                    <span class="icon">⚙️</span>
-                    <h4>تنظیمات</h4>
-                    <p>تغییر نام کاربری، رمز عبور و کشور</p>
-                </div>
-
-                <div class="dashboard-card" id="adminPanelCard" onclick="window.location.href='chat.html'" style="display:none;">
-                    <span class="icon">🛡️</span>
-                    <h4>پنل مدیریت</h4>
-                    <p>مدیریت کاربران و پیام‌ها</p>
-                </div>
-
-                <div class="dashboard-card" onclick="openLogout()">
-                    <span class="icon">🚪</span>
-                    <h4>خروج از حساب کاربری</h4>
-                    <p>از حساب کاربری خود خارج شوید</p>
+            <div class="admin-content">
+                <h3>👥 لیست کاربران</h3>
+                <div id="adminUsersList">
+                    <!-- توسط جاوااسکریپت پر میشه -->
                 </div>
             </div>
         </div>
 
     </main>
-
-    <!-- ============================================================
-    LOGOUT OVERLAY
-    ============================================================ -->
-    <div class="logout-overlay" id="logoutOverlay">
-        <div class="logout-box">
-            <span class="logout-icon">😞</span>
-            <h3>آیا مطمئن هستید؟</h3>
-            <p>آیا واقعاً می‌خواهید از حساب کاربری خود خارج شوید؟</p>
-            <div class="logout-buttons">
-                <button class="btn-yes" id="logoutConfirmBtn">بله، مطمئنم</button>
-                <button class="btn-no" id="logoutCancelBtn">نه، می‌مانم</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- ============================================================
-    SETTINGS OVERLAY
-    ============================================================ -->
-    <div class="settings-overlay" id="settingsOverlay" onclick="closeSettings()"></div>
-    <div class="settings-panel" id="settingsPanel">
-        <div class="form-box">
-            <button class="close-settings" onclick="closeSettings()">✕</button>
-            <h3>⚙️ تنظیمات حساب کاربری</h3>
-
-            <form id="settingsForm">
-                <label>👤 نام کاربری جدید</label>
-                <input type="text" id="settingsUsername" placeholder="نام کاربری جدید" />
-                <div class="error-msg" id="settingsUsernameError">این نام معتبر نیست.</div>
-
-                <hr class="divider" />
-
-                <label>🔒 رمز عبور جدید (اختیاری)</label>
-                <input type="password" id="settingsPassword" placeholder="رمز عبور جدید" />
-                <div class="error-msg" id="settingsPasswordError">رمز باید حداقل ۶ کاراکتر باشد.</div>
-
-                <hr class="divider" />
-
-                <label>🎖️ تغییر کشور مورد علاقه</label>
-                <select id="settingsCountry">
-                    <option value="آلمان">آلمان</option>
-                    <option value="بریتانیا">بریتانیا</option>
-                    <option value="آمریکا">آمریکا</option>
-                    <option value="شوروی">شوروی</option>
-                    <option value="ژاپن">ژاپن</option>
-                    <option value="ایتالیا">ایتالیا</option>
-                    <option value="فرانسه">فرانسه</option>
-                </select>
-
-                <button type="submit" class="btn" style="margin-top:15px;">💾 ذخیره تغییرات</button>
-                <div class="settings-success" id="settingsSuccess">✅ تغییرات ذخیره شد!</div>
-            </form>
-        </div>
-    </div>
 
     <footer>
         <p style="color:var(--text-secondary); font-size:0.85rem;">Hearts of Iran © ۲۰۲۶</p>
@@ -137,7 +99,8 @@
 
     <script src="js/config.js"></script>
     <script src="js/api.js"></script>
-    <script src="js/panel.js"></script>
+    <script src="js/chat.js"></script>
+    <script src="js/admin.js"></script>
 
 </body>
 </html>
