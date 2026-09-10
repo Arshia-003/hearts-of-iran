@@ -15,10 +15,10 @@ async function getData() {
         });
         if (!res.ok) throw new Error('HTTP ' + res.status);
         const data = await res.json();
-        return data.record || { messages: [], users: [], admins: [], theme: 'dark' };
+        return data.record || { messages: [], users: [], admins: [], timedOut: [], theme: 'dark' };
     } catch (e) {
         console.error('❌ خطا در دریافت:', e);
-        return { messages: [], users: [], admins: [], theme: 'dark' };
+        return { messages: [], users: [], admins: [], timedOut: [], theme: 'dark' };
     }
 }
 
@@ -41,7 +41,7 @@ async function updateData(data) {
 }
 
 // ============================================================
-// SESSION MANAGEMENT (فقط برای لاگین)
+// SESSION MANAGEMENT (فقط برای لاگین - بدون localStorage)
 // ============================================================
 function saveSession(username) {
     sessionStorage.setItem('hoi4-session', username);
@@ -75,7 +75,7 @@ let currentUser = null;
 let isLoginMode = false;
 let chatInterval = null;
 let userInterval = null;
-let globalData = { users: [], messages: [], admins: [], theme: 'dark' };
+let checkInterval = null;
 
 // ============================================================
 // THEME
@@ -450,8 +450,16 @@ async function sendMessage() {
     if (!text) return;
     if (!currentUser) { alert('لطفاً ابتدا وارد شوید!'); return; }
 
-    // چک تایم‌اوت
+    // چک کردن وجود کاربر
     const data = await getData();
+    const users = data.users || [];
+    if (!users.some(u => u.username === currentUser.username)) {
+        alert('⚠️ اکانت شما حذف شده است!');
+        handleDeletedAccount();
+        return;
+    }
+
+    // چک تایم‌اوت
     const timedOut = data.timedOut || [];
     if (timedOut.includes(currentUser.username)) {
         alert('⏰ شما توسط ادمین تایم‌اوت شده‌اید و نمی‌توانید پیام بفرستید!');
@@ -577,6 +585,48 @@ async function loadChatUsers() {
 }
 
 // ============================================================
+// AUTO LOGOUT - چک کردن وجود کاربر در JSONBin
+// ============================================================
+async function checkUserExists() {
+    if (!currentUser) return;
+
+    try {
+        const data = await getData();
+        const users = data.users || [];
+        
+        const userExists = users.some(u => u.username === currentUser.username);
+        
+        if (!userExists) {
+            console.log('⚠️ اکانت حذف شده!');
+            handleDeletedAccount();
+        }
+    } catch (e) {
+        console.error('❌ خطا در چک کردن کاربر:', e);
+    }
+}
+
+function handleDeletedAccount() {
+    // بستن همه interval‌ها
+    stopIntervals();
+    if (checkInterval) {
+        clearInterval(checkInterval);
+        checkInterval = null;
+    }
+    
+    // پاک کردن کاربر و session
+    currentUser = null;
+    clearSession();
+    updateUIForUser();
+    showSection('home');
+    
+    // پیام به کاربر
+    alert('⚠️ اکانت شما توسط مدیر حذف شده است!');
+    
+    // رفرش
+    location.reload();
+}
+
+// ============================================================
 // INTERVALS
 // ============================================================
 function startIntervals() {
@@ -609,7 +659,7 @@ window.deleteMessage = async function(index) {
 };
 
 window.timeoutUser = async function(username) {
-    if (!confirm(`آیا میخواهید "${username}" را ۵ دقیقه تایم‌اوت کنید؟`)) return;
+    if (!confirm(`آیا می‌خواهید "${username}" را ۵ دقیقه تایم‌اوت کنید؟`)) return;
     const data = await getData();
     const timedOut = data.timedOut || [];
     if (!timedOut.includes(username)) {
@@ -674,7 +724,6 @@ async function loadAdminUsers() {
         if (isOwnerUser) { roleLabel = 'مدیر'; roleClass = 'owner'; }
         else if (isAdminUser) { roleLabel = 'ادمین'; roleClass = 'admin'; }
 
-        // فقط مدیر میتونه حذف کنه
         const canDelete = currentUser.username === 'ArshiaT' && !isOwnerUser && !isCurrentUser;
 
         html += `
@@ -729,25 +778,20 @@ window.deleteUser = async function(username) {
         let users = data.users || [];
         let messages = data.messages || [];
         let admins = data.admins || [];
+        let timedOut = data.timedOut || [];
 
-        // حذف کاربر
         users = users.filter(u => u.username !== username);
-
-        // حذف پیام‌های کاربر
         messages = messages.filter(m => m.username !== username);
-
-        // حذف از ادمین‌ها
         admins = admins.filter(a => a !== username);
+        timedOut = timedOut.filter(t => t !== username);
 
-        // ذخیره در JSONBin
-        const result = await updateData({ ...data, users, messages, admins });
+        const result = await updateData({ ...data, users, messages, admins, timedOut });
 
         if (!result) {
             alert('❌ خطا در حذف کاربر!');
             return;
         }
 
-        // رفرش پنل
         await loadAdminUsers();
         if (chatSection.classList.contains('active')) {
             await loadChatUsers();
@@ -911,22 +955,20 @@ settingsForm.addEventListener('submit', async function(e) {
         return;
     }
 
-    // آپدیت در JSONBin
     const idx = usersList.findIndex(u => u.email === currentUser.email);
     if (idx !== -1) {
         usersList[idx].username = newUsername;
         if (newPassword) usersList[idx].password = newPassword;
         usersList[idx].country = newCountry;
-        await updateData({ ...data, users: usersList });
     }
 
-    // آپدیت ادمین‌ها اگه اسم عوض شده
     const admins = data.admins || [];
     const adminIdx = admins.indexOf(currentUser.username);
     if (adminIdx !== -1) {
         admins[adminIdx] = newUsername;
-        await updateData({ ...data, admins });
     }
+
+    await updateData({ ...data, users: usersList, admins });
 
     const updatedUser = { ...currentUser, username: newUsername, country: newCountry };
     if (newPassword) updatedUser.password = newPassword;
@@ -948,10 +990,8 @@ settingsForm.addEventListener('submit', async function(e) {
 // INIT
 // ============================================================
 async function init() {
-    // لود تم
     await loadTheme();
 
-    // چک سشن
     const sessionUsername = getSession();
     if (sessionUsername) {
         const data = await getData();
@@ -959,7 +999,6 @@ async function init() {
         const found = users.find(u => u.username === sessionUsername);
         if (found) {
             currentUser = found;
-            // آپدیت آنلاین
             const updatedUsers = users.map(u => u.username === found.username ? { ...u, online: true } : u);
             await updateData({ ...data, users: updatedUsers });
         } else {
@@ -969,6 +1008,9 @@ async function init() {
 
     updateUIForUser();
     showSection('home');
+
+    // ===== چک کردن خودکار وجود کاربر هر ۳ ثانیه =====
+    checkInterval = setInterval(checkUserExists, 3000);
 
     console.log('🔥 JSONBin Chat is ready! (بدون localStorage)');
     console.log('👤 کاربر فعلی:', currentUser ? currentUser.username : 'خیر');
