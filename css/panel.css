@@ -135,7 +135,7 @@
    ۴. پنجره تأیید خروج (LOGOUT OVERLAY)
    ============================================================ */
 .logout-overlay {
-    display: none !important;
+    display: none;
     position: fixed;
     top: 0;
     left: 0;
@@ -149,7 +149,7 @@
 }
 
 .logout-overlay.active {
-    display: flex !important;
+    display: flex;
 }
 
 .logout-overlay .logout-box {
@@ -228,7 +228,7 @@
    ۵. پنجره تنظیمات (SETTINGS OVERLAY)
    ============================================================ */
 .settings-overlay {
-    display: none !important;
+    display: none;
     position: fixed;
     top: 0;
     left: 0;
@@ -240,11 +240,11 @@
 }
 
 .settings-overlay.active {
-    display: block !important;
+    display: block;
 }
 
 .settings-panel {
-    display: none !important;
+    display: none;
     position: fixed;
     top: 50%;
     left: 50%;
@@ -255,7 +255,7 @@
 }
 
 .settings-panel.active {
-    display: block !important;
+    display: block;
     animation: slideDown 0.4s ease;
 }
 
