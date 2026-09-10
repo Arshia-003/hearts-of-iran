@@ -77,7 +77,6 @@ function initNavbar() {
         });
     });
 
-    // دکمه ثبت‌نام در navbar
     const registerBtnNav = $('registerBtnNav');
     if (registerBtnNav) {
         registerBtnNav.addEventListener('click', () => {
@@ -90,7 +89,6 @@ function initNavbar() {
         });
     }
 
-    // دکمه چت روم در navbar
     const chatBtnNav = $('chatBtnNav');
     if (chatBtnNav) {
         chatBtnNav.addEventListener('click', () => {
@@ -98,7 +96,6 @@ function initNavbar() {
         });
     }
 
-    // دکمه پنل کاربری در navbar
     const userBtnNav = $('userBtnNav');
     if (userBtnNav) {
         userBtnNav.addEventListener('click', () => {
@@ -108,7 +105,6 @@ function initNavbar() {
         });
     }
 
-    // دکمه تم
     const themeToggleNav = $('themeToggleNav');
     if (themeToggleNav) {
         themeToggleNav.addEventListener('click', toggleTheme);
@@ -210,9 +206,7 @@ async function initHome() {
     initAuth();
     initSettings();
 
-    // ============================================================
-    // همیشه صفحه خانه رو نشون بده (نه پنل کاربری)
-    // ============================================================
+    // ===== همیشه صفحه خانه رو نشون بده =====
     showSection('home');
 
     console.log('🔥 Home page is ready!');
