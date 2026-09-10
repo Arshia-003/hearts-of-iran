@@ -1,7 +1,10 @@
 // ============================================================
-// AUTH - ثبت‌نام، ورود، تنظیمات
+// AUTH - ثبت‌نام، ورود (برای index.html)
 // ============================================================
 
+// ============================================================
+// FORM VALIDATION
+// ============================================================
 function validateField(input, errorEl, condition, errorMsg) {
     if (!input || !errorEl) return false;
     if (!condition) {
@@ -18,6 +21,9 @@ function validateField(input, errorEl, condition, errorMsg) {
     }
 }
 
+// ============================================================
+// SWITCH BETWEEN REGISTER & LOGIN
+// ============================================================
 function initAuthSwitch() {
     const switchBtn = $('switchAuthBtn');
     if (!switchBtn) return;
@@ -57,6 +63,9 @@ function initAuthSwitch() {
     });
 }
 
+// ============================================================
+// FORM VALIDATION LISTENERS
+// ============================================================
 function initFormValidation() {
     const usernameInput = $('username');
     const emailInput = $('email');
@@ -93,12 +102,16 @@ function initFormValidation() {
     }
 }
 
+// ============================================================
+// REGISTER / LOGIN SUBMIT
+// ============================================================
 function initRegisterForm() {
     const form = $('registerForm');
     if (!form) return;
 
     form.addEventListener('submit', async function(e) {
         e.preventDefault();
+
         if (isLoginMode) {
             await handleLogin();
         } else {
@@ -107,7 +120,12 @@ function initRegisterForm() {
     });
 }
 
+// ============================================================
+// LOGIN
+// ============================================================
 async function handleLogin() {
+    console.log('🔐 شروع ورود...');
+
     const loginUsernameInput = $('loginUsername');
     const passwordInput = $('password');
     const loginSuccessMsg = $('loginSuccessMsg');
@@ -153,11 +171,17 @@ async function handleLogin() {
     setTimeout(() => {
         loginSuccessMsg.classList.remove('show');
         loginSuccessMsg.style.display = 'none';
-        showUserPanel();
+        console.log('👤 رفتن به پنل کاربری...');
+        window.location.href = 'panel.html';
     }, 1200);
 }
 
+// ============================================================
+// REGISTER
+// ============================================================
 async function handleRegister() {
+    console.log('📝 شروع ثبت‌نام...');
+
     const usernameInput = $('username');
     const emailInput = $('email');
     const passwordInput = $('password');
@@ -221,100 +245,16 @@ async function handleRegister() {
 
     setTimeout(() => {
         successMsg.classList.remove('show');
-        showUserPanel();
+        console.log('👤 رفتن به پنل کاربری (ثبت‌نام)...');
+        window.location.href = 'panel.html';
     }, 1200);
 }
 
-function updateUIForUser() {
-    const registerBtnNav = $('registerBtnNav');
-    const userBtnNav = $('userBtnNav');
-    const chatBtnNav = $('chatBtnNav');
-
-    if (currentUser) {
-        if (registerBtnNav) registerBtnNav.style.display = 'none';
-        if (userBtnNav) {
-            userBtnNav.classList.add('show');
-            userBtnNav.textContent = `👤 ${currentUser.username}`;
-        }
-        if (chatBtnNav) chatBtnNav.classList.add('show');
-    } else {
-        if (registerBtnNav) registerBtnNav.style.display = 'flex';
-        if (userBtnNav) userBtnNav.classList.remove('show');
-        if (chatBtnNav) chatBtnNav.classList.remove('show');
-    }
-}
-
-function initSettings() {
-    const settingsForm = $('settingsForm');
-    if (!settingsForm) return;
-
-    settingsForm.addEventListener('submit', async function(e) {
-        e.preventDefault();
-        if (!currentUser) { alert('لطفاً ابتدا وارد شوید!'); return; }
-
-        const newUsername = $('settingsUsername').value.trim();
-        const newPassword = $('settingsPassword').value.trim();
-        const newCountry = $('settingsCountry').value;
-
-        let hasError = false;
-        const data = await getData();
-        const usersList = data.users || [];
-
-        if (newUsername.length < 3) {
-            $('settingsUsernameError').textContent = 'نام کاربری باید حداقل ۳ کاراکتر باشد.';
-            $('settingsUsernameError').classList.add('show');
-            hasError = true;
-        } else if (newUsername !== currentUser.username &&
-            usersList.some(u => u.username.toLowerCase() === newUsername.toLowerCase())) {
-            $('settingsUsernameError').textContent = 'این نام کاربری قبلاً ثبت شده است!';
-            $('settingsUsernameError').classList.add('show');
-            hasError = true;
-        } else {
-            $('settingsUsernameError').classList.remove('show');
-        }
-
-        if (newPassword && newPassword.length < 6) {
-            $('settingsPasswordError').textContent = 'رمز عبور باید حداقل ۶ کاراکتر باشد.';
-            $('settingsPasswordError').classList.add('show');
-            hasError = true;
-        } else {
-            $('settingsPasswordError').classList.remove('show');
-        }
-
-        if (hasError) return;
-
-        const idx = usersList.findIndex(u => u.email === currentUser.email);
-        if (idx !== -1) {
-            usersList[idx].username = newUsername;
-            if (newPassword) usersList[idx].password = newPassword;
-            usersList[idx].country = newCountry;
-        }
-
-        const admins = data.admins || [];
-        const adminIdx = admins.indexOf(currentUser.username);
-        if (adminIdx !== -1) admins[adminIdx] = newUsername;
-
-        await updateData({ ...data, users: usersList, admins });
-
-        const updatedUser = { ...currentUser, username: newUsername, country: newCountry };
-        if (newPassword) updatedUser.password = newPassword;
-        currentUser = updatedUser;
-        saveSession(newUsername);
-
-        updateUIForUser();
-        if (typeof showUserPanel === 'function') showUserPanel();
-
-        $('settingsSuccess').classList.add('show');
-        setTimeout(() => {
-            $('settingsSuccess').classList.remove('show');
-            if (typeof closeSettings === 'function') closeSettings();
-        }, 2000);
-    });
-}
-
+// ============================================================
+// INIT AUTH
+// ============================================================
 function initAuth() {
     initAuthSwitch();
     initFormValidation();
     initRegisterForm();
-    initSettings();
 }
