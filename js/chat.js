@@ -36,79 +36,51 @@ async function initChat() {
     updateUIForUser();
     initNavbar();
     initChatSystem();
-    initAdminAccess();
 
-    // ===== نمایش چت روم =====
-    showChat();
-
-    // ===== چک خودکار وجود کاربر =====
-    checkInterval = setInterval(checkUserExists, 3000);
-
-    // Escape
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape') {
-            if (typeof closeAdminPanel === 'function') closeAdminPanel();
-        }
-    });
-
-    console.log('🔥 Chat page is ready!');
-}
-
-// ============================================================
-// SHOW CHAT
-// ============================================================
-function showChat() {
-    console.log('💬 نمایش چت');
-
-    const chatSection = $('chatSection');
-    const adminPanel = $('adminPanel');
-
-    if (chatSection) chatSection.classList.add('active');
-    if (adminPanel) adminPanel.classList.remove('active');
-
+    // ===== لود کردن چت =====
     loadChatUsers();
     loadMessages();
     startIntervals();
 
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    // ===== چک خودکار وجود کاربر =====
+    checkInterval = setInterval(checkUserExists, 3000);
+
+    console.log('🔥 Chat page is ready!');
 }
 
 // ============================================================
 // NAVBAR
 // ============================================================
 function initNavbar() {
-    // دکمه پنل کاربری
+    // دکمه پنل کاربری → رفتن به panel.html
     const userBtnNav = $('userBtnNav');
     if (userBtnNav) {
-        userBtnNav.onclick = function() {
+        userBtnNav.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            console.log('👤 رفتن به پنل کاربری');
             window.location.href = 'panel.html';
-        };
+        });
     }
 
-    // دکمه چت روم
+    // دکمه چت روم → رفرش صفحه
     const chatBtnNav = $('chatBtnNav');
     if (chatBtnNav) {
-        chatBtnNav.onclick = function() {
-            showChat();
-        };
+        chatBtnNav.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            console.log('💬 رفرش چت روم');
+            location.reload();
+        });
     }
 
     // دکمه تم
     const themeToggleNav = $('themeToggleNav');
     if (themeToggleNav) {
-        themeToggleNav.onclick = toggleTheme;
-    }
-}
-
-// ============================================================
-// ADMIN ACCESS
-// ============================================================
-function initAdminAccess() {
-    // اگه کاربر مدیر هست، پنل مدیریت رو فعال کن
-    if (currentUser && currentUser.username === OWNER_USERNAME) {
-        console.log('✅ کاربر مدیر هست - دسترسی به پنل مدیریت');
-    } else {
-        console.log('❌ کاربر عادی - بدون دسترسی به پنل مدیریت');
+        themeToggleNav.addEventListener('click', function(e) {
+            e.preventDefault();
+            toggleTheme();
+        });
     }
 }
 
@@ -328,12 +300,10 @@ function handleDeletedAccount() {
 function startIntervals() {
     stopIntervals();
     chatInterval = setInterval(() => {
-        const chatSection = $('chatSection');
-        if (chatSection && chatSection.classList.contains('active')) loadMessages();
+        loadMessages();
     }, 5000);
     userInterval = setInterval(() => {
-        const chatSection = $('chatSection');
-        if (chatSection && chatSection.classList.contains('active')) loadChatUsers();
+        loadChatUsers();
     }, 10000);
 }
 
@@ -345,7 +315,7 @@ function stopIntervals() {
 }
 
 // ============================================================
-// DELETE MESSAGE
+// DELETE MESSAGE (فقط ادمین/مدیر)
 // ============================================================
 window.deleteMessage = async function(index) {
     if (!confirm('آیا از حذف این پیام مطمئن هستید؟')) return;
@@ -357,7 +327,7 @@ window.deleteMessage = async function(index) {
 };
 
 // ============================================================
-// TIMEOUT USER
+// TIMEOUT USER (فقط ادمین/مدیر)
 // ============================================================
 window.timeoutUser = async function(username) {
     if (!confirm(`آیا می‌خواهید "${username}" را ۵ دقیقه تایم‌اوت کنید؟`)) return;
