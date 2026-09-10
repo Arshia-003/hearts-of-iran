@@ -94,24 +94,6 @@ function initNavbar() {
             toggleTheme();
         };
     }
-
-    // دکمه خانه توی navbar
-    const homeLink = document.querySelector('nav a[data-target="home"]');
-    if (homeLink) {
-        homeLink.onclick = function(e) {
-            e.preventDefault();
-            window.location.href = 'index.html';
-        };
-    }
-
-    // دکمه رویدادها
-    const eventsLink = document.querySelector('nav a[data-target="events"]');
-    if (eventsLink) {
-        eventsLink.onclick = function(e) {
-            e.preventDefault();
-            window.location.href = 'index.html#eventsSection';
-        };
-    }
 }
 
 // ============================================================
@@ -498,8 +480,10 @@ async function initChat() {
         });
     }
 
-    // نمایش چت به صورت پیش‌فرض
-    showChat();
+    // ============================================================
+    // نمایش پنل کاربری به صورت پیش‌فرض (نه چت)
+    // ============================================================
+    showDashboard();
 
     // چک خودکار
     checkInterval = setInterval(checkUserExists, 3000);
