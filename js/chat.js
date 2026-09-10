@@ -3,86 +3,92 @@
 // ============================================================
 
 // ============================================================
-// NAVIGATION - نسخه ساده و مطمئن
+// INIT CHAT PAGE
+// ============================================================
+async function initChat() {
+    console.log('🚀 شروع initChat');
+
+    await loadTheme();
+
+    const sessionUsername = getSession();
+    if (!sessionUsername) {
+        alert('لطفاً ابتدا وارد شوید!');
+        window.location.href = 'index.html';
+        return;
+    }
+
+    const data = await getData();
+    const users = data.users || [];
+    const found = users.find(u => u.username === sessionUsername);
+
+    if (!found) {
+        clearSession();
+        alert('⚠️ اکانت شما یافت نشد!');
+        window.location.href = 'index.html';
+        return;
+    }
+
+    currentUser = found;
+    await setUserOnline(found.username, true);
+
+    console.log('👤 کاربر:', currentUser.username);
+
+    updateUIForUser();
+    initNavbar();
+    initChatSystem();
+    initAdminAccess();
+
+    // ===== نمایش چت روم =====
+    showChat();
+
+    // ===== چک خودکار وجود کاربر =====
+    checkInterval = setInterval(checkUserExists, 3000);
+
+    // Escape
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            if (typeof closeAdminPanel === 'function') closeAdminPanel();
+        }
+    });
+
+    console.log('🔥 Chat page is ready!');
+}
+
+// ============================================================
+// SHOW CHAT
 // ============================================================
 function showChat() {
     console.log('💬 نمایش چت');
-    const dashboardSection = $('dashboardSection');
+
     const chatSection = $('chatSection');
     const adminPanel = $('adminPanel');
 
-    if (dashboardSection) dashboardSection.classList.remove('active');
-    if (adminPanel) adminPanel.classList.remove('active');
     if (chatSection) chatSection.classList.add('active');
+    if (adminPanel) adminPanel.classList.remove('active');
 
     loadChatUsers();
     loadMessages();
     startIntervals();
+
     window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-
-function showDashboard() {
-    console.log('👤 نمایش پنل کاربری');
-    const dashboardSection = $('dashboardSection');
-    const chatSection = $('chatSection');
-    const adminPanel = $('adminPanel');
-
-    if (chatSection) chatSection.classList.remove('active');
-    if (adminPanel) adminPanel.classList.remove('active');
-    if (dashboardSection) dashboardSection.classList.add('active');
-
-    stopIntervals();
-    updateDashboardUI();
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-
-function showAdminPanel() {
-    console.log('🛡️ نمایش پنل مدیریت');
-    const dashboardSection = $('dashboardSection');
-    const chatSection = $('chatSection');
-    const adminPanel = $('adminPanel');
-
-    if (chatSection) chatSection.classList.remove('active');
-    if (dashboardSection) dashboardSection.classList.remove('active');
-    if (adminPanel) adminPanel.classList.add('active');
-
-    stopIntervals();
-    loadAdminUsers();
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-
-// برای سازگاری با کد قدیمی
-function showSection(section) {
-    if (section === 'chat') showChat();
-    else if (section === 'dashboard') showDashboard();
-    else if (section === 'admin') showAdminPanel();
 }
 
 // ============================================================
-// NAVBAR - دکمه‌ها
+// NAVBAR
 // ============================================================
 function initNavbar() {
     // دکمه پنل کاربری
     const userBtnNav = $('userBtnNav');
     if (userBtnNav) {
-        userBtnNav.onclick = function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            showDashboard();
+        userBtnNav.onclick = function() {
+            window.location.href = 'panel.html';
         };
     }
 
     // دکمه چت روم
     const chatBtnNav = $('chatBtnNav');
     if (chatBtnNav) {
-        chatBtnNav.onclick = function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            if (!currentUser) {
-                alert('لطفاً ابتدا وارد شوید!');
-                window.location.href = 'index.html';
-                return;
-            }
+        chatBtnNav.onclick = function() {
             showChat();
         };
     }
@@ -90,38 +96,39 @@ function initNavbar() {
     // دکمه تم
     const themeToggleNav = $('themeToggleNav');
     if (themeToggleNav) {
-        themeToggleNav.onclick = function() {
-            toggleTheme();
-        };
+        themeToggleNav.onclick = toggleTheme;
     }
 }
 
 // ============================================================
-// DASHBOARD UI
+// ADMIN ACCESS
 // ============================================================
-function updateDashboardUI() {
-    if (!currentUser) return;
-
-    const dashboardUsername = $('dashboardUsername');
-    const countryBadge = $('countryBadge');
-    const countryFlag = $('countryFlag');
-    const dashboardBg = $('dashboardBg');
-
-    if (dashboardUsername) dashboardUsername.textContent = currentUser.username;
-
-    const country = currentUser.country;
-    if (countryBadge) countryBadge.textContent = `🎖️ کشور مورد علاقه: ${country}`;
-    if (countryFlag) countryFlag.src = `images/${flagMap[country] || 'germany-flag.png'}`;
-    if (dashboardBg) dashboardBg.style.backgroundImage = `url('images/${bgMap[country] || 'germany-bg.jpg'}')`;
-
-    const adminPanelBtn = $('adminPanelBtn');
-    if (adminPanelBtn) {
-        adminPanelBtn.style.display = currentUser.username === OWNER_USERNAME ? 'block' : 'none';
+function initAdminAccess() {
+    // اگه کاربر مدیر هست، پنل مدیریت رو فعال کن
+    if (currentUser && currentUser.username === OWNER_USERNAME) {
+        console.log('✅ کاربر مدیر هست - دسترسی به پنل مدیریت');
+    } else {
+        console.log('❌ کاربر عادی - بدون دسترسی به پنل مدیریت');
     }
 }
 
 // ============================================================
 // CHAT SYSTEM
+// ============================================================
+function initChatSystem() {
+    const sendChatBtn = $('sendChatBtn');
+    const chatInput = $('chatInput');
+
+    if (sendChatBtn) sendChatBtn.onclick = sendMessage;
+    if (chatInput) {
+        chatInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') sendMessage();
+        });
+    }
+}
+
+// ============================================================
+// SEND MESSAGE
 // ============================================================
 async function sendMessage() {
     const input = $('chatInput');
@@ -136,12 +143,15 @@ async function sendMessage() {
 
     const data = await getData();
     const users = data.users || [];
+
+    // چک کردن وجود کاربر
     if (!users.some(u => u.username === currentUser.username)) {
         alert('⚠️ اکانت شما حذف شده است!');
         handleDeletedAccount();
         return;
     }
 
+    // چک تایم‌اوت
     const timedOut = data.timedOut || [];
     if (timedOut.includes(currentUser.username)) {
         alert('⏰ شما توسط ادمین تایم‌اوت شده‌اید و نمی‌توانید پیام بفرستید!');
@@ -161,6 +171,9 @@ async function sendMessage() {
     loadMessages();
 }
 
+// ============================================================
+// LOAD MESSAGES
+// ============================================================
 async function loadMessages() {
     const data = await getData();
     const messages = data.messages || [];
@@ -200,6 +213,9 @@ async function loadMessages() {
     container.scrollTop = container.scrollHeight;
 }
 
+// ============================================================
+// LOAD CHAT USERS
+// ============================================================
 async function loadChatUsers() {
     if (!currentUser) return;
 
@@ -209,6 +225,7 @@ async function loadChatUsers() {
     const container = $('usersListContainer');
     if (!container) return;
 
+    // آپدیت آنلاین کاربر جاری
     const updatedUsers = users.map(u =>
         u.username === currentUser.username ? { ...u, online: true } : u
     );
@@ -217,6 +234,7 @@ async function loadChatUsers() {
     const onlineList = updatedUsers.filter(u => u.online === true);
     const offlineList = updatedUsers.filter(u => u.online !== true);
 
+    // مرتب‌سازی آنلاین‌ها
     onlineList.sort((a, b) => {
         const roleA = a.username === OWNER_USERNAME ? 'owner' : (admins.includes(a.username) ? 'admin' : 'user');
         const roleB = b.username === OWNER_USERNAME ? 'owner' : (admins.includes(b.username) ? 'admin' : 'user');
@@ -273,7 +291,7 @@ async function loadChatUsers() {
 }
 
 // ============================================================
-// AUTO LOGOUT
+// AUTO LOGOUT - چک کردن وجود کاربر
 // ============================================================
 async function checkUserExists() {
     if (!currentUser) return;
@@ -327,7 +345,7 @@ function stopIntervals() {
 }
 
 // ============================================================
-// CHAT ACTIONS
+// DELETE MESSAGE
 // ============================================================
 window.deleteMessage = async function(index) {
     if (!confirm('آیا از حذف این پیام مطمئن هستید؟')) return;
@@ -338,6 +356,9 @@ window.deleteMessage = async function(index) {
     loadMessages();
 };
 
+// ============================================================
+// TIMEOUT USER
+// ============================================================
 window.timeoutUser = async function(username) {
     if (!confirm(`آیا می‌خواهید "${username}" را ۵ دقیقه تایم‌اوت کنید؟`)) return;
 
@@ -357,145 +378,7 @@ window.timeoutUser = async function(username) {
     }, 300000);
 };
 
-window.closeChat = async function() {
-    if (currentUser) {
-        await setUserOnline(currentUser.username, false);
-    }
-    stopIntervals();
-    showDashboard();
-};
-
 // ============================================================
-// LOGOUT
+// START
 // ============================================================
-async function handleLogout() {
-    await logoutUser();
-    const logoutOverlay = $('logoutOverlay');
-    if (logoutOverlay) logoutOverlay.classList.remove('active');
-    alert('✅ شما با موفقیت خارج شدید!');
-    window.location.href = 'index.html';
-}
-
-window.openLogout = function() {
-    if (!currentUser) {
-        alert('لطفاً ابتدا وارد شوید!');
-        return;
-    }
-    const logoutOverlay = $('logoutOverlay');
-    if (logoutOverlay) logoutOverlay.classList.add('active');
-};
-
-// ============================================================
-// SETTINGS
-// ============================================================
-window.openSettings = function() {
-    if (!currentUser) {
-        alert('لطفاً ابتدا وارد شوید!');
-        return;
-    }
-    const settingsOverlay = $('settingsOverlay');
-    const settingsPanel = $('settingsPanel');
-    const settingsUsername = $('settingsUsername');
-    const settingsCountry = $('settingsCountry');
-    const settingsPassword = $('settingsPassword');
-
-    if (settingsOverlay) settingsOverlay.classList.add('active');
-    if (settingsPanel) settingsPanel.classList.add('active');
-
-    if (settingsUsername) settingsUsername.value = currentUser.username;
-    if (settingsCountry) settingsCountry.value = currentUser.country;
-    if (settingsPassword) settingsPassword.value = '';
-
-    ['settingsSuccess', 'settingsError', 'settingsUsernameError', 'settingsPasswordError'].forEach(id => {
-        const el = $(id);
-        if (el) el.classList.remove('show');
-    });
-};
-
-window.closeSettings = function() {
-    const settingsOverlay = $('settingsOverlay');
-    const settingsPanel = $('settingsPanel');
-    if (settingsOverlay) settingsOverlay.classList.remove('active');
-    if (settingsPanel) settingsPanel.classList.remove('active');
-};
-
-// ============================================================
-// INIT CHAT PAGE
-// ============================================================
-async function initChat() {
-    console.log('🚀 شروع initChat');
-
-    await loadTheme();
-
-    const sessionUsername = getSession();
-    if (!sessionUsername) {
-        alert('لطفاً ابتدا وارد شوید!');
-        window.location.href = 'index.html';
-        return;
-    }
-
-    const data = await getData();
-    const users = data.users || [];
-    const found = users.find(u => u.username === sessionUsername);
-
-    if (!found) {
-        clearSession();
-        alert('⚠️ اکانت شما یافت نشد!');
-        window.location.href = 'index.html';
-        return;
-    }
-
-    currentUser = found;
-    await setUserOnline(found.username, true);
-
-    console.log('👤 کاربر:', currentUser.username);
-
-    updateUIForUser();
-    updateDashboardUI();
-    initNavbar();
-    initSettings();
-
-    // دکمه‌های logout
-    const logoutConfirmBtn = $('logoutConfirmBtn');
-    const logoutCancelBtn = $('logoutCancelBtn');
-    const logoutOverlay = $('logoutOverlay');
-
-    if (logoutConfirmBtn) logoutConfirmBtn.onclick = handleLogout;
-    if (logoutCancelBtn) logoutCancelBtn.onclick = () => {
-        if (logoutOverlay) logoutOverlay.classList.remove('active');
-    };
-    if (logoutOverlay) {
-        logoutOverlay.addEventListener('click', function(e) {
-            if (e.target === this) this.classList.remove('active');
-        });
-    }
-
-    // دکمه ارسال پیام
-    const sendChatBtn = $('sendChatBtn');
-    const chatInput = $('chatInput');
-    if (sendChatBtn) sendChatBtn.onclick = sendMessage;
-    if (chatInput) {
-        chatInput.addEventListener('keypress', e => {
-            if (e.key === 'Enter') sendMessage();
-        });
-    }
-
-    // ============================================================
-    // نمایش پنل کاربری به صورت پیش‌فرض (نه چت)
-    // ============================================================
-    showDashboard();
-
-    // چک خودکار
-    checkInterval = setInterval(checkUserExists, 3000);
-
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape') {
-            window.closeSettings();
-            if (logoutOverlay) logoutOverlay.classList.remove('active');
-        }
-    });
-
-    console.log('🔥 Chat page is ready!');
-}
-
 document.addEventListener('DOMContentLoaded', initChat);
