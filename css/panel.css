@@ -1,20 +1,20 @@
 /* ============================================================
-   USER PANEL (برای index.html)
+   USER PANEL (فقط برای index.html)
    ============================================================ */
 
-.dashboard {
+#userPanelSection {
     display: none;
-    animation: slideDown 0.4s ease;
+    animation: fadeInUp 0.4s ease;
     margin: 20px 0 40px;
     position: relative;
     min-height: 400px;
 }
 
-.dashboard.active {
+#userPanelSection.active {
     display: block;
 }
 
-.dashboard .dashboard-bg {
+#userPanelSection .dashboard-bg {
     position: fixed;
     top: 0;
     left: 0;
@@ -28,7 +28,7 @@
     pointer-events: none;
 }
 
-.dashboard .dashboard-bg::after {
+#userPanelSection .dashboard-bg::after {
     content: '';
     position: absolute;
     top: 0;
@@ -38,7 +38,7 @@
     background: radial-gradient(ellipse at center, transparent 40%, var(--bg-primary) 100%);
 }
 
-.dashboard .welcome-banner {
+#userPanelSection .welcome-banner {
     background: linear-gradient(135deg, var(--bg-card), var(--bg-secondary));
     padding: 25px 30px;
     border-radius: 16px;
@@ -50,7 +50,7 @@
     overflow: hidden;
 }
 
-.dashboard .welcome-banner .country-flag {
+#userPanelSection .welcome-banner .country-flag {
     width: 60px;
     height: 40px;
     border-radius: 8px;
@@ -60,18 +60,18 @@
     display: block;
 }
 
-.dashboard .welcome-banner h2 {
+#userPanelSection .welcome-banner h2 {
     color: var(--gold);
     font-size: 1.8rem;
 }
 
-.dashboard .welcome-banner p {
+#userPanelSection .welcome-banner p {
     color: var(--text-secondary);
     font-size: 1rem;
     margin-top: 5px;
 }
 
-.dashboard .welcome-banner .country-badge {
+#userPanelSection .welcome-banner .country-badge {
     display: inline-block;
     background: var(--gold);
     color: #0b0e14;
@@ -82,13 +82,13 @@
     margin-top: 8px;
 }
 
-.dashboard-grid {
+#userPanelSection .dashboard-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 20px;
 }
 
-.dashboard-card {
+#userPanelSection .dashboard-card {
     background: var(--bg-card);
     padding: 20px 15px;
     border-radius: 16px;
@@ -99,25 +99,25 @@
     text-align: center;
 }
 
-.dashboard-card:hover {
+#userPanelSection .dashboard-card:hover {
     transform: translateY(-8px);
     border-color: var(--gold);
     box-shadow: 0 12px 40px rgba(184, 134, 11, 0.2);
 }
 
-.dashboard-card .icon {
+#userPanelSection .dashboard-card .icon {
     font-size: 2.5rem;
     display: block;
     margin-bottom: 8px;
 }
 
-.dashboard-card h4 {
+#userPanelSection .dashboard-card h4 {
     color: var(--gold);
     font-size: 1.1rem;
     margin-bottom: 4px;
 }
 
-.dashboard-card p {
+#userPanelSection .dashboard-card p {
     color: var(--text-secondary);
     font-size: 0.8rem;
 }
@@ -154,7 +154,6 @@
 
 .settings-panel.active {
     display: block;
-    animation: slideDown 0.4s ease;
 }
 
 .settings-panel .form-box {
@@ -215,20 +214,6 @@
 
 .settings-panel .form-box .settings-success.show {
     display: block;
-}
-
-/* ============================================================
-   ANIMATIONS
-   ============================================================ */
-@keyframes slideDown {
-    from {
-        opacity: 0;
-        transform: translateY(-30px) scale(0.95);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-    }
 }
 
 @keyframes fadeInUp {
