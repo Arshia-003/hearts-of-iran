@@ -34,19 +34,23 @@ function showSection(section) {
 // NAVBAR
 // ============================================================
 function initNavbar() {
-    // دکمه پنل کاربری در navbar → میره به پنل کاربری
+    // دکمه پنل کاربری → میره به پنل
     const userBtnNav = $('userBtnNav');
     if (userBtnNav) {
-        userBtnNav.addEventListener('click', () => {
+        userBtnNav.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
             showSection('dashboard');
             window.scrollTo({ top: 0, behavior: 'smooth' });
         });
     }
 
-    // دکمه چت روم در navbar → مستقیم میره به چت
+    // دکمه چت روم → میره به چت
     const chatBtnNav = $('chatBtnNav');
     if (chatBtnNav) {
-        chatBtnNav.addEventListener('click', () => {
+        chatBtnNav.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
             if (!currentUser) {
                 alert('لطفاً ابتدا وارد شوید!');
                 window.location.href = 'index.html';
@@ -63,7 +67,7 @@ function initNavbar() {
         themeToggleNav.addEventListener('click', toggleTheme);
     }
 
-    // لینک‌های ناوبری (خانه، رویدادها و...)
+    // لینک‌های ناوبری (خانه، رویدادها)
     const navLinks = document.querySelectorAll('nav a[data-target]');
     navLinks.forEach(link => {
         link.addEventListener('click', function(e) {
@@ -475,8 +479,8 @@ async function initChat() {
         });
     }
 
-    // نمایش پنل کاربری
-    showSection('dashboard');
+    // ===== نمایش پیش‌فرض: چت روم =====
+    showSection('chat');
 
     // چک کردن خودکار وجود کاربر هر ۳ ثانیه
     checkInterval = setInterval(checkUserExists, 3000);
