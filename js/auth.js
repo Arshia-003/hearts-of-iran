@@ -1,5 +1,5 @@
 // ============================================================
-// AUTH - ثبت‌نام، ورود، تنظیمات کاربری
+// AUTH - ثبت‌نام، ورود، تنظیمات
 // ============================================================
 
 // ============================================================
@@ -157,11 +157,8 @@ async function handleLogin() {
         return;
     }
 
-    // ذخیره در session
     currentUser = found;
     saveSession(found.username);
-
-    // آپدیت آنلاین
     await setUserOnline(found.username, true);
 
     loginSuccessMsg.style.display = 'block';
@@ -172,8 +169,8 @@ async function handleLogin() {
     setTimeout(() => {
         loginSuccessMsg.classList.remove('show');
         loginSuccessMsg.style.display = 'none';
-        // هدایت به صفحه چت
-        window.location.href = 'chat.html';
+        // ===== نمایش پنل کاربری توی همین صفحه =====
+        showUserPanel();
     }, 1200);
 }
 
@@ -244,7 +241,8 @@ async function handleRegister() {
 
     setTimeout(() => {
         successMsg.classList.remove('show');
-        window.location.href = 'chat.html';
+        // ===== نمایش پنل کاربری توی همین صفحه =====
+        showUserPanel();
     }, 1200);
 }
 
@@ -271,7 +269,7 @@ function updateUIForUser() {
 }
 
 // ============================================================
-// SETTINGS (در chat.html استفاده میشه)
+// SETTINGS
 // ============================================================
 function initSettings() {
     const settingsForm = $('settingsForm');
@@ -331,7 +329,7 @@ function initSettings() {
         saveSession(newUsername);
 
         updateUIForUser();
-        if (typeof updateDashboardUI === 'function') updateDashboardUI();
+        if (typeof showUserPanel === 'function') showUserPanel();
 
         $('settingsSuccess').classList.add('show');
         setTimeout(() => {
@@ -342,7 +340,7 @@ function initSettings() {
 }
 
 // ============================================================
-// INIT AUTH (اجرا در index.html)
+// INIT AUTH
 // ============================================================
 function initAuth() {
     initAuthSwitch();
