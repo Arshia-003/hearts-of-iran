@@ -1,11 +1,6 @@
 // ============================================================
 // API - ارتباط با JSONBin
 // ============================================================
-
-/**
- * دریافت همه دیتا از JSONBin
- * @returns {Promise<Object>} - { users, messages, admins, timedOut, theme }
- */
 async function getData() {
     try {
         const res = await fetch(API_URL + '/latest', {
@@ -32,11 +27,6 @@ async function getData() {
     }
 }
 
-/**
- * آپدیت کل دیتا در JSONBin
- * @param {Object} data - دیتای کامل
- * @returns {Promise<Object|null>}
- */
 async function updateData(data) {
     try {
         const res = await fetch(API_URL, {
@@ -56,7 +46,7 @@ async function updateData(data) {
 }
 
 // ============================================================
-// SESSION MANAGEMENT (فقط برای لاگین - در sessionStorage)
+// SESSION MANAGEMENT
 // ============================================================
 function saveSession(username) {
     sessionStorage.setItem('hoi4-session', username);
@@ -71,7 +61,7 @@ function clearSession() {
 }
 
 // ============================================================
-// THEME FUNCTIONS (مشترک بین صفحات)
+// THEME FUNCTIONS
 // ============================================================
 async function loadTheme() {
     const data = await getData();
@@ -98,7 +88,7 @@ async function toggleTheme() {
     const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
     const nextTheme = currentTheme === 'dark' ? 'light' : 'dark';
     applyTheme(nextTheme);
-    
+
     const data = await getData();
     data.theme = nextTheme;
     await updateData(data);
@@ -107,32 +97,47 @@ async function toggleTheme() {
 // ============================================================
 // USER UPDATE HELPERS
 // ============================================================
-
-/**
- * آپدیت وضعیت آنلاین کاربر
- */
 async function setUserOnline(username, online = true) {
     const data = await getData();
     const users = data.users || [];
-    const updatedUsers = users.map(u => 
+    const updatedUsers = users.map(u =>
         u.username === username ? { ...u, online } : u
     );
     await updateData({ ...data, users: updatedUsers });
 }
 
-/**
- * خروج کاربر (آفلاین کردن)
- */
 async function logoutUser() {
     if (currentUser) {
         await setUserOnline(currentUser.username, false);
     }
-    
+
     if (chatInterval) clearInterval(chatInterval);
     if (userInterval) clearInterval(userInterval);
     if (checkInterval) clearInterval(checkInterval);
-    
+
     currentUser = null;
     clearSession();
     updateUIForUser();
+}
+
+// ============================================================
+// UI UPDATE FOR USER (مشترک بین صفحه اصلی و چت)
+// ============================================================
+function updateUIForUser() {
+    const registerBtnNav = $('registerBtnNav');
+    const userBtnNav = $('userBtnNav');
+    const chatBtnNav = $('chatBtnNav');
+
+    if (currentUser) {
+        if (registerBtnNav) registerBtnNav.style.display = 'none';
+        if (userBtnNav) {
+            userBtnNav.classList.add('show');
+            userBtnNav.textContent = `👤 ${currentUser.username}`;
+        }
+        if (chatBtnNav) chatBtnNav.classList.add('show');
+    } else {
+        if (registerBtnNav) registerBtnNav.style.display = 'flex';
+        if (userBtnNav) userBtnNav.classList.remove('show');
+        if (chatBtnNav) chatBtnNav.classList.remove('show');
+    }
 }
