@@ -55,7 +55,7 @@
                     <p>تغییر نام کاربری، رمز عبور و کشور</p>
                 </div>
 
-                <div class="dashboard-card" id="adminPanelCard" onclick="window.location.href='chat.html'" style="display:none;">
+                <div class="dashboard-card" id="adminPanelCard" onclick="window.location.href='chat.html?admin=true'" style="display:none;">
                     <span class="icon">🛡️</span>
                     <h4>پنل مدیریت</h4>
                     <p>مدیریت کاربران و پیام‌ها</p>
@@ -71,9 +71,6 @@
 
     </main>
 
-    <!-- ============================================================
-    LOGOUT OVERLAY
-    ============================================================ -->
     <div class="logout-overlay" id="logoutOverlay">
         <div class="logout-box">
             <span class="logout-icon">😞</span>
@@ -86,9 +83,6 @@
         </div>
     </div>
 
-    <!-- ============================================================
-    SETTINGS OVERLAY
-    ============================================================ -->
     <div class="settings-overlay" id="settingsOverlay" onclick="closeSettings()"></div>
     <div class="settings-panel" id="settingsPanel">
         <div class="form-box">
