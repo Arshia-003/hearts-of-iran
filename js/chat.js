@@ -45,6 +45,19 @@ async function initChat() {
     // ===== چک خودکار وجود کاربر =====
     checkInterval = setInterval(checkUserExists, 3000);
 
+    // ============================================================
+    // چک کردن پارامتر URL برای باز کردن پنل مدیریت
+    // ============================================================
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('admin') === 'true' && currentUser.username === OWNER_USERNAME) {
+        console.log('🛡️ باز کردن پنل مدیریت از طریق URL');
+        setTimeout(function() {
+            if (typeof openAdminPanel === 'function') {
+                openAdminPanel();
+            }
+        }, 500);
+    }
+
     console.log('🔥 Chat page is ready!');
 }
 
@@ -315,7 +328,7 @@ function stopIntervals() {
 }
 
 // ============================================================
-// DELETE MESSAGE (فقط ادمین/مدیر)
+// DELETE MESSAGE (ادمین/مدیر)
 // ============================================================
 window.deleteMessage = async function(index) {
     if (!confirm('آیا از حذف این پیام مطمئن هستید؟')) return;
@@ -327,7 +340,7 @@ window.deleteMessage = async function(index) {
 };
 
 // ============================================================
-// TIMEOUT USER (فقط ادمین/مدیر)
+// TIMEOUT USER (ادمین/مدیر)
 // ============================================================
 window.timeoutUser = async function(username) {
     if (!confirm(`آیا می‌خواهید "${username}" را ۵ دقیقه تایم‌اوت کنید؟`)) return;
