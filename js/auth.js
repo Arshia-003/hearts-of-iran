@@ -3,7 +3,7 @@
 // ============================================================
 
 // ============================================================
-// FORM VALIDATION
+// VALIDATE FIELD
 // ============================================================
 function validateField(input, errorEl, condition, errorMsg) {
     if (!input || !errorEl) return false;
@@ -103,7 +103,7 @@ function initFormValidation() {
 }
 
 // ============================================================
-// REGISTER / LOGIN SUBMIT
+// REGISTER FORM SUBMIT
 // ============================================================
 function initRegisterForm() {
     const form = $('registerForm');
