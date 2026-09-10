@@ -3,15 +3,16 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Hearts of Iran | صفحه اصلی</title>
+    <title>Hearts of Iran</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Vazirmatn:wght@400;700;900&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="css/style.css" />
     <link rel="stylesheet" href="css/home.css" />
+    <link rel="stylesheet" href="css/chat.css" />
 </head>
 <body>
 
     <!-- ============================================================
-    SHAPES (پس‌زمینه)
+    SHAPES
     ============================================================ -->
     <div class="shape shape-1"></div>
     <div class="shape shape-2"></div>
@@ -63,7 +64,7 @@
 
         <!-- ===== HOME SECTION ===== -->
         <div id="homeSection" class="home-section">
-            <div class="animate-on-load about-section">
+            <div class="about-section">
                 <p>
                     <strong>Hearts of Iran</strong> یک بازی استراتژی بزرگ از Paradox Interactive است.
                     در این بازی کنترل کامل یک کشور را در جنگ جهانی دوم به دست می‌گیرید.
@@ -71,9 +72,9 @@
                 </p>
             </div>
 
-            <h2 class="section-title animate-on-load">🇺🇳 قدرت‌های بزرگ</h2>
+            <h2 class="section-title">🇺🇳 قدرت‌های بزرگ</h2>
             <div class="factions">
-                <div class="faction-card animate-on-load">
+                <div class="faction-card">
                     <div class="card-bg" style="background-image: url('images/germany-bg.jpg');"></div>
                     <div class="flag-container">
                         <img src="images/germany-flag.png" alt="پرچم آلمان" />
@@ -81,7 +82,7 @@
                     <h3>آلمان</h3>
                     <p>آدولف هیتلر • بلایتس کریگ</p>
                 </div>
-                <div class="faction-card animate-on-load">
+                <div class="faction-card">
                     <div class="card-bg" style="background-image: url('images/uk-bg.jpg');"></div>
                     <div class="flag-container">
                         <img src="images/uk-flag.png" alt="پرچم بریتانیا" />
@@ -89,7 +90,7 @@
                     <h3>بریتانیا</h3>
                     <p>وینستون چرچیل • نیروی هوایی</p>
                 </div>
-                <div class="faction-card animate-on-load">
+                <div class="faction-card">
                     <div class="card-bg" style="background-image: url('images/usa-bg.jpg');"></div>
                     <div class="flag-container">
                         <img src="images/usa-flag.png" alt="پرچم آمریکا" />
@@ -97,7 +98,7 @@
                     <h3>آمریکا</h3>
                     <p>فرانکلین روزولت • تولید عظیم</p>
                 </div>
-                <div class="faction-card animate-on-load">
+                <div class="faction-card">
                     <div class="card-bg" style="background-image: url('images/japan-bg.jpg');"></div>
                     <div class="flag-container">
                         <img src="images/japan-flag.png" alt="پرچم ژاپن" />
@@ -105,7 +106,7 @@
                     <h3>ژاپن</h3>
                     <p>هیروهیتو • ناوگان قدرتمند</p>
                 </div>
-                <div class="faction-card animate-on-load">
+                <div class="faction-card">
                     <div class="card-bg" style="background-image: url('images/soviet-bg.jpg');"></div>
                     <div class="flag-container">
                         <img src="images/soviet-flag.png" alt="پرچم شوروی" />
@@ -113,7 +114,7 @@
                     <h3>شوروی</h3>
                     <p>ژوزف استالین • جبهه شرقی</p>
                 </div>
-                <div class="faction-card animate-on-load">
+                <div class="faction-card">
                     <div class="card-bg" style="background-image: url('images/italy-bg.jpg');"></div>
                     <div class="flag-container">
                         <img src="images/italy-flag.png" alt="پرچم ایتالیا" />
@@ -123,8 +124,8 @@
                 </div>
             </div>
 
-            <h2 class="section-title animate-on-load" id="eventsSection">⏳ رویدادهای کلیدی</h2>
-            <div class="event-cards animate-on-load">
+            <h2 class="section-title" id="eventsSection">⏳ رویدادهای کلیدی</h2>
+            <div class="event-cards">
                 <div class="event-card">
                     <div class="event-image">
                         <img src="images/ww2-start.jpg" alt="آغاز جنگ" />
@@ -138,7 +139,6 @@
                             <div class="detail-box">
                                 این حمله باعث شد بریتانیا و فرانسه به آلمان اعلام جنگ کنند.
                                 لهستان در کمتر از یک ماه سقوط کرد و کشورهای بالتیک تحت تأثیر قرار گرفتند.
-                                تاکتیک بلیتس‌کریگ برای اولین بار در این جنگ استفاده شد.
                             </div>
                         </div>
                         <button class="event-toggle">بیشتر بدانید</button>
@@ -157,8 +157,6 @@
                         <div class="detail-hidden">
                             <div class="detail-box">
                                 آلمان با استفاده از تاکتیک "بلیتس‌کریگ" از طریق جنگل‌های آردن به فرانسه حمله کرد.
-                                فرانسه سقوط کرد و آلمان کنترل بخش بزرگی از اروپای غربی را به دست گرفت.
-                                نیروهای بریتانیایی از دانکرک عقب‌نشینی کردند.
                             </div>
                         </div>
                         <button class="event-toggle">بیشتر بدانید</button>
@@ -177,8 +175,6 @@
                         <div class="detail-hidden">
                             <div class="detail-box">
                                 آلمان با بیش از ۳ میلیون سرباز به شوروی حمله کرد.
-                                این بزرگترین عملیات نظامی تاریخ بود.
-                                با رسیدن زمستان و مقاومت شوروی، پیشروی متوقف شد.
                             </div>
                         </div>
                         <button class="event-toggle">بیشتر بدانید</button>
@@ -196,9 +192,7 @@
                         <p>۶ ژوئن ۱۹۴۴ (D-Day) - بزرگترین عملیات آبی-خاکی.</p>
                         <div class="detail-hidden">
                             <div class="detail-box">
-                                متفقین با پیاده‌سازی در سواحل نرماندی فرانسه، جبهه غربی را باز کردند.
-                                این عملیات با نام "اوورلرد" بزرگترین عملیات آبی-خاکی تاریخ بود.
-                                پس از چند ماه نبرد، متفقین موفق به آزادسازی پاریس شدند.
+                                متفقین با پیاده‌سازی در سواحل نرماندی، جبهه غربی را باز کردند.
                             </div>
                         </div>
                         <button class="event-toggle">بیشتر بدانید</button>
@@ -217,8 +211,6 @@
                         <div class="detail-hidden">
                             <div class="detail-box">
                                 پس از سقوط برلین و خودکشی هیتلر، آلمان تسلیم شد.
-                                در اوت ۱۹۴۵، آمریکا با پرتاب بمب‌های اتمی بر هیروشیما و ناکازاکی،
-                                جنگ را در اقیانوس آرام نیز به پایان رساند.
                             </div>
                         </div>
                         <button class="event-toggle">بیشتر بدانید</button>
@@ -227,9 +219,9 @@
             </div>
         </div>
 
-        <!-- ===== REGISTER / LOGIN ===== -->
+        <!-- ===== REGISTER / LOGIN SECTION ===== -->
         <div id="registerSection" class="register-section">
-            <div class="form-box animate-on-load">
+            <div class="form-box">
                 <h2 id="authTitle">📝 ساخت اکانت جدید</h2>
                 <form id="registerForm" novalidate>
                     <div id="registerFields">
@@ -276,13 +268,87 @@
             </div>
         </div>
 
+        <!-- ===== USER PANEL SECTION ===== -->
+        <div id="userPanelSection" class="dashboard">
+            <div class="dashboard-bg" id="panelBg"></div>
+
+            <div class="welcome-banner">
+                <img src="" alt="پرچم کشور" class="country-flag" id="panelFlag" />
+                <h2>👋 خوش آمدید، <span id="panelUsername">کاربر</span>!</h2>
+                <p>به پنل کاربری خود خوش آمدید.</p>
+                <div class="country-badge" id="panelCountry">🎖️ کشور مورد علاقه: آلمان</div>
+            </div>
+
+            <div class="dashboard-grid">
+                <div class="dashboard-card" onclick="window.location.href='chat.html'">
+                    <span class="icon">💬</span>
+                    <h4>چت روم</h4>
+                    <p>گفت‌وگو با سایر کاربران</p>
+                </div>
+                <div class="dashboard-card" onclick="panelSettings()">
+                    <span class="icon">⚙️</span>
+                    <h4>تنظیمات</h4>
+                    <p>تغییر نام کاربری، رمز عبور و کشور</p>
+                </div>
+                <div class="dashboard-card" onclick="window.location.href='chat.html'">
+                    <span class="icon">🛡️</span>
+                    <h4>پنل مدیریت</h4>
+                    <p>مدیریت کاربران</p>
+                </div>
+                <div class="dashboard-card" onclick="panelLogout()">
+                    <span class="icon">🚪</span>
+                    <h4>خروج از حساب کاربری</h4>
+                    <p>از حساب کاربری خود خارج شوید</p>
+                </div>
+            </div>
+        </div>
+
     </main>
+
+    <!-- ============================================================
+    SETTINGS OVERLAY
+    ============================================================ -->
+    <div class="settings-overlay" id="settingsOverlay" onclick="closeSettings()"></div>
+    <div class="settings-panel" id="settingsPanel">
+        <div class="form-box">
+            <button class="close-settings" onclick="closeSettings()">✕</button>
+            <h3>⚙️ تنظیمات حساب کاربری</h3>
+
+            <form id="settingsForm">
+                <label>👤 نام کاربری جدید</label>
+                <input type="text" id="settingsUsername" placeholder="نام کاربری جدید" />
+                <div class="error-msg" id="settingsUsernameError">این نام قبلاً ثبت شده یا نامعتبر است.</div>
+
+                <hr class="divider" />
+
+                <label>🔒 رمز عبور جدید (اختیاری)</label>
+                <input type="password" id="settingsPassword" placeholder="رمز عبور جدید (حداقل ۶ کاراکتر)" />
+                <div class="error-msg" id="settingsPasswordError">رمز عبور باید حداقل ۶ کاراکتر باشد.</div>
+
+                <hr class="divider" />
+
+                <label>🎖️ تغییر کشور مورد علاقه</label>
+                <select id="settingsCountry">
+                    <option value="آلمان">آلمان</option>
+                    <option value="بریتانیا">بریتانیا</option>
+                    <option value="آمریکا">آمریکا</option>
+                    <option value="شوروی">شوروی</option>
+                    <option value="ژاپن">ژاپن</option>
+                    <option value="ایتالیا">ایتالیا</option>
+                    <option value="فرانسه">فرانسه</option>
+                </select>
+
+                <button type="submit" class="btn" style="margin-top:15px;">💾 ذخیره تغییرات</button>
+                <div class="settings-success" id="settingsSuccess">✅ تغییرات با موفقیت ذخیره شد!</div>
+            </form>
+        </div>
+    </div>
 
     <!-- ============================================================
     FOOTER
     ============================================================ -->
     <footer>
-    <p style="color:var(--text-secondary); font-size:0.85rem;">Hearts of Iran © ۲۰۲۶</p>
+        <p style="color:var(--text-secondary); font-size:0.85rem;">Hearts of Iran © ۲۰۲۶</p>
     </footer>
 
     <!-- ============================================================
