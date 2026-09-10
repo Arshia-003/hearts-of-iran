@@ -2,18 +2,49 @@
 // ADMIN - پنل مدیریت
 // ============================================================
 
+// ============================================================
+// OPEN ADMIN PANEL
+// ============================================================
 window.openAdminPanel = function() {
     if (!currentUser || currentUser.username !== OWNER_USERNAME) {
         alert('شما دسترسی مدیر ندارید!');
         return;
     }
-    showSection('admin');
+
+    console.log('🛡️ باز کردن پنل مدیریت');
+
+    const chatSection = $('chatSection');
+    const adminPanel = $('adminPanel');
+
+    if (chatSection) chatSection.classList.remove('active');
+    if (adminPanel) adminPanel.classList.add('active');
+
+    stopIntervals();
+    loadAdminUsers();
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
 };
 
+// ============================================================
+// CLOSE ADMIN PANEL
+// ============================================================
 window.closeAdminPanel = function() {
-    showSection('dashboard');
+    console.log('🔙 بستن پنل مدیریت');
+
+    const chatSection = $('chatSection');
+    const adminPanel = $('adminPanel');
+
+    if (adminPanel) adminPanel.classList.remove('active');
+    if (chatSection) chatSection.classList.add('active');
+
+    startIntervals();
+    loadChatUsers();
+    loadMessages();
 };
 
+// ============================================================
+// LOAD ADMIN USERS
+// ============================================================
 async function loadAdminUsers() {
     const data = await getData();
     const users = data.users || [];
@@ -46,9 +77,15 @@ async function loadAdminUsers() {
         const isAdminUser = admins.includes(u.username);
         const isCurrentUser = u.username === currentUser.username;
 
-        let roleLabel = 'کاربر', roleClass = 'user';
-        if (isOwnerUser) { roleLabel = 'مدیر'; roleClass = 'owner'; }
-        else if (isAdminUser) { roleLabel = 'ادمین'; roleClass = 'admin'; }
+        let roleLabel = 'کاربر',
+            roleClass = 'user';
+        if (isOwnerUser) {
+            roleLabel = 'مدیر';
+            roleClass = 'owner';
+        } else if (isAdminUser) {
+            roleLabel = 'ادمین';
+            roleClass = 'admin';
+        }
 
         const canDelete = currentUser.username === OWNER_USERNAME && !isOwnerUser && !isCurrentUser;
 
@@ -81,6 +118,9 @@ async function loadAdminUsers() {
     container.innerHTML = html;
 }
 
+// ============================================================
+// DELETE USER
+// ============================================================
 window.deleteUser = async function(username) {
     if (currentUser.username !== OWNER_USERNAME) {
         alert('❌ فقط مدیر اصلی می‌تواند کاربران را حذف کند!');
@@ -116,11 +156,6 @@ window.deleteUser = async function(username) {
         }
 
         await loadAdminUsers();
-        const chatSection = $('chatSection');
-        if (chatSection && chatSection.classList.contains('active')) {
-            await loadChatUsers();
-            await loadMessages();
-        }
 
         alert(`✅ کاربر "${username}" به طور کامل حذف شد!`);
     } catch (e) {
@@ -129,6 +164,9 @@ window.deleteUser = async function(username) {
     }
 };
 
+// ============================================================
+// MAKE ADMIN
+// ============================================================
 window.makeAdmin = async function(username) {
     if (currentUser.username !== OWNER_USERNAME) {
         alert('❌ فقط مدیر اصلی می‌تواند ادمین تعیین کند!');
@@ -143,11 +181,12 @@ window.makeAdmin = async function(username) {
         await updateData({ ...data, admins });
     }
     loadAdminUsers();
-    const chatSection = $('chatSection');
-    if (chatSection && chatSection.classList.contains('active')) loadChatUsers();
     alert(`✅ "${username}" به لیست ادمین‌ها اضافه شد!`);
 };
 
+// ============================================================
+// REMOVE ADMIN
+// ============================================================
 window.removeAdmin = async function(username) {
     if (currentUser.username !== OWNER_USERNAME) {
         alert('❌ فقط مدیر اصلی می‌تواند ادمین را حذف کند!');
@@ -160,7 +199,5 @@ window.removeAdmin = async function(username) {
     admins = admins.filter(a => a !== username);
     await updateData({ ...data, admins });
     loadAdminUsers();
-    const chatSection = $('chatSection');
-    if (chatSection && chatSection.classList.contains('active')) loadChatUsers();
     alert(`✅ ادمین بودن "${username}" لغو شد!`);
 };
