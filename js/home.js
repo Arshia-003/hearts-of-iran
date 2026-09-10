@@ -2,6 +2,9 @@
 // HOME - منطق صفحه اصلی
 // ============================================================
 
+// ============================================================
+// NAVIGATION BETWEEN SECTIONS
+// ============================================================
 function showSection(section) {
     const homeSection = $('homeSection');
     const registerSection = $('registerSection');
@@ -16,6 +19,9 @@ function showSection(section) {
     }
 }
 
+// ============================================================
+// NAVBAR LINKS
+// ============================================================
 function initNavbar() {
     const navLinks = document.querySelectorAll('nav a[data-target]');
 
@@ -40,6 +46,7 @@ function initNavbar() {
         });
     });
 
+    // دکمه ثبت‌نام / ورود
     const registerBtnNav = $('registerBtnNav');
     if (registerBtnNav) {
         registerBtnNav.addEventListener('click', () => {
@@ -52,6 +59,7 @@ function initNavbar() {
         });
     }
 
+    // دکمه چت روم
     const chatBtnNav = $('chatBtnNav');
     if (chatBtnNav) {
         chatBtnNav.addEventListener('click', () => {
@@ -59,6 +67,7 @@ function initNavbar() {
         });
     }
 
+    // دکمه پنل کاربری
     const userBtnNav = $('userBtnNav');
     if (userBtnNav) {
         userBtnNav.addEventListener('click', () => {
@@ -68,12 +77,16 @@ function initNavbar() {
         });
     }
 
+    // دکمه تم
     const themeToggleNav = $('themeToggleNav');
     if (themeToggleNav) {
         themeToggleNav.addEventListener('click', toggleTheme);
     }
 }
 
+// ============================================================
+// EVENT TOGGLES (رویدادهای کلیدی)
+// ============================================================
 function initEventToggles() {
     document.querySelectorAll('.event-toggle').forEach((btn) => {
         btn.addEventListener('click', function(e) {
@@ -87,6 +100,9 @@ function initEventToggles() {
     });
 }
 
+// ============================================================
+// CHECK SESSION
+// ============================================================
 async function checkUserSession() {
     const sessionUsername = getSession();
     if (!sessionUsername) return false;
@@ -105,6 +121,9 @@ async function checkUserSession() {
     }
 }
 
+// ============================================================
+// INIT HOME PAGE
+// ============================================================
 async function initHome() {
     await loadTheme();
     await checkUserSession();
@@ -113,6 +132,7 @@ async function initHome() {
     initEventToggles();
     initAuth();
 
+    // ===== همیشه صفحه خانه رو نشون بده =====
     showSection('home');
 
     console.log('🔥 Home page is ready!');
