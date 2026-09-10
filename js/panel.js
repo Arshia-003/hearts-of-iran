@@ -84,26 +84,35 @@ function updateAdminCard() {
 // NAVBAR
 // ============================================================
 function initNavbar() {
-    // دکمه پنل کاربری
+    // دکمه پنل کاربری → رفرش صفحه
     const userBtnNav = $('userBtnNav');
     if (userBtnNav) {
-        userBtnNav.onclick = function() {
+        userBtnNav.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            console.log('👤 کلیک روی پنل کاربری');
             location.reload();
-        };
+        });
     }
 
-    // دکمه چت روم
+    // دکمه چت روم → رفتن به chat.html
     const chatBtnNav = $('chatBtnNav');
     if (chatBtnNav) {
-        chatBtnNav.onclick = function() {
+        chatBtnNav.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            console.log('💬 کلیک روی چت روم - رفتن به chat.html');
             window.location.href = 'chat.html';
-        };
+        });
     }
 
     // دکمه تم
     const themeToggleNav = $('themeToggleNav');
     if (themeToggleNav) {
-        themeToggleNav.onclick = toggleTheme;
+        themeToggleNav.addEventListener('click', function(e) {
+            e.preventDefault();
+            toggleTheme();
+        });
     }
 }
 
