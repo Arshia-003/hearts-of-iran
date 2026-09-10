@@ -2,6 +2,9 @@
    HOME PAGE STYLES
    ============================================================ */
 
+/* ============================================================
+   SHAPES (پس‌زمینه)
+   ============================================================ */
 .shape {
     position: fixed;
     border: 1px solid rgba(184, 134, 11, 0.1);
@@ -60,6 +63,9 @@ body::before {
         radial-gradient(circle at 80% 70%, rgba(184, 134, 11, 0.07) 0%, transparent 40%);
 }
 
+/* ============================================================
+   CONTAINER
+   ============================================================ */
 .container {
     max-width: 1200px;
     margin: 0 auto;
@@ -85,6 +91,9 @@ body::before {
     border-radius: 10px;
 }
 
+/* ============================================================
+   ABOUT SECTION
+   ============================================================ */
 .about-section {
     background: var(--bg-card);
     padding: 25px 30px;
@@ -105,6 +114,9 @@ body::before {
 
 .about-section p strong { color: var(--gold); }
 
+/* ============================================================
+   FACTION CARDS
+   ============================================================ */
 .factions {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -170,6 +182,9 @@ body::before {
 .faction-card h3 { color: var(--gold); font-size: 1.5rem; margin-top: 8px; }
 .faction-card p { color: var(--text-secondary); font-size: 0.85rem; margin-top: 4px; }
 
+/* ============================================================
+   EVENT CARDS
+   ============================================================ */
 .event-cards {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -278,6 +293,9 @@ body::before {
     transform: scale(1.05);
 }
 
+/* ============================================================
+   REGISTER / LOGIN SECTION
+   ============================================================ */
 .register-section {
     display: none;
     animation: slideDown 0.4s ease;
@@ -329,6 +347,9 @@ body::before {
 
 .switch-btn.login-btn { background: var(--gold); color: #0b0e14; }
 
+/* ============================================================
+   FOOTER
+   ============================================================ */
 footer {
     background: var(--bg-secondary);
     padding: 25px 20px 15px;
@@ -342,11 +363,9 @@ footer p { color: var(--text-secondary); font-size: 0.85rem; }
 .home-section { display: block; }
 .home-section.hidden { display: none; }
 
-@keyframes slideDown {
-    from { opacity: 0; transform: translateY(-30px) scale(0.95); }
-    to { opacity: 1; transform: translateY(0) scale(1); }
-}
-
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
 @media (max-width: 768px) {
     .factions { grid-template-columns: repeat(2, 1fr); }
     .shape-1, .shape-2, .shape-3, .shape-4, .shape-5 { display: none; }
