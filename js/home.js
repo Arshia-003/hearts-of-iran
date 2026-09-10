@@ -24,7 +24,7 @@ function showSection(section) {
 }
 
 // ============================================================
-// DISPLAY USER PANEL (بعد از لاگین/ثبت‌نام)
+// DISPLAY USER PANEL
 // ============================================================
 function showUserPanel() {
     const userPanelSection = $('userPanelSection');
@@ -186,6 +186,16 @@ function panelSettings() {
     if (settingsUsername) settingsUsername.value = currentUser.username;
     if (settingsCountry) settingsCountry.value = currentUser.country;
     if (settingsPassword) settingsPassword.value = '';
+}
+
+// ============================================================
+// CLOSE SETTINGS
+// ============================================================
+function closeSettings() {
+    const settingsOverlay = $('settingsOverlay');
+    const settingsPanel = $('settingsPanel');
+    if (settingsOverlay) settingsOverlay.classList.remove('active');
+    if (settingsPanel) settingsPanel.classList.remove('active');
 }
 
 // ============================================================
