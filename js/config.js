@@ -11,7 +11,7 @@ const API_URL = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
 const OWNER_USERNAME = 'ArshiaT';
 
 // ============================================================
-// STATE (مشترک بین صفحات)
+// STATE
 // ============================================================
 let currentUser = null;
 let isLoginMode = false;
@@ -20,7 +20,7 @@ let userInterval = null;
 let checkInterval = null;
 
 // ============================================================
-// MAPS (پرچم و پس‌زمینه کشورها)
+// MAPS
 // ============================================================
 const flagMap = {
     'آلمان': 'germany-flag.png',
