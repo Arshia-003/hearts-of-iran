@@ -2,9 +2,6 @@
 // ADMIN - پنل مدیریت
 // ============================================================
 
-// ============================================================
-// OPEN / CLOSE ADMIN PANEL
-// ============================================================
 window.openAdminPanel = function() {
     if (!currentUser || currentUser.username !== OWNER_USERNAME) {
         alert('شما دسترسی مدیر ندارید!');
@@ -17,9 +14,6 @@ window.closeAdminPanel = function() {
     showSection('dashboard');
 };
 
-// ============================================================
-// LOAD ADMIN USERS
-// ============================================================
 async function loadAdminUsers() {
     const data = await getData();
     const users = data.users || [];
@@ -52,15 +46,9 @@ async function loadAdminUsers() {
         const isAdminUser = admins.includes(u.username);
         const isCurrentUser = u.username === currentUser.username;
 
-        let roleLabel = 'کاربر',
-            roleClass = 'user';
-        if (isOwnerUser) {
-            roleLabel = 'مدیر';
-            roleClass = 'owner';
-        } else if (isAdminUser) {
-            roleLabel = 'ادمین';
-            roleClass = 'admin';
-        }
+        let roleLabel = 'کاربر', roleClass = 'user';
+        if (isOwnerUser) { roleLabel = 'مدیر'; roleClass = 'owner'; }
+        else if (isAdminUser) { roleLabel = 'ادمین'; roleClass = 'admin'; }
 
         const canDelete = currentUser.username === OWNER_USERNAME && !isOwnerUser && !isCurrentUser;
 
@@ -93,9 +81,6 @@ async function loadAdminUsers() {
     container.innerHTML = html;
 }
 
-// ============================================================
-// DELETE USER - کاملاً از JSONBin
-// ============================================================
 window.deleteUser = async function(username) {
     if (currentUser.username !== OWNER_USERNAME) {
         alert('❌ فقط مدیر اصلی می‌تواند کاربران را حذف کند!');
@@ -137,16 +122,13 @@ window.deleteUser = async function(username) {
             await loadMessages();
         }
 
-        alert(`✅ کاربر "${username}" به طور کامل از دیتابیس حذف شد!`);
+        alert(`✅ کاربر "${username}" به طور کامل حذف شد!`);
     } catch (e) {
         console.error('❌ خطا:', e);
         alert('❌ خطا در حذف کاربر!');
     }
 };
 
-// ============================================================
-// MAKE ADMIN
-// ============================================================
 window.makeAdmin = async function(username) {
     if (currentUser.username !== OWNER_USERNAME) {
         alert('❌ فقط مدیر اصلی می‌تواند ادمین تعیین کند!');
@@ -166,9 +148,6 @@ window.makeAdmin = async function(username) {
     alert(`✅ "${username}" به لیست ادمین‌ها اضافه شد!`);
 };
 
-// ============================================================
-// REMOVE ADMIN
-// ============================================================
 window.removeAdmin = async function(username) {
     if (currentUser.username !== OWNER_USERNAME) {
         alert('❌ فقط مدیر اصلی می‌تواند ادمین را حذف کند!');
