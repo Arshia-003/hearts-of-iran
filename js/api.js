@@ -1,6 +1,10 @@
 // ============================================================
 // API - ارتباط با JSONBin
 // ============================================================
+
+// ============================================================
+// GET DATA
+// ============================================================
 async function getData() {
     try {
         const res = await fetch(API_URL + '/latest', {
@@ -27,6 +31,9 @@ async function getData() {
     }
 }
 
+// ============================================================
+// UPDATE DATA
+// ============================================================
 async function updateData(data) {
     try {
         const res = await fetch(API_URL, {
@@ -46,7 +53,7 @@ async function updateData(data) {
 }
 
 // ============================================================
-// SESSION MANAGEMENT
+// SESSION MANAGEMENT (در sessionStorage)
 // ============================================================
 function saveSession(username) {
     sessionStorage.setItem('hoi4-session', username);
@@ -106,6 +113,9 @@ async function setUserOnline(username, online = true) {
     await updateData({ ...data, users: updatedUsers });
 }
 
+// ============================================================
+// LOGOUT USER
+// ============================================================
 async function logoutUser() {
     if (currentUser) {
         await setUserOnline(currentUser.username, false);
@@ -140,12 +150,4 @@ function updateUIForUser() {
         if (userBtnNav) userBtnNav.classList.remove('show');
         if (chatBtnNav) chatBtnNav.classList.remove('show');
     }
-}
-
-// ============================================================
-// LOGOUT OVERLAY (کمکی)
-// ============================================================
-function openLogout() {
-    const logoutOverlay = $('logoutOverlay');
-    if (logoutOverlay) logoutOverlay.classList.add('active');
 }
