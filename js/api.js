@@ -1,6 +1,3 @@
-// ============================================================
-// API - ارتباط با JSONBin
-// ============================================================
 async function getData() {
     try {
         const res = await fetch(API_URL + '/latest', {
@@ -45,9 +42,6 @@ async function updateData(data) {
     }
 }
 
-// ============================================================
-// SESSION MANAGEMENT
-// ============================================================
 function saveSession(username) {
     sessionStorage.setItem('hoi4-session', username);
 }
@@ -60,9 +54,6 @@ function clearSession() {
     sessionStorage.removeItem('hoi4-session');
 }
 
-// ============================================================
-// THEME FUNCTIONS
-// ============================================================
 async function loadTheme() {
     const data = await getData();
     const theme = data.theme || 'dark';
@@ -94,9 +85,6 @@ async function toggleTheme() {
     await updateData(data);
 }
 
-// ============================================================
-// USER UPDATE HELPERS
-// ============================================================
 async function setUserOnline(username, online = true) {
     const data = await getData();
     const users = data.users || [];
@@ -110,19 +98,14 @@ async function logoutUser() {
     if (currentUser) {
         await setUserOnline(currentUser.username, false);
     }
-
     if (chatInterval) clearInterval(chatInterval);
     if (userInterval) clearInterval(userInterval);
     if (checkInterval) clearInterval(checkInterval);
-
     currentUser = null;
     clearSession();
     updateUIForUser();
 }
 
-// ============================================================
-// UI UPDATE FOR USER
-// ============================================================
 function updateUIForUser() {
     const registerBtnNav = $('registerBtnNav');
     const userBtnNav = $('userBtnNav');
