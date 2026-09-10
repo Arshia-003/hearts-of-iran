@@ -34,7 +34,7 @@ function showSection(section) {
 // NAVBAR
 // ============================================================
 function initNavbar() {
-    // دکمه پنل کاربری در navbar
+    // دکمه پنل کاربری در navbar → میره به پنل کاربری
     const userBtnNav = $('userBtnNav');
     if (userBtnNav) {
         userBtnNav.addEventListener('click', () => {
@@ -43,7 +43,7 @@ function initNavbar() {
         });
     }
 
-    // دکمه چت روم در navbar
+    // دکمه چت روم در navbar → مستقیم میره به چت
     const chatBtnNav = $('chatBtnNav');
     if (chatBtnNav) {
         chatBtnNav.addEventListener('click', () => {
@@ -63,14 +63,23 @@ function initNavbar() {
         themeToggleNav.addEventListener('click', toggleTheme);
     }
 
-    // لینک بازگشت به خانه
-    const homeLink = document.querySelector('nav a[data-target="home"]');
-    if (homeLink) {
-        homeLink.addEventListener('click', (e) => {
+    // لینک‌های ناوبری (خانه، رویدادها و...)
+    const navLinks = document.querySelectorAll('nav a[data-target]');
+    navLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
             e.preventDefault();
-            window.location.href = 'index.html';
+            const target = this.dataset.target;
+
+            navLinks.forEach(l => l.classList.remove('active'));
+            this.classList.add('active');
+
+            if (target === 'home') {
+                window.location.href = 'index.html';
+            } else if (target === 'events') {
+                window.location.href = 'index.html#eventsSection';
+            }
         });
-    }
+    });
 }
 
 // ============================================================
@@ -88,7 +97,6 @@ function updateDashboardUI() {
 
     const country = currentUser.country;
     if (countryBadge) countryBadge.textContent = `🎖️ کشور مورد علاقه: ${country}`;
-
     if (countryFlag) countryFlag.src = `images/${flagMap[country] || 'germany-flag.png'}`;
     if (dashboardBg) dashboardBg.style.backgroundImage = `url('images/${bgMap[country] || 'germany-bg.jpg'}')`;
 
@@ -390,7 +398,6 @@ window.openSettings = function() {
     if (settingsCountry) settingsCountry.value = currentUser.country;
     if (settingsPassword) settingsPassword.value = '';
 
-    // پاک کردن پیام‌ها
     ['settingsSuccess', 'settingsError', 'settingsUsernameError', 'settingsPasswordError'].forEach(id => {
         const el = $(id);
         if (el) el.classList.remove('show');
