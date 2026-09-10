@@ -1,7 +1,10 @@
 /* ============================================================
-   USER PANEL (فقط برای index.html)
+   PANEL PAGE - استایل‌های پنل کاربری
    ============================================================ */
 
+/* ============================================================
+   ۱. بخش اصلی پنل کاربری
+   ============================================================ */
 #userPanelSection {
     display: none;
     animation: fadeInUp 0.4s ease;
@@ -38,6 +41,9 @@
     background: radial-gradient(ellipse at center, transparent 40%, var(--bg-primary) 100%);
 }
 
+/* ============================================================
+   ۲. بنر خوش‌آمدگویی
+   ============================================================ */
 #userPanelSection .welcome-banner {
     background: linear-gradient(135deg, var(--bg-card), var(--bg-secondary));
     padding: 25px 30px;
@@ -82,6 +88,9 @@
     margin-top: 8px;
 }
 
+/* ============================================================
+   ۳. کارت‌های پنل
+   ============================================================ */
 #userPanelSection .dashboard-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -123,10 +132,103 @@
 }
 
 /* ============================================================
-   SETTINGS OVERLAY
+   ۴. پنجره تأیید خروج (LOGOUT OVERLAY)
+   ============================================================ */
+.logout-overlay {
+    display: none !important;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 9997;
+    backdrop-filter: blur(8px);
+    justify-content: center;
+    align-items: center;
+}
+
+.logout-overlay.active {
+    display: flex !important;
+}
+
+.logout-overlay .logout-box {
+    background: var(--bg-secondary);
+    padding: 40px 35px;
+    border-radius: 30px;
+    border: 2px solid var(--gold);
+    max-width: 450px;
+    width: 90%;
+    text-align: center;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
+    animation: slideDown 0.4s ease;
+}
+
+.logout-overlay .logout-box .logout-icon {
+    font-size: 4rem;
+    display: block;
+    margin-bottom: 15px;
+}
+
+.logout-overlay .logout-box h3 {
+    color: var(--text-primary);
+    font-size: 1.3rem;
+    margin-bottom: 10px;
+}
+
+.logout-overlay .logout-box p {
+    color: var(--text-secondary);
+    font-size: 1rem;
+    margin-bottom: 25px;
+    line-height: 1.8;
+}
+
+.logout-overlay .logout-box .logout-buttons {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.logout-overlay .logout-box .logout-buttons button {
+    padding: 10px 25px;
+    border: none;
+    border-radius: 30px;
+    font-size: 0.95rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all var(--transition);
+    font-family: inherit;
+}
+
+.logout-overlay .logout-box .logout-buttons .btn-yes {
+    background: #ff4444;
+    color: #fff;
+}
+
+.logout-overlay .logout-box .logout-buttons .btn-yes:hover {
+    transform: scale(1.05);
+    background: #ff6666;
+    box-shadow: 0 0 30px rgba(255, 68, 68, 0.3);
+}
+
+.logout-overlay .logout-box .logout-buttons .btn-no {
+    background: var(--bg-card);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+}
+
+.logout-overlay .logout-box .logout-buttons .btn-no:hover {
+    transform: scale(1.05);
+    border-color: var(--gold);
+    box-shadow: 0 0 20px rgba(184, 134, 11, 0.2);
+}
+
+/* ============================================================
+   ۵. پنجره تنظیمات (SETTINGS OVERLAY)
    ============================================================ */
 .settings-overlay {
-    display: none;
+    display: none !important;
     position: fixed;
     top: 0;
     left: 0;
@@ -138,11 +240,11 @@
 }
 
 .settings-overlay.active {
-    display: block;
+    display: block !important;
 }
 
 .settings-panel {
-    display: none;
+    display: none !important;
     position: fixed;
     top: 50%;
     left: 50%;
@@ -153,7 +255,8 @@
 }
 
 .settings-panel.active {
-    display: block;
+    display: block !important;
+    animation: slideDown 0.4s ease;
 }
 
 .settings-panel .form-box {
@@ -179,6 +282,7 @@
     font-size: 1.2rem;
     cursor: pointer;
     font-family: inherit;
+    transition: all var(--transition);
 }
 
 .settings-panel .form-box .close-settings:hover {
@@ -216,6 +320,9 @@
     display: block;
 }
 
+/* ============================================================
+   ۶. انیمیشن‌ها
+   ============================================================ */
 @keyframes fadeInUp {
     from {
         opacity: 0;
@@ -226,93 +333,35 @@
         transform: translateY(0);
     }
 }
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-30px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
 /* ============================================================
-   LOGOUT OVERLAY
+   ۷. ریسپانسیو
    ============================================================ */
-.logout-overlay {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.7);
-    z-index: 9997;
-    backdrop-filter: blur(8px);
-    justify-content: center;
-    align-items: center;
-}
-
-.logout-overlay.active {
-    display: flex;
-}
-
-.logout-box {
-    background: var(--bg-secondary);
-    padding: 40px 35px;
-    border-radius: 30px;
-    border: 2px solid var(--gold);
-    max-width: 450px;
-    width: 90%;
-    text-align: center;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
-}
-
-.logout-box .logout-icon {
-    font-size: 4rem;
-    display: block;
-    margin-bottom: 15px;
-}
-
-.logout-box h3 {
-    color: var(--text-primary);
-    font-size: 1.3rem;
-    margin-bottom: 10px;
-}
-
-.logout-box p {
-    color: var(--text-secondary);
-    font-size: 1rem;
-    margin-bottom: 25px;
-}
-
-.logout-box .logout-buttons {
-    display: flex;
-    gap: 15px;
-    justify-content: center;
-    flex-wrap: wrap;
-}
-
-.logout-box .logout-buttons button {
-    padding: 10px 25px;
-    border: none;
-    border-radius: 30px;
-    font-size: 0.95rem;
-    font-weight: 700;
-    cursor: pointer;
-    font-family: inherit;
-    transition: all var(--transition);
-}
-
-.logout-box .logout-buttons .btn-yes {
-    background: #ff4444;
-    color: #fff;
-}
-
-.logout-box .logout-buttons .btn-yes:hover {
-    transform: scale(1.05);
-    background: #ff6666;
-    box-shadow: 0 0 30px rgba(255, 68, 68, 0.3);
-}
-
-.logout-box .logout-buttons .btn-no {
-    background: var(--bg-card);
-    color: var(--text-primary);
-    border: 1px solid var(--border-color);
-}
-
-.logout-box .logout-buttons .btn-no:hover {
-    transform: scale(1.05);
-    border-color: var(--gold);
-    box-shadow: 0 0 20px rgba(184, 134, 11, 0.2);
+@media (max-width: 650px) {
+    .settings-panel {
+        width: 95%;
+    }
+    .settings-panel .form-box {
+        padding: 25px 15px;
+    }
+    .logout-overlay .logout-box {
+        padding: 30px 20px;
+    }
+    .logout-overlay .logout-box .logout-buttons {
+        flex-direction: column;
+    }
+    .logout-overlay .logout-box .logout-buttons button {
+        width: 100%;
+    }
 }
