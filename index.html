@@ -4,878 +4,239 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Hearts of Iran</title>
-    <style>
-        /* ============================================================
-           RESET & BASE
-           ============================================================ */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        :root {
-            --bg-primary: #0b0e14;
-            --bg-secondary: #141a22;
-            --bg-card: #181f29;
-            --text-primary: #ddd;
-            --text-secondary: #b0b8c5;
-            --gold: #b8860b;
-            --gold-light: #f5d77b;
-            --border-color: #2e3a48;
-            --shadow: 0 8px 30px rgba(0, 0, 0, 0.7);
-            --transition: 0.3s ease;
-            --online-green: #44ff88;
-            --offline-gray: #666;
-            --radius: 16px;
-        }
-
-        [data-theme="light"] {
-            --bg-primary: #f0ede8;
-            --bg-secondary: #e8e3da;
-            --bg-card: #dcd5ca;
-            --text-primary: #1a1a1a;
-            --text-secondary: #3a3a3a;
-            --border-color: #b8a99a;
-            --shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
-        }
-
-        body {
-            font-family: 'Tahoma', 'Vazirmatn', sans-serif;
-            background: var(--bg-primary);
-            color: var(--text-primary);
-            line-height: 1.8;
-            transition: background var(--transition), color var(--transition);
-            min-height: 100vh;
-            padding: 20px;
-        }
-
-        /* ============================================================
-           SCROLLBAR
-           ============================================================ */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: var(--bg-secondary);
-        }
-        ::-webkit-scrollbar-thumb {
-            background: var(--gold);
-            border-radius: 10px;
-        }
-
-        /* ============================================================
-           CONTAINER
-           ============================================================ */
-        .container {
-            max-width: 1100px;
-            margin: 0 auto;
-            background: var(--bg-secondary);
-            padding: 30px;
-            border-radius: var(--radius);
-            border: 2px solid var(--gold);
-            box-shadow: var(--shadow);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .container::before {
-            content: '⚔️';
-            position: absolute;
-            font-size: 80px;
-            right: -20px;
-            bottom: -20px;
-            opacity: 0.04;
-            transform: rotate(-15deg);
-            pointer-events: none;
-        }
-
-        .container::after {
-            content: '✈️';
-            position: absolute;
-            font-size: 60px;
-            left: -15px;
-            top: -15px;
-            opacity: 0.04;
-            transform: rotate(15deg);
-            pointer-events: none;
-        }
-
-        /* ============================================================
-           HEADER
-           ============================================================ */
-        .header {
-            text-align: center;
-            border-bottom: 2px solid var(--gold);
-            padding-bottom: 20px;
-            margin-bottom: 25px;
-            position: relative;
-            z-index: 1;
-        }
-
-        .header h1 {
-            font-size: 2.8rem;
-            font-weight: 900;
-            background: linear-gradient(45deg, var(--gold-light), var(--gold));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            letter-spacing: 4px;
-            text-shadow: 0 0 30px rgba(184, 134, 11, 0.2);
-        }
-
-        .header .subtitle {
-            color: var(--text-secondary);
-            font-size: 1.1rem;
-            margin-top: 5px;
-            letter-spacing: 2px;
-        }
-
-        .header .badge {
-            display: inline-block;
-            background: var(--gold);
-            color: #0b0e14;
-            padding: 4px 20px;
-            border-radius: 40px;
-            font-size: 0.85rem;
-            font-weight: 700;
-            margin-top: 8px;
-            animation: pulseGlow 2s infinite;
-        }
-
-        @keyframes pulseGlow {
-            0%,
-            100% {
-                box-shadow: 0 0 10px var(--gold);
-            }
-            50% {
-                box-shadow: 0 0 30px var(--gold-light);
-            }
-        }
-
-        /* ============================================================
-           THEME TOGGLE
-           ============================================================ */
-        .theme-toggle {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            z-index: 10;
-            background: var(--bg-card);
-            color: var(--text-primary);
-            border: 2px solid var(--gold);
-            border-radius: 50px;
-            padding: 6px 14px;
-            font-size: 0.85rem;
-            cursor: pointer;
-            transition: all var(--transition);
-            font-weight: 700;
-            font-family: inherit;
-        }
-
-        .theme-toggle:hover {
-            transform: scale(1.05);
-            border-color: var(--gold-light);
-            box-shadow: 0 0 20px var(--gold);
-        }
-
-        /* ============================================================
-           TABS
-           ============================================================ */
-        .tabs {
-            display: flex;
-            gap: 10px;
-            justify-content: center;
-            flex-wrap: wrap;
-            margin-bottom: 25px;
-            position: relative;
-            z-index: 1;
-        }
-
-        .tabs button {
-            background: var(--bg-card);
-            color: var(--text-secondary);
-            border: 2px solid var(--border-color);
-            padding: 10px 22px;
-            border-radius: 30px;
-            font-size: 0.95rem;
-            cursor: pointer;
-            font-weight: 700;
-            transition: all var(--transition);
-            font-family: inherit;
-        }
-
-        .tabs button:hover {
-            transform: scale(1.05);
-            border-color: var(--gold);
-            color: var(--gold);
-        }
-
-        .tabs button.active {
-            background: var(--gold);
-            color: #0b0e14;
-            border-color: var(--gold);
-        }
-
-        .tabs button:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            transform: none !important;
-        }
-
-        /* ============================================================
-           TAB CONTENT
-           ============================================================ */
-        .tab-content {
-            display: none;
-            animation: fadeIn 0.4s ease;
-            position: relative;
-            z-index: 1;
-        }
-
-        .tab-content.active {
-            display: block;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(15px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* ============================================================
-           HOME TAB
-           ============================================================ */
-        .home-box {
-            background: var(--bg-card);
-            padding: 30px;
-            border-radius: var(--radius);
-            border: 1px solid var(--border-color);
-            text-align: center;
-            box-shadow: var(--shadow);
-        }
-
-        .home-box p {
-            color: var(--text-secondary);
-            font-size: 1.05rem;
-            line-height: 2.2;
-            max-width: 700px;
-            margin: 0 auto;
-        }
-
-        .home-box strong {
-            color: var(--gold);
-        }
-
-        .home-box .features {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 15px;
-            margin-top: 25px;
-        }
-
-        .home-box .features .feature-item {
-            background: var(--bg-primary);
-            padding: 15px;
-            border-radius: 12px;
-            border: 1px solid var(--border-color);
-            transition: all var(--transition);
-        }
-
-        .home-box .features .feature-item:hover {
-            border-color: var(--gold);
-            transform: translateY(-3px);
-        }
-
-        .home-box .features .feature-item .icon {
-            font-size: 2rem;
-            display: block;
-            margin-bottom: 5px;
-        }
-
-        .home-box .features .feature-item span {
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-        }
-
-        /* ============================================================
-           FORM BOX
-           ============================================================ */
-        .form-box {
-            max-width: 450px;
-            margin: 0 auto;
-            background: var(--bg-card);
-            padding: 30px;
-            border-radius: var(--radius);
-            border: 1px solid var(--border-color);
-            box-shadow: var(--shadow);
-        }
-
-        .form-box h2 {
-            color: var(--gold);
-            text-align: center;
-            margin-bottom: 20px;
-            font-size: 1.5rem;
-        }
-
-        .form-box label {
-            display: block;
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-            margin-top: 10px;
-            font-weight: 700;
-        }
-
-        .form-box input,
-        .form-box select {
-            width: 100%;
-            padding: 12px 16px;
-            margin: 6px 0 4px;
-            background: var(--bg-primary);
-            border: 2px solid var(--border-color);
-            border-radius: 12px;
-            color: var(--text-primary);
-            font-size: 1rem;
-            transition: all var(--transition);
-            font-family: inherit;
-        }
-
-        .form-box input:focus,
-        .form-box select:focus {
-            border-color: var(--gold);
-            outline: none;
-            box-shadow: 0 0 20px rgba(184, 134, 11, 0.15);
-        }
-
-        .form-box input.error {
-            border-color: #ff4444;
-        }
-
-        .form-box input.success {
-            border-color: #44ff88;
-        }
-
-        .form-box .form-btn {
-            width: 100%;
-            margin-top: 15px;
-            padding: 14px;
-            font-size: 1.1rem;
-            background: var(--gold);
-            color: #0b0e14;
-            border: none;
-            border-radius: 30px;
-            cursor: pointer;
-            font-weight: 700;
-            transition: all var(--transition);
-            font-family: inherit;
-        }
-
-        .form-box .form-btn:hover {
-            background: var(--gold-light);
-            transform: scale(1.02);
-            box-shadow: 0 0 30px rgba(245, 215, 123, 0.3);
-        }
-
-        .form-box .error-msg {
-            color: #ff4444;
-            font-size: 0.85rem;
-            margin-top: 4px;
-            display: none;
-        }
-
-        .form-box .error-msg.show {
-            display: block;
-        }
-
-        .form-box .success-msg {
-            color: #44ff88;
-            font-size: 0.95rem;
-            margin-top: 12px;
-            display: none;
-            font-weight: 700;
-            text-align: center;
-        }
-
-        .form-box .success-msg.show {
-            display: block;
-            animation: fadeIn 0.3s ease;
-        }
-
-        .switch-btn {
-            width: 100%;
-            margin-top: 15px;
-            padding: 12px;
-            background: transparent !important;
-            color: var(--gold) !important;
-            border: 2px solid var(--gold) !important;
-            border-radius: 30px;
-            cursor: pointer;
-            font-weight: 700;
-            transition: all var(--transition);
-            font-family: inherit;
-            font-size: 0.95rem;
-        }
-
-        .switch-btn:hover {
-            background: var(--gold) !important;
-            color: #0b0e14 !important;
-            transform: scale(1.02);
-        }
-
-        /* ============================================================
-           CHAT
-           ============================================================ */
-        .chat-container {
-            display: flex;
-            gap: 20px;
-            flex-wrap: wrap;
-        }
-
-        .chat-users {
-            flex: 1;
-            min-width: 200px;
-            max-height: 450px;
-            overflow-y: auto;
-            background: var(--bg-card);
-            padding: 15px;
-            border-radius: var(--radius);
-            border: 1px solid var(--border-color);
-        }
-
-        .chat-users::-webkit-scrollbar {
-            width: 4px;
-        }
-        .chat-users::-webkit-scrollbar-thumb {
-            background: var(--gold);
-            border-radius: 10px;
-        }
-
-        .chat-users .users-title {
-            color: var(--gold);
-            font-weight: 700;
-            text-align: center;
-            border-bottom: 2px solid var(--border-color);
-            padding-bottom: 10px;
-            margin-bottom: 12px;
-            font-size: 1rem;
-        }
-
-        .user-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 8px 12px;
-            border-bottom: 1px solid var(--border-color);
-            font-size: 0.9rem;
-            transition: var(--transition);
-            border-radius: 6px;
-        }
-
-        .user-item:hover {
-            background: var(--bg-primary);
-        }
-
-        .user-item:last-child {
-            border-bottom: none;
-        }
-
-        .user-item .user-info {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .user-item .status-dot {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            flex-shrink: 0;
-        }
-
-        .user-item .status-dot.online {
-            background: var(--online-green);
-            box-shadow: 0 0 10px rgba(68, 255, 136, 0.3);
-        }
-
-        .user-item .status-dot.offline {
-            background: var(--offline-gray);
-        }
-
-        .user-item .badge {
-            padding: 2px 12px;
-            border-radius: 20px;
-            font-size: 0.7rem;
-            font-weight: 700;
-            background: var(--gold);
-            color: #0b0e14;
-        }
-
-        .user-item .badge.offline-badge {
-            background: var(--bg-primary);
-            color: var(--text-secondary);
-        }
-
-        .chat-messages-wrapper {
-            flex: 2;
-            min-width: 250px;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .chat-messages {
-            flex: 1;
-            max-height: 350px;
-            overflow-y: auto;
-            background: var(--bg-card);
-            padding: 15px;
-            border-radius: var(--radius);
-            border: 1px solid var(--border-color);
-            min-height: 300px;
-        }
-
-        .chat-messages::-webkit-scrollbar {
-            width: 4px;
-        }
-        .chat-messages::-webkit-scrollbar-thumb {
-            background: var(--gold);
-            border-radius: 10px;
-        }
-
-        .chat-messages .empty-msg {
-            color: var(--text-secondary);
-            text-align: center;
-            padding: 40px 0;
-            opacity: 0.5;
-        }
-
-        .message {
-            padding: 10px 14px;
-            border-radius: 14px;
-            margin: 6px 0;
-            border: 1px solid var(--border-color);
-            background: var(--bg-primary);
-            max-width: 85%;
-            word-wrap: break-word;
-            animation: fadeIn 0.3s ease;
-        }
-
-        .message.own {
-            background: var(--gold);
-            color: #0b0e14;
-            border-color: var(--gold-light);
-            margin-right: auto;
-            text-align: left;
-        }
-
-        .message .msg-user {
-            font-weight: 700;
-            font-size: 0.85rem;
-            color: var(--gold);
-            margin-bottom: 2px;
-        }
-
-        .message.own .msg-user {
-            color: #0b0e14;
-        }
-
-        .message .msg-text {
-            font-size: 0.95rem;
-            line-height: 1.5;
-        }
-
-        .message .msg-time {
-            color: var(--text-secondary);
-            font-size: 0.7rem;
-            margin-top: 4px;
-            opacity: 0.6;
-            text-align: left;
-        }
-
-        .message.own .msg-time {
-            color: #0b0e14;
-            opacity: 0.7;
-        }
-
-        .chat-input-area {
-            display: flex;
-            gap: 10px;
-            margin-top: 12px;
-        }
-
-        .chat-input-area input {
-            flex: 1;
-            padding: 12px 16px;
-            background: var(--bg-primary);
-            border: 2px solid var(--border-color);
-            border-radius: 30px;
-            color: var(--text-primary);
-            font-size: 0.95rem;
-            transition: all var(--transition);
-            font-family: inherit;
-        }
-
-        .chat-input-area input:focus {
-            border-color: var(--gold);
-            outline: none;
-            box-shadow: 0 0 20px rgba(184, 134, 11, 0.15);
-        }
-
-        .chat-input-area input::placeholder {
-            color: var(--text-secondary);
-            opacity: 0.5;
-        }
-
-        .chat-input-area .send-btn {
-            padding: 12px 20px;
-            border: none;
-            border-radius: 30px;
-            background: var(--gold);
-            color: #0b0e14;
-            font-size: 1.2rem;
-            cursor: pointer;
-            transition: all var(--transition);
-            font-weight: 700;
-            font-family: inherit;
-        }
-
-        .chat-input-area .send-btn:hover {
-            background: var(--gold-light);
-            transform: scale(1.05);
-            box-shadow: 0 0 30px rgba(245, 215, 123, 0.3);
-        }
-
-        /* ============================================================
-           DASHBOARD
-           ============================================================ */
-        .dashboard-box {
-            max-width: 400px;
-            margin: 0 auto;
-            background: var(--bg-card);
-            padding: 30px;
-            border-radius: var(--radius);
-            border: 1px solid var(--border-color);
-            text-align: center;
-            box-shadow: var(--shadow);
-        }
-
-        .dashboard-box h2 {
-            color: var(--gold);
-            font-size: 1.5rem;
-            margin-bottom: 10px;
-        }
-
-        .dashboard-box p {
-            color: var(--text-secondary);
-            font-size: 1.1rem;
-            margin-bottom: 20px;
-        }
-
-        .dashboard-box p strong {
-            color: var(--gold);
-        }
-
-        .dashboard-box .logout-btn {
-            width: 100%;
-            padding: 14px;
-            border: none;
-            border-radius: 30px;
-            background: #ff4444;
-            color: #fff;
-            font-size: 1rem;
-            cursor: pointer;
-            font-weight: 700;
-            transition: all var(--transition);
-            font-family: inherit;
-        }
-
-        .dashboard-box .logout-btn:hover {
-            transform: scale(1.02);
-            background: #ff6666;
-            box-shadow: 0 0 30px rgba(255, 68, 68, 0.3);
-        }
-
-        .dashboard-box .user-country {
-            display: inline-block;
-            background: var(--gold);
-            color: #0b0e14;
-            padding: 4px 16px;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            font-weight: 700;
-            margin-top: 5px;
-        }
-
-        /* ============================================================
-           DIVIDER
-           ============================================================ */
-        .divider {
-            border: none;
-            border-top: 2px solid var(--border-color);
-            margin: 12px 0;
-            opacity: 0.5;
-        }
-
-        /* ============================================================
-           RESPONSIVE
-           ============================================================ */
-        @media (max-width: 768px) {
-            body {
-                padding: 10px;
-            }
-            .container {
-                padding: 15px;
-            }
-            .header h1 {
-                font-size: 2rem;
-            }
-            .tabs button {
-                font-size: 0.8rem;
-                padding: 8px 14px;
-            }
-            .chat-container {
-                flex-direction: column;
-            }
-            .chat-users {
-                max-height: 200px;
-            }
-            .home-box .features {
-                grid-template-columns: 1fr 1fr;
-            }
-            .theme-toggle {
-                top: 10px;
-                left: 10px;
-                font-size: 0.75rem;
-                padding: 4px 10px;
-            }
-            .form-box {
-                padding: 20px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .container {
-                padding: 10px;
-            }
-            .header h1 {
-                font-size: 1.6rem;
-            }
-            .home-box .features {
-                grid-template-columns: 1fr;
-            }
-            .tabs {
-                gap: 5px;
-            }
-            .tabs button {
-                font-size: 0.7rem;
-                padding: 6px 10px;
-            }
-            .chat-messages {
-                min-height: 200px;
-                max-height: 250px;
-            }
-            .chat-input-area {
-                flex-wrap: wrap;
-            }
-            .chat-input-area input {
-                width: 100%;
-            }
-            .chat-input-area .send-btn {
-                width: 100%;
-                justify-content: center;
-            }
-            .theme-toggle {
-                top: 8px;
-                left: 8px;
-                font-size: 0.7rem;
-                padding: 3px 8px;
-            }
-        }
-    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Vazirmatn:wght@400;700;900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
-    <div class="container">
+    <!-- ============================================================
+    SHAPES (پس‌زمینه)
+    ============================================================ -->
+    <div class="shape shape-1"></div>
+    <div class="shape shape-2"></div>
+    <div class="shape shape-3"></div>
+    <div class="shape shape-4"></div>
+    <div class="shape shape-5"></div>
 
-        <!-- ============================================================
-        THEME TOGGLE
-        ============================================================ -->
-        <button class="theme-toggle" id="themeToggle">
-            <span id="themeIcon">🌙</span>
-            <span id="themeLabel">تاریک</span>
-        </button>
+    <!-- ============================================================
+    HEADER
+    ============================================================ -->
+    <header class="hero">
+        <div class="badge">🎖️ استراتژی بی‌نهایت</div>
+        <h1>Hearts of Iran</h1>
+        <div class="subtitle">جنگ جهانی دوم را از نو بنویس...</div>
+        <div class="hero-icons">🛩️ 🚢 🚀</div>
+    </header>
 
-        <!-- ============================================================
-        HEADER
-        ============================================================ -->
-        <div class="header">
-            <div class="badge">🎖️ استراتژی بی‌نهایت</div>
-            <h1>Hearts of Iran</h1>
-            <div class="subtitle">جنگ جهانی دوم را از نو بنویس...</div>
-            <div style="margin-top:8px; font-size:1.3rem; letter-spacing:8px;">
-                🛩️ 🚢 🚀
+    <!-- ============================================================
+    NAVBAR
+    ============================================================ -->
+    <nav>
+        <div class="nav-container">
+            <div class="nav-left">
+                <button class="register-btn-nav" id="registerBtnNav">📝 ثبت‌نام / ورود</button>
+                <button class="user-btn-nav" id="userBtnNav">👤</button>
+                <button class="chat-btn-nav" id="chatBtnNav">💬 چت روم</button>
+            </div>
+            <div class="nav-center">
+                <a href="#" class="active" data-target="home">🏠 خانه</a>
+                <a href="#" data-target="events">⏳ رویدادها</a>
+                <a href="#">🗺️ نقشه</a>
+                <a href="#">⚙️ آپدیت‌ها</a>
+            </div>
+            <div class="nav-right">
+                <button class="theme-toggle-nav" id="themeToggleNav">
+                    <span id="themeIconNav">🌙</span>
+                    <span id="themeLabelNav">تاریک</span>
+                </button>
             </div>
         </div>
+    </nav>
 
-        <!-- ============================================================
-        TABS
-        ============================================================ -->
-        <div class="tabs">
-            <button class="active" data-tab="home">🏠 خانه</button>
-            <button data-tab="register">📝 ثبت‌نام / ورود</button>
-            <button data-tab="chat" id="chatTabBtn" disabled>💬 چت روم</button>
-            <button data-tab="dashboard" id="dashboardTabBtn" disabled>👤 پنل کاربری</button>
-        </div>
+    <!-- ============================================================
+    MAIN
+    ============================================================ -->
+    <main class="container">
 
-        <!-- ============================================================
-        TAB: HOME
-        ============================================================ -->
-        <div id="tab-home" class="tab-content active">
-            <div class="home-box">
+        <!-- ===== HOME SECTION ===== -->
+        <div id="homeSection" class="home-section">
+            <div class="animate-on-load about-section">
                 <p>
-                    به <strong>Hearts of Iran</strong> خوش آمدید! 🎉<br />
-                    این یک چت روم ساخته شده با <strong>JSONBin</strong> است.<br />
-                    ثبت‌نام کنید، وارد شوید و با سایر کاربران گفت‌وگو کنید.
+                    <strong>Hearts of Iran</strong> یک بازی استراتژی بزرگ از Paradox Interactive است.
+                    در این بازی کنترل کامل یک کشور را در جنگ جهانی دوم به دست می‌گیرید.
+                    اقتصاد، دیپلماسی، فناوری و نیروهای نظامی را مدیریت کنید و تاریخ را تغییر دهید!
                 </p>
-                <div class="features">
-                    <div class="feature-item">
-                        <span class="icon">💬</span>
-                        <span>چت زنده</span>
+            </div>
+
+            <h2 class="section-title animate-on-load">🇺🇳 قدرت‌های بزرگ</h2>
+            <div class="factions">
+                <div class="faction-card animate-on-load">
+                    <div class="card-bg" style="background-image: url('images/germany-bg.jpg');"></div>
+                    <div class="flag-container">
+                        <img src="images/germany-flag.png" alt="پرچم آلمان" />
                     </div>
-                    <div class="feature-item">
-                        <span class="icon">👥</span>
-                        <span>کاربران آنلاین</span>
+                    <h3>آلمان</h3>
+                    <p>آدولف هیتلر • بلایتس کریگ</p>
+                </div>
+                <div class="faction-card animate-on-load">
+                    <div class="card-bg" style="background-image: url('images/uk-bg.jpg');"></div>
+                    <div class="flag-container">
+                        <img src="images/uk-flag.png" alt="پرچم بریتانیا" />
                     </div>
-                    <div class="feature-item">
-                        <span class="icon">🔐</span>
-                        <span>ثبت‌نام امن</span>
+                    <h3>بریتانیا</h3>
+                    <p>وینستون چرچیل • نیروی هوایی</p>
+                </div>
+                <div class="faction-card animate-on-load">
+                    <div class="card-bg" style="background-image: url('images/usa-bg.jpg');"></div>
+                    <div class="flag-container">
+                        <img src="images/usa-flag.png" alt="پرچم آمریکا" />
                     </div>
-                    <div class="feature-item">
-                        <span class="icon">🌐</span>
-                        <span>متصل به ابر</span>
+                    <h3>آمریکا</h3>
+                    <p>فرانکلین روزولت • تولید عظیم</p>
+                </div>
+                <div class="faction-card animate-on-load">
+                    <div class="card-bg" style="background-image: url('images/japan-bg.jpg');"></div>
+                    <div class="flag-container">
+                        <img src="images/japan-flag.png" alt="پرچم ژاپن" />
+                    </div>
+                    <h3>ژاپن</h3>
+                    <p>هیروهیتو • ناوگان قدرتمند</p>
+                </div>
+                <div class="faction-card animate-on-load">
+                    <div class="card-bg" style="background-image: url('images/soviet-bg.jpg');"></div>
+                    <div class="flag-container">
+                        <img src="images/soviet-flag.png" alt="پرچم شوروی" />
+                    </div>
+                    <h3>شوروی</h3>
+                    <p>ژوزف استالین • جبهه شرقی</p>
+                </div>
+                <div class="faction-card animate-on-load">
+                    <div class="card-bg" style="background-image: url('images/italy-bg.jpg');"></div>
+                    <div class="flag-container">
+                        <img src="images/italy-flag.png" alt="پرچم ایتالیا" />
+                    </div>
+                    <h3>ایتالیا</h3>
+                    <p>بنیتو موسولینی • متحد محور</p>
+                </div>
+            </div>
+
+            <h2 class="section-title animate-on-load" id="eventsSection">⏳ رویدادهای کلیدی</h2>
+            <div class="event-cards animate-on-load">
+                <div class="event-card">
+                    <div class="event-image">
+                        <img src="images/ww2-start.jpg" alt="آغاز جنگ" />
+                        <span class="year-badge">۱۹۳۹</span>
+                        <div class="overlay">آغاز جنگ جهانی دوم</div>
+                    </div>
+                    <div class="event-body">
+                        <h4>حمله به لهستان</h4>
+                        <p>۱ سپتامبر ۱۹۳۹ - آلمان نازی با حمله به لهستان، جنگ جهانی دوم را آغاز کرد.</p>
+                        <div class="detail-hidden">
+                            <div class="detail-box">
+                                این حمله باعث شد بریتانیا و فرانسه به آلمان اعلام جنگ کنند.
+                                لهستان در کمتر از یک ماه سقوط کرد و کشورهای بالتیک تحت تأثیر قرار گرفتند.
+                                تاکتیک بلیتس‌کریگ برای اولین بار در این جنگ استفاده شد.
+                            </div>
+                        </div>
+                        <button class="event-toggle">بیشتر بدانید</button>
+                    </div>
+                </div>
+
+                <div class="event-card">
+                    <div class="event-image">
+                        <img src="images/france-fall.jpg" alt="سقوط فرانسه" />
+                        <span class="year-badge">۱۹۴۰</span>
+                        <div class="overlay">سقوط فرانسه</div>
+                    </div>
+                    <div class="event-body">
+                        <h4>سقوط فرانسه</h4>
+                        <p>مه-ژوئن ۱۹۴۰ - فرانسه در کمتر از ۶ هفته سقوط کرد.</p>
+                        <div class="detail-hidden">
+                            <div class="detail-box">
+                                آلمان با استفاده از تاکتیک "بلیتس‌کریگ" از طریق جنگل‌های آردن به فرانسه حمله کرد.
+                                فرانسه سقوط کرد و آلمان کنترل بخش بزرگی از اروپای غربی را به دست گرفت.
+                                نیروهای بریتانیایی از دانکرک عقب‌نشینی کردند.
+                            </div>
+                        </div>
+                        <button class="event-toggle">بیشتر بدانید</button>
+                    </div>
+                </div>
+
+                <div class="event-card">
+                    <div class="event-image">
+                        <img src="images/barbarossa.jpg" alt="عملیات بارباروسا" />
+                        <span class="year-badge">۱۹۴۱</span>
+                        <div class="overlay">عملیات بارباروسا</div>
+                    </div>
+                    <div class="event-body">
+                        <h4>حمله به شوروی</h4>
+                        <p>۲۲ ژوئن ۱۹۴۱ - بزرگترین عملیات نظامی تاریخ.</p>
+                        <div class="detail-hidden">
+                            <div class="detail-box">
+                                آلمان با بیش از ۳ میلیون سرباز به شوروی حمله کرد.
+                                این بزرگترین عملیات نظامی تاریخ بود.
+                                با رسیدن زمستان و مقاومت شوروی، پیشروی متوقف شد.
+                            </div>
+                        </div>
+                        <button class="event-toggle">بیشتر بدانید</button>
+                    </div>
+                </div>
+
+                <div class="event-card">
+                    <div class="event-image">
+                        <img src="images/dday.jpg" alt="پیاده‌سازی در نرماندی" />
+                        <span class="year-badge">۱۹۴۴</span>
+                        <div class="overlay">پیاده‌سازی در نرماندی</div>
+                    </div>
+                    <div class="event-body">
+                        <h4>عملیات اوورلرد</h4>
+                        <p>۶ ژوئن ۱۹۴۴ (D-Day) - بزرگترین عملیات آبی-خاکی.</p>
+                        <div class="detail-hidden">
+                            <div class="detail-box">
+                                متفقین با پیاده‌سازی در سواحل نرماندی فرانسه، جبهه غربی را باز کردند.
+                                این عملیات با نام "اوورلرد" بزرگترین عملیات آبی-خاکی تاریخ بود.
+                                پس از چند ماه نبرد، متفقین موفق به آزادسازی پاریس شدند.
+                            </div>
+                        </div>
+                        <button class="event-toggle">بیشتر بدانید</button>
+                    </div>
+                </div>
+
+                <div class="event-card">
+                    <div class="event-image">
+                        <img src="images/ww2-end.jpg" alt="پایان جنگ" />
+                        <span class="year-badge">۱۹۴۵</span>
+                        <div class="overlay">پایان جنگ</div>
+                    </div>
+                    <div class="event-body">
+                        <h4>پایان جنگ جهانی دوم</h4>
+                        <p>۸ مه ۱۹۴۵ - پایان جنگ در اروپا.</p>
+                        <div class="detail-hidden">
+                            <div class="detail-box">
+                                پس از سقوط برلین و خودکشی هیتلر، آلمان تسلیم شد.
+                                در اوت ۱۹۴۵، آمریکا با پرتاب بمب‌های اتمی بر هیروشیما و ناکازاکی،
+                                جنگ را در اقیانوس آرام نیز به پایان رساند.
+                            </div>
+                        </div>
+                        <button class="event-toggle">بیشتر بدانید</button>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- ============================================================
-        TAB: REGISTER / LOGIN
-        ============================================================ -->
-        <div id="tab-register" class="tab-content">
-            <div class="form-box">
+        <!-- ===== REGISTER / LOGIN ===== -->
+        <div id="registerSection" class="register-section">
+            <div class="form-box animate-on-load">
                 <h2 id="authTitle">📝 ساخت اکانت جدید</h2>
-                <form id="registerForm">
+                <form id="registerForm" novalidate>
                     <div id="registerFields">
                         <label>👤 نام کاربری (حداقل ۳ کاراکتر)</label>
-                        <input type="text" id="username" placeholder="مثال: General_Patton" required />
-                        <div class="error-msg" id="usernameError">نام کاربری باید حداقل ۳ کاراکتر باشد.</div>
+                        <input type="text" id="username" placeholder="مثال: General_Patton" required minlength="3" />
+                        <div class="error-msg" id="usernameError">نام کاربری باید حداقل ۳ حرف باشد.</div>
 
                         <label>✉️ ایمیل معتبر</label>
                         <input type="email" id="email" placeholder="your@email.com" required />
-                        <div class="error-msg" id="emailError">لطفاً یک ایمیل معتبر وارد کنید.</div>
+                        <div class="error-msg" id="emailError">لطفاً یک ایمیل واقعی و معتبر وارد کنید.</div>
                     </div>
 
                     <div id="loginFields" style="display:none;">
@@ -885,10 +246,10 @@
                     </div>
 
                     <label>🔒 رمز عبور (حداقل ۶ کاراکتر)</label>
-                    <input type="password" id="password" placeholder="********" required />
+                    <input type="password" id="password" placeholder="********" required minlength="6" />
                     <div class="error-msg" id="passwordError">رمز عبور باید حداقل ۶ کاراکتر باشد.</div>
 
-                    <label>🎖️ کشور مورد علاقه</label>
+                    <label id="countryLabel">🎖️ کشور مورد علاقه</label>
                     <select id="country">
                         <option value="آلمان">آلمان</option>
                         <option value="بریتانیا">بریتانیا</option>
@@ -899,602 +260,167 @@
                         <option value="فرانسه">فرانسه</option>
                     </select>
 
-                    <button type="submit" class="form-btn" id="authSubmitBtn">⚡ ساخت اکانت</button>
+                    <button type="submit" id="authSubmitBtn">⚡ ساخت اکانت</button>
                     <div class="success-msg" id="successMsg">✅ اکانت شما با موفقیت ساخته شد!</div>
                     <div class="success-msg" id="loginSuccessMsg" style="display:none;">✅ ورود با موفقیت انجام شد!</div>
                 </form>
 
-                <button class="switch-btn" id="switchAuthBtn">
-                    آیا از قبل حساب کاربری دارید؟ وارد شوید
-                </button>
+                <div class="switch-auth">
+                    <button class="switch-btn" id="switchAuthBtn">
+                        آیا از قبل حساب کاربری دارید؟ وارد شوید
+                    </button>
+                </div>
             </div>
         </div>
 
-        <!-- ============================================================
-        TAB: CHAT
-        ============================================================ -->
-        <div id="tab-chat" class="tab-content">
+        <!-- ===== DASHBOARD ===== -->
+        <div id="dashboardSection" class="dashboard">
+            <div class="dashboard-bg" id="dashboardBg"></div>
+
+            <div class="welcome-banner animate-on-load">
+                <img src="" alt="پرچم کشور" class="country-flag" id="countryFlag" />
+                <h2>👋 خوش آمدید، <span id="dashboardUsername">کاربر</span>!</h2>
+                <p>به پنل کاربری خود خوش آمدید.</p>
+                <div class="country-badge" id="countryBadge">🎖️ کشور مورد علاقه: آلمان</div>
+            </div>
+
+            <div class="dashboard-grid">
+                <div class="dashboard-card" onclick="openSettings()">
+                    <span class="icon">⚙️</span>
+                    <h4>تنظیمات</h4>
+                    <p>تغییر نام کاربری، رمز عبور و کشور</p>
+                </div>
+                <div class="dashboard-card" onclick="openAdminPanel()" id="adminPanelBtn" style="display:none;">
+                    <span class="icon">🛡️</span>
+                    <h4>پنل مدیریت</h4>
+                    <p>مدیریت کاربران و تنظیمات</p>
+                </div>
+                <div class="dashboard-card" onclick="openLogout()">
+                    <span class="icon">🚪</span>
+                    <h4>خروج از حساب کاربری</h4>
+                    <p>از حساب کاربری خود خارج شوید</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== CHAT ROOM ===== -->
+        <div id="chatSection" class="chat-room">
             <div class="chat-container">
-                <!-- لیست کاربران -->
-                <div class="chat-users">
+                <div class="chat-users" id="chatUsersList">
                     <div class="users-title">👥 کاربران آنلاین</div>
-                    <div id="usersList">
-                        <div style="color:var(--text-secondary); text-align:center; padding:20px; opacity:0.5;">
-                            در حال بارگذاری...
-                        </div>
+                    <div id="usersListContainer">
+                        <!-- توسط جاوااسکریپت پر میشه -->
                     </div>
                 </div>
 
-                <!-- پیام‌ها -->
-                <div class="chat-messages-wrapper">
+                <div class="chat-main">
+                    <div class="chat-header">
+                        <span class="chat-title">💬 چت روم</span>
+                        <button class="chat-close" onclick="closeChat()">✕</button>
+                    </div>
                     <div class="chat-messages" id="chatMessages">
-                        <div class="empty-msg">هنوز پیامی ارسال نشده است</div>
+                        <!-- توسط جاوااسکریپت پر میشه -->
                     </div>
                     <div class="chat-input-area">
                         <input type="text" id="chatInput" placeholder="پیام خود را بنویسید..." />
-                        <button class="send-btn" id="sendBtn">📤</button>
+                        <button class="send-btn" id="sendChatBtn">📤</button>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- ============================================================
-        TAB: DASHBOARD
-        ============================================================ -->
-        <div id="tab-dashboard" class="tab-content">
-            <div class="dashboard-box">
-                <h2>👤 پنل کاربری</h2>
-                <p>
-                    خوش آمدید، <strong id="dashboardUsername">کاربر</strong>!
-                </p>
-                <div class="user-country" id="dashboardCountry">🎖️ کشور مورد علاقه: آلمان</div>
-                <div class="divider"></div>
-                <button class="logout-btn" id="logoutBtn">🚪 خروج از حساب</button>
+        <!-- ===== ADMIN PANEL ===== -->
+        <div id="adminPanel" class="admin-panel">
+            <div class="admin-header">
+                <h2>🛡️ پنل مدیریت</h2>
+                <p>مدیریت کاربران سایت</p>
+                <button class="close-admin" onclick="closeAdminPanel()">❌ بستن پنل</button>
+            </div>
+
+            <div class="admin-content">
+                <h3>👥 لیست کاربران</h3>
+                <div id="adminUsersList">
+                    <!-- توسط جاوااسکریپت پر میشه -->
+                </div>
             </div>
         </div>
 
+    </main>
+
+    <!-- ============================================================
+    LOGOUT OVERLAY
+    ============================================================ -->
+    <div class="logout-overlay" id="logoutOverlay">
+        <div class="logout-box">
+            <span class="logout-icon">😞</span>
+            <h3>آیا مطمئن هستید؟</h3>
+            <p>آیا واقعاً می‌خواهید از حساب کاربری خود خارج شوید؟</p>
+            <div class="logout-buttons">
+                <button class="btn-yes" id="logoutConfirmBtn">بله، مطمئنم</button>
+                <button class="btn-no" id="logoutCancelBtn">نه، در این حساب می‌مانم</button>
+            </div>
+        </div>
     </div>
 
     <!-- ============================================================
-    JAVASCRIPT
+    SETTINGS OVERLAY
     ============================================================ -->
-    <script>
-        // ============================================================
-        // JSONBin CONFIG
-        // ============================================================
-        const BIN_ID = '6aa1c487ffd5d16053f334a8';
-        const MASTER_KEY = '$2a$10$Aeo5..C6OPC7HvhrJihfQ.XJWcdz738W7cC3ZoIcPWMyGe9lJoaam';
-        const API_URL = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
+    <div class="settings-overlay" id="settingsOverlay" onclick="closeSettings()"></div>
+    <div class="settings-panel" id="settingsPanel">
+        <div class="form-box animate-on-load">
+            <button class="close-settings" onclick="closeSettings()">✕</button>
+            <h3>⚙️ تنظیمات حساب کاربری</h3>
 
-        // ============================================================
-        // HELPERS
-        // ============================================================
-        async function getData() {
-            try {
-                const res = await fetch(API_URL + '/latest', {
-                    headers: { 'X-Master-Key': MASTER_KEY }
-                });
-                if (!res.ok) throw new Error('HTTP ' + res.status);
-                const data = await res.json();
-                return data.record || { messages: [], users: [] };
-            } catch (e) {
-                console.error('❌ خطا در دریافت:', e);
-                return { messages: [], users: [] };
-            }
-        }
+            <form id="settingsForm">
+                <label>👤 نام کاربری جدید</label>
+                <input type="text" id="settingsUsername" placeholder="نام کاربری جدید" />
+                <div class="error-msg" id="settingsUsernameError">این نام قبلاً ثبت شده یا نامعتبر است.</div>
 
-        async function updateData(data) {
-            try {
-                const res = await fetch(API_URL, {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-Master-Key': MASTER_KEY
-                    },
-                    body: JSON.stringify(data)
-                });
-                if (!res.ok) throw new Error('HTTP ' + res.status);
-                return await res.json();
-            } catch (e) {
-                console.error('❌ خطا در آپدیت:', e);
-                return null;
-            }
-        }
+                <hr class="divider" />
 
-        // ============================================================
-        // DOM REFS
-        // ============================================================
-        const $ = id => document.getElementById(id);
-        const tabs = {
-            home: $('tab-home'),
-            register: $('tab-register'),
-            chat: $('tab-chat'),
-            dashboard: $('tab-dashboard')
-        };
-        const tabBtns = document.querySelectorAll('.tabs button[data-tab]');
+                <label>🔒 رمز عبور جدید (اختیاری)</label>
+                <input type="password" id="settingsPassword" placeholder="رمز عبور جدید (حداقل ۶ کاراکتر)" />
+                <div class="error-msg" id="settingsPasswordError">رمز عبور باید حداقل ۶ کاراکتر باشد.</div>
 
-        // ============================================================
-        // STATE
-        // ============================================================
-        let currentUser = null;
-        let isLoginMode = false;
-        let chatInterval = null;
-        let userInterval = null;
+                <hr class="divider" />
 
-        // ============================================================
-        // THEME TOGGLE
-        // ============================================================
-        const themeToggle = $('themeToggle');
-        const themeIcon = $('themeIcon');
-        const themeLabel = $('themeLabel');
-        let currentTheme = localStorage.getItem('hoi4-theme') || 'dark';
+                <label>🎖️ تغییر کشور مورد علاقه</label>
+                <select id="settingsCountry">
+                    <option value="آلمان">آلمان</option>
+                    <option value="بریتانیا">بریتانیا</option>
+                    <option value="آمریکا">آمریکا</option>
+                    <option value="شوروی">شوروی</option>
+                    <option value="ژاپن">ژاپن</option>
+                    <option value="ایتالیا">ایتالیا</option>
+                    <option value="فرانسه">فرانسه</option>
+                </select>
 
-        function applyTheme(theme) {
-            document.documentElement.setAttribute('data-theme', theme);
-            currentTheme = theme;
-            localStorage.setItem('hoi4-theme', theme);
-            if (theme === 'light') {
-                themeIcon.textContent = '☀️';
-                themeLabel.textContent = 'روشن';
-            } else {
-                themeIcon.textContent = '🌙';
-                themeLabel.textContent = 'تاریک';
-            }
-        }
+                <button type="submit" style="margin-top:15px;">💾 ذخیره تغییرات</button>
+                <div class="settings-success" id="settingsSuccess">✅ تغییرات با موفقیت ذخیره شد!</div>
+                <div class="settings-error" id="settingsError">❌ خطا در ذخیره تغییرات!</div>
+            </form>
+        </div>
+    </div>
 
-        applyTheme(currentTheme);
+    <!-- ============================================================
+    FOOTER
+    ============================================================ -->
+    <footer>
+        <div class="socials">
+            <span>🎮</span>
+            <span>🕹️</span>
+            <span>📺</span>
+            <span>💬</span>
+            <span>🎧</span>
+        </div>
+        <p>طراحی شده با ❤️ برای طرفداران Hearts of Iran • ۲۰۲۶</p>
+        <p style="margin-top:8px; font-size:0.8rem; color:var(--text-secondary); opacity:0.5;">نسخه نهایی</p>
+    </footer>
 
-        themeToggle.addEventListener('click', function() {
-            const nextTheme = currentTheme === 'dark' ? 'light' : 'dark';
-            applyTheme(nextTheme);
-        });
-
-        // ============================================================
-        // TAB SYSTEM
-        // ============================================================
-        function showTab(name) {
-            // مخفی کردن همه
-            Object.keys(tabs).forEach(key => {
-                tabs[key].classList.toggle('active', key === name);
-            });
-            // آپدیت دکمه‌ها
-            tabBtns.forEach(btn => {
-                btn.classList.toggle('active', btn.dataset.tab === name);
-            });
-
-            if (name === 'chat') {
-                if (currentUser) {
-                    loadChatUsers();
-                    loadMessages();
-                    startIntervals();
-                }
-            } else {
-                stopIntervals();
-            }
-        }
-
-        function updateTabs() {
-            const isLoggedIn = !!currentUser;
-            const chatBtn = $('chatTabBtn');
-            const dashboardBtn = $('dashboardTabBtn');
-
-            if (isLoggedIn) {
-                chatBtn.disabled = false;
-                dashboardBtn.disabled = false;
-            } else {
-                chatBtn.disabled = true;
-                dashboardBtn.disabled = true;
-                // اگه توی چت یا پنل هستیم، برو به خانه
-                if (tabs.chat.classList.contains('active') || tabs.dashboard.classList.contains('active')) {
-                    showTab('home');
-                }
-            }
-        }
-
-        // ============================================================
-        // INTERVALS
-        // ============================================================
-        function startIntervals() {
-            stopIntervals();
-            chatInterval = setInterval(() => {
-                if (tabs.chat.classList.contains('active')) loadMessages();
-            }, 5000);
-            userInterval = setInterval(() => {
-                if (tabs.chat.classList.contains('active')) loadChatUsers();
-            }, 10000);
-        }
-
-        function stopIntervals() {
-            if (chatInterval) clearInterval(chatInterval);
-            if (userInterval) clearInterval(userInterval);
-            chatInterval = null;
-            userInterval = null;
-        }
-
-        // ============================================================
-        // TAB BUTTONS
-        // ============================================================
-        tabBtns.forEach(btn => {
-            btn.addEventListener('click', function() {
-                const tabName = this.dataset.tab;
-                if (tabName === 'chat' && !currentUser) {
-                    alert('لطفاً ابتدا وارد شوید!');
-                    return;
-                }
-                if (tabName === 'dashboard' && !currentUser) {
-                    alert('لطفاً ابتدا وارد شوید!');
-                    return;
-                }
-                showTab(tabName);
-            });
-        });
-
-        // ============================================================
-        // AUTH SWITCH
-        // ============================================================
-        $('switchAuthBtn').addEventListener('click', function() {
-            isLoginMode = !isLoginMode;
-            const title = $('authTitle');
-            const regFields = $('registerFields');
-            const loginFields = $('loginFields');
-            const submitBtn = $('authSubmitBtn');
-            const countrySelect = $('country');
-
-            if (isLoginMode) {
-                title.textContent = '🔐 ورود به حساب کاربری';
-                regFields.style.display = 'none';
-                loginFields.style.display = 'block';
-                submitBtn.textContent = '🚪 ورود';
-                countrySelect.style.display = 'none';
-                this.textContent = 'حساب کاربری ندارید؟ ثبت‌نام کنید';
-            } else {
-                title.textContent = '📝 ساخت اکانت جدید';
-                regFields.style.display = 'block';
-                loginFields.style.display = 'none';
-                submitBtn.textContent = '⚡ ساخت اکانت';
-                countrySelect.style.display = 'block';
-                this.textContent = 'آیا از قبل حساب کاربری دارید؟ وارد شوید';
-            }
-            $('successMsg').classList.remove('show');
-            $('loginSuccessMsg').classList.remove('show');
-            document.querySelectorAll('.form-box .error-msg').forEach(el => el.classList.remove('show'));
-            document.querySelectorAll('.form-box input').forEach(el => el.classList.remove('error', 'success'));
-        });
-
-        // ============================================================
-        // REGISTER / LOGIN
-        // ============================================================
-        $('registerForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
-
-            const successMsg = $('successMsg');
-            const loginSuccessMsg = $('loginSuccessMsg');
-            successMsg.classList.remove('show');
-            loginSuccessMsg.classList.remove('show');
-
-            // پاک کردن خطاهای قبلی
-            document.querySelectorAll('.form-box .error-msg').forEach(el => el.classList.remove('show'));
-            document.querySelectorAll('.form-box input').forEach(el => el.classList.remove('error', 'success'));
-
-            if (isLoginMode) {
-                // ===== LOGIN =====
-                const identifier = $('loginUsername').value.trim();
-                const password = $('password').value;
-                let hasError = false;
-
-                if (!identifier) {
-                    $('loginUsernameError').textContent = 'لطفاً نام کاربری یا ایمیل خود را وارد کنید.';
-                    $('loginUsernameError').classList.add('show');
-                    $('loginUsername').classList.add('error');
-                    hasError = true;
-                }
-
-                if (password.length < 6) {
-                    $('passwordError').textContent = 'رمز عبور باید حداقل ۶ کاراکتر باشد.';
-                    $('passwordError').classList.add('show');
-                    $('password').classList.add('error');
-                    hasError = true;
-                }
-
-                if (hasError) return;
-
-                const data = await getData();
-                const users = data.users || [];
-                const found = users.find(u =>
-                    (u.username.toLowerCase() === identifier.toLowerCase() ||
-                        u.email.toLowerCase() === identifier.toLowerCase()) &&
-                    u.password === password
-                );
-
-                if (!found) {
-                    $('loginUsernameError').textContent = 'نام کاربری، ایمیل یا رمز عبور اشتباه است!';
-                    $('loginUsernameError').classList.add('show');
-                    $('loginUsername').classList.add('error');
-                    return;
-                }
-
-                currentUser = found;
-                localStorage.setItem('hoi4-user', JSON.stringify(found));
-
-                // آپدیت آنلاین
-                const updatedUsers = users.map(u => {
-                    if (u.username === found.username) return { ...u, online: true };
-                    return u;
-                });
-                await updateData({ ...data, users: updatedUsers });
-
-                loginSuccessMsg.style.display = 'block';
-                loginSuccessMsg.textContent = '✅ ورود با موفقیت انجام شد!';
-                loginSuccessMsg.classList.add('show');
-                updateUI();
-                showTab('chat');
-                this.reset();
-
-            } else {
-                // ===== REGISTER =====
-                const username = $('username').value.trim();
-                const email = $('email').value.trim();
-                const password = $('password').value;
-                const country = $('country').value;
-                let hasError = false;
-
-                if (username.length < 3) {
-                    $('usernameError').classList.add('show');
-                    $('username').classList.add('error');
-                    hasError = true;
-                } else {
-                    $('username').classList.add('success');
-                }
-
-                if (!email || !email.includes('@') || !email.includes('.')) {
-                    $('emailError').textContent = 'لطفاً یک ایمیل معتبر وارد کنید.';
-                    $('emailError').classList.add('show');
-                    $('email').classList.add('error');
-                    hasError = true;
-                } else {
-                    $('email').classList.add('success');
-                }
-
-                if (password.length < 6) {
-                    $('passwordError').classList.add('show');
-                    $('password').classList.add('error');
-                    hasError = true;
-                } else {
-                    $('password').classList.add('success');
-                }
-
-                if (hasError) return;
-
-                const data = await getData();
-                const users = data.users || [];
-
-                if (users.some(u => u.username.toLowerCase() === username.toLowerCase())) {
-                    $('usernameError').textContent = 'این نام کاربری قبلاً ثبت شده است!';
-                    $('usernameError').classList.add('show');
-                    $('username').classList.add('error');
-                    return;
-                }
-                if (users.some(u => u.email.toLowerCase() === email.toLowerCase())) {
-                    $('emailError').textContent = 'این ایمیل قبلاً ثبت شده است!';
-                    $('emailError').classList.add('show');
-                    $('email').classList.add('error');
-                    return;
-                }
-
-                const newUser = {
-                    username,
-                    email,
-                    password,
-                    country,
-                    date: new Date().toLocaleDateString('fa-IR'),
-                    online: true
-                };
-
-                users.push(newUser);
-                await updateData({ ...data, users });
-
-                currentUser = newUser;
-                localStorage.setItem('hoi4-user', JSON.stringify(newUser));
-
-                successMsg.textContent = '✅ اکانت شما با موفقیت ساخته شد!';
-                successMsg.classList.add('show');
-                updateUI();
-                showTab('chat');
-                this.reset();
-            }
-        });
-
-        // ============================================================
-        // UI UPDATE
-        // ============================================================
-        function updateUI() {
-            if (currentUser) {
-                $('dashboardUsername').textContent = currentUser.username;
-                $('dashboardCountry').textContent = `🎖️ کشور مورد علاقه: ${currentUser.country}`;
-            }
-            updateTabs();
-        }
-
-        // ============================================================
-        // LOGOUT
-        // ============================================================
-        async function logout() {
-            if (currentUser) {
-                const data = await getData();
-                const users = data.users || [];
-                const updatedUsers = users.map(u => {
-                    if (u.username === currentUser.username) return { ...u, online: false };
-                    return u;
-                });
-                await updateData({ ...data, users: updatedUsers });
-            }
-            currentUser = null;
-            localStorage.removeItem('hoi4-user');
-            stopIntervals();
-            updateUI();
-            showTab('home');
-            alert('✅ شما با موفقیت خارج شدید!');
-        }
-
-        $('logoutBtn').addEventListener('click', logout);
-
-        // ============================================================
-        // CHAT USERS
-        // ============================================================
-        async function loadChatUsers() {
-            try {
-                const data = await getData();
-                const users = data.users || [];
-                const container = $('usersList');
-
-                if (users.length === 0) {
-                    container.innerHTML =
-                        '<div style="color:var(--text-secondary); text-align:center; padding:20px; opacity:0.5;">هیچ کاربری ثبت‌نام نکرده است</div>';
-                    return;
-                }
-
-                const onlineUsers = users.filter(u => u.online === true);
-                const offlineUsers = users.filter(u => u.online !== true);
-
-                let html = '';
-                if (onlineUsers.length > 0) {
-                    onlineUsers.forEach(u => {
-                        html += `
-                            <div class="user-item">
-                                <div class="user-info">
-                                    <span class="status-dot online"></span>
-                                    ${u.username}
-                                </div>
-                                <span class="badge">آنلاین</span>
-                            </div>
-                        `;
-                    });
-                }
-                if (onlineUsers.length > 0 && offlineUsers.length > 0) {
-                    html += '<hr class="divider">';
-                }
-                if (offlineUsers.length > 0) {
-                    offlineUsers.forEach(u => {
-                        html += `
-                            <div class="user-item">
-                                <div class="user-info">
-                                    <span class="status-dot offline"></span>
-                                    ${u.username}
-                                </div>
-                                <span class="badge offline-badge">آفلاین</span>
-                            </div>
-                        `;
-                    });
-                }
-
-                container.innerHTML = html ||
-                    '<div style="color:var(--text-secondary); text-align:center; padding:20px; opacity:0.5;">هیچ کاربری ثبت‌نام نکرده است</div>';
-            } catch (e) {
-                console.error('❌ خطا در بارگذاری کاربران:', e);
-            }
-        }
-
-        // ============================================================
-        // CHAT MESSAGES
-        // ============================================================
-        async function loadMessages() {
-            try {
-                const data = await getData();
-                const messages = data.messages || [];
-                const container = $('chatMessages');
-
-                if (messages.length === 0) {
-                    container.innerHTML = '<div class="empty-msg">هنوز پیامی ارسال نشده است</div>';
-                    return;
-                }
-
-                let html = '';
-                messages.forEach(msg => {
-                    const isOwn = currentUser && msg.username === currentUser.username;
-                    html += `
-                        <div class="message ${isOwn ? 'own' : ''}">
-                            <div class="msg-user">${msg.username}</div>
-                            <div class="msg-text">${msg.text}</div>
-                            <div class="msg-time">${msg.time}</div>
-                        </div>
-                    `;
-                });
-
-                container.innerHTML = html;
-                container.scrollTop = container.scrollHeight;
-            } catch (e) {
-                console.error('❌ خطا در بارگذاری پیام‌ها:', e);
-            }
-        }
-
-        // ============================================================
-        // SEND MESSAGE
-        // ============================================================
-        async function sendMessage() {
-            const input = $('chatInput');
-            const text = input.value.trim();
-            if (!text) return;
-            if (!currentUser) {
-                alert('لطفاً ابتدا وارد شوید!');
-                return;
-            }
-
-            try {
-                const data = await getData();
-                const messages = data.messages || [];
-
-                messages.push({
-                    username: currentUser.username,
-                    text: text,
-                    time: new Date().toLocaleTimeString('fa-IR', { hour: '2-digit', minute: '2-digit' })
-                });
-
-                await updateData({ ...data, messages });
-                input.value = '';
-                loadMessages();
-            } catch (e) {
-                console.error('❌ خطا در ارسال پیام:', e);
-                alert('خطا در ارسال پیام!');
-            }
-        }
-
-        $('sendBtn').addEventListener('click', sendMessage);
-        $('chatInput').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') sendMessage();
-        });
-
-        // ============================================================
-        // INIT
-        // ============================================================
-        // بررسی کاربر ذخیره شده
-        const savedUser = localStorage.getItem('hoi4-user');
-        if (savedUser) {
-            try {
-                currentUser = JSON.parse(savedUser);
-                // آپدیت آنلاین
-                (async () => {
-                    const data = await getData();
-                    const users = data.users || [];
-                    const updatedUsers = users.map(u => {
-                        if (u.username === currentUser.username) return { ...u, online: true };
-                        return u;
-                    });
-                    await updateData({ ...data, users: updatedUsers });
-                })();
-            } catch (e) {
-                currentUser = null;
-                localStorage.removeItem('hoi4-user');
-            }
-        }
-
-        updateUI();
-        showTab('home');
-
-        console.log('🔥 JSONBin Chat is ready!');
-        console.log('📦 Bin ID:', BIN_ID);
-        console.log('🔑 Master Key:', MASTER_KEY ? '✅ موجود' : '❌缺失');
-        console.log('👤 Current User:', currentUser ? currentUser.username : 'خیر');
-    </script>
+    <!-- ============================================================
+    SCRIPTS
+    ============================================================ -->
+    <script src="script.js"></script>
 
 </body>
 </html>
