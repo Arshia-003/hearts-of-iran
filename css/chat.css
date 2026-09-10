@@ -1,117 +1,20 @@
 /* ============================================================
-   CHAT PAGE & DASHBOARD STYLES
+   CHAT PAGE STYLES
    ============================================================ */
 
 /* ============================================================
-   DASHBOARD SECTION
-   ============================================================ */
-.dashboard {
-    display: none;
-    animation: slideDown 0.4s ease;
-    margin: 20px 0 40px;
-    position: relative;
-    min-height: 400px;
-}
-
-.dashboard.active { display: block; }
-
-.dashboard .dashboard-bg {
-    position: fixed;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    z-index: -1;
-    opacity: 0.15;
-    background-size: cover;
-    background-position: center;
-    filter: blur(3px);
-    pointer-events: none;
-}
-
-.dashboard .dashboard-bg::after {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background: radial-gradient(ellipse at center, transparent 40%, var(--bg-primary) 100%);
-}
-
-.dashboard .welcome-banner {
-    background: linear-gradient(135deg, var(--bg-card), var(--bg-secondary));
-    padding: 25px 30px;
-    border-radius: 16px;
-    border: 2px solid var(--gold);
-    margin-bottom: 30px;
-    text-align: center;
-    box-shadow: var(--shadow);
-    position: relative;
-    overflow: hidden;
-}
-
-.dashboard .welcome-banner .country-flag {
-    width: 60px;
-    height: 40px;
-    border-radius: 8px;
-    border: 2px solid var(--gold);
-    margin: 0 auto 10px;
-    object-fit: cover;
-    display: block;
-}
-
-.dashboard .welcome-banner h2 {
-    color: var(--gold);
-    font-size: 1.8rem;
-}
-
-.dashboard .welcome-banner p { color: var(--text-secondary); font-size: 1rem; margin-top: 5px; }
-
-.dashboard .welcome-banner .country-badge {
-    display: inline-block;
-    background: var(--gold);
-    color: #0b0e14;
-    padding: 4px 20px;
-    border-radius: 30px;
-    font-weight: 700;
-    font-size: 0.9rem;
-    margin-top: 8px;
-}
-
-.dashboard-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 20px;
-}
-
-.dashboard-card {
-    background: var(--bg-card);
-    padding: 20px 15px;
-    border-radius: 16px;
-    border: 1px solid var(--border-color);
-    transition: all var(--transition);
-    box-shadow: var(--shadow);
-    cursor: pointer;
-    text-align: center;
-}
-
-.dashboard-card:hover {
-    transform: translateY(-8px);
-    border-color: var(--gold);
-    box-shadow: 0 12px 40px rgba(184, 134, 11, 0.2);
-}
-
-.dashboard-card .icon { font-size: 2.5rem; display: block; margin-bottom: 8px; }
-.dashboard-card h4 { color: var(--gold); font-size: 1.1rem; margin-bottom: 4px; }
-.dashboard-card p { color: var(--text-secondary); font-size: 0.8rem; }
-
-/* ============================================================
-   CHAT ROOM SECTION
+   ۱. بخش چت روم
    ============================================================ */
 .chat-room {
     display: none;
-    animation: slideDown 0.4s ease;
+    animation: fadeInUp 0.4s ease;
     margin: 20px 0 40px;
     min-height: 500px;
 }
 
-.chat-room.active { display: block; }
+.chat-room.active {
+    display: block;
+}
 
 .chat-container {
     display: flex;
@@ -125,7 +28,9 @@
     max-height: 600px;
 }
 
-/* لیست کاربران */
+/* ============================================================
+   ۲. لیست کاربران
+   ============================================================ */
 .chat-users {
     width: 280px;
     background: var(--bg-card);
@@ -134,6 +39,9 @@
     overflow-y: auto;
     flex-shrink: 0;
 }
+
+.chat-users::-webkit-scrollbar { width: 4px; }
+.chat-users::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 10px; }
 
 .chat-users .users-title {
     color: var(--gold);
@@ -151,6 +59,7 @@
     padding: 8px 12px;
     border-radius: 8px;
     margin-bottom: 2px;
+    transition: var(--transition);
 }
 
 .chat-users .user-item:hover { background: var(--bg-primary); }
@@ -169,7 +78,11 @@
 
 .chat-users .user-item .status-dot.offline { background: var(--offline-gray); }
 
-.chat-users .user-item .username { font-size: 0.9rem; color: var(--text-primary); font-weight: 500; }
+.chat-users .user-item .username {
+    font-size: 0.9rem;
+    color: var(--text-primary);
+    font-weight: 500;
+}
 
 .chat-users .user-item .user-role {
     font-size: 0.65rem;
@@ -189,7 +102,9 @@
     opacity: 0.5;
 }
 
-/* بخش پیام‌ها */
+/* ============================================================
+   ۳. بخش پیام‌ها
+   ============================================================ */
 .chat-main {
     flex: 1;
     display: flex;
@@ -212,27 +127,6 @@
     font-size: 1.1rem;
 }
 
-.chat-main .chat-header .chat-close {
-    background: var(--bg-card);
-    color: var(--text-secondary);
-    border: 1px solid var(--border-color);
-    border-radius: 50%;
-    width: 35px;
-    height: 35px;
-    font-size: 1.2rem;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: inherit;
-}
-
-.chat-main .chat-header .chat-close:hover {
-    transform: rotate(90deg);
-    border-color: var(--gold);
-    color: var(--gold);
-}
-
 .chat-messages {
     flex: 1;
     overflow-y: auto;
@@ -241,6 +135,9 @@
     flex-direction: column;
     gap: 10px;
 }
+
+.chat-messages::-webkit-scrollbar { width: 4px; }
+.chat-messages::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 10px; }
 
 .chat-messages .message {
     max-width: 75%;
@@ -298,9 +195,13 @@
     font-family: inherit;
     outline: none;
     margin: 0;
+    transition: all var(--transition);
 }
 
-.chat-input-area input:focus { border-color: var(--gold); }
+.chat-input-area input:focus {
+    border-color: var(--gold);
+    box-shadow: 0 0 20px rgba(184, 134, 11, 0.15);
+}
 
 .chat-input-area .send-btn {
     background: var(--gold);
@@ -316,20 +217,26 @@
     justify-content: center;
     flex-shrink: 0;
     font-family: inherit;
+    transition: all var(--transition);
 }
 
-.chat-input-area .send-btn:hover { transform: scale(1.05); }
+.chat-input-area .send-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 30px rgba(184, 134, 11, 0.3);
+}
 
 /* ============================================================
-   ADMIN PANEL
+   ۴. پنل مدیریت (Admin Panel)
    ============================================================ */
 .admin-panel {
     display: none;
-    animation: slideDown 0.4s ease;
+    animation: fadeInUp 0.4s ease;
     margin: 20px 0 40px;
 }
 
-.admin-panel.active { display: block; }
+.admin-panel.active {
+    display: block;
+}
 
 .admin-panel .admin-header {
     background: linear-gradient(135deg, var(--bg-card), var(--bg-secondary));
@@ -341,8 +248,16 @@
     box-shadow: var(--shadow);
 }
 
-.admin-panel .admin-header h2 { color: var(--gold); font-size: 1.8rem; }
-.admin-panel .admin-header p { color: var(--text-secondary); font-size: 1rem; margin-top: 5px; }
+.admin-panel .admin-header h2 {
+    color: var(--gold);
+    font-size: 1.8rem;
+}
+
+.admin-panel .admin-header p {
+    color: var(--text-secondary);
+    font-size: 1rem;
+    margin-top: 5px;
+}
 
 .admin-panel .admin-header .close-admin {
     margin-top: 12px;
@@ -355,9 +270,14 @@
     font-weight: 700;
     font-size: 0.9rem;
     font-family: inherit;
+    transition: all var(--transition);
 }
 
-.admin-panel .admin-header .close-admin:hover { border-color: var(--gold); color: var(--gold); }
+.admin-panel .admin-header .close-admin:hover {
+    border-color: var(--gold);
+    color: var(--gold);
+    transform: scale(1.05);
+}
 
 .admin-panel .admin-content {
     background: var(--bg-card);
@@ -367,7 +287,11 @@
     overflow-x: auto;
 }
 
-.admin-panel .admin-content h3 { color: var(--gold); margin-bottom: 15px; font-size: 1.2rem; }
+.admin-panel .admin-content h3 {
+    color: var(--gold);
+    margin-bottom: 15px;
+    font-size: 1.2rem;
+}
 
 .admin-panel .admin-content table {
     width: 100%;
@@ -410,166 +334,49 @@
     cursor: pointer;
     font-family: inherit;
     margin: 2px;
+    transition: all var(--transition);
 }
 
+.admin-panel .admin-content table .action-btn:hover { transform: scale(1.05); }
 .admin-panel .admin-content table .action-btn.delete { background: #ff4444; color: #fff; }
 .admin-panel .admin-content table .action-btn.make-admin { background: var(--admin-color); color: #fff; }
 .admin-panel .admin-content table .action-btn.remove-admin { background: var(--bg-card); color: var(--text-secondary); border: 1px solid var(--border-color); }
 
 /* ============================================================
-   LOGOUT OVERLAY
+   ۵. انیمیشن‌ها
    ============================================================ */
-.logout-overlay {
-    display: none;
-    position: fixed;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(0, 0, 0, 0.7);
-    z-index: 9997;
-    backdrop-filter: blur(8px);
-    justify-content: center;
-    align-items: center;
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
-
-.logout-overlay.active { display: flex; }
-
-.logout-box {
-    background: var(--bg-secondary);
-    padding: 40px 35px;
-    border-radius: 30px;
-    border: 2px solid var(--gold);
-    max-width: 450px;
-    width: 90%;
-    text-align: center;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
-}
-
-.logout-box .logout-icon { font-size: 4rem; display: block; margin-bottom: 15px; }
-.logout-box h3 { color: var(--text-primary); font-size: 1.3rem; margin-bottom: 10px; }
-.logout-box p { color: var(--text-secondary); font-size: 1rem; margin-bottom: 25px; }
-
-.logout-box .logout-buttons {
-    display: flex;
-    gap: 15px;
-    justify-content: center;
-    flex-wrap: wrap;
-}
-
-.logout-box .logout-buttons button {
-    padding: 10px 25px;
-    border: none;
-    border-radius: 30px;
-    font-size: 0.95rem;
-    font-weight: 700;
-    cursor: pointer;
-    font-family: inherit;
-}
-
-.logout-box .logout-buttons .btn-yes { background: #ff4444; color: #fff; }
-.logout-box .logout-buttons .btn-no { background: var(--bg-card); color: var(--text-primary); border: 1px solid var(--border-color); }
 
 /* ============================================================
-   SETTINGS OVERLAY
-   ============================================================ */
-.settings-overlay {
-    display: none;
-    position: fixed;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(0, 0, 0, 0.7);
-    z-index: 9996;
-    backdrop-filter: blur(5px);
-}
-
-.settings-overlay.active { display: block; }
-
-.settings-panel {
-    display: none;
-    position: fixed;
-    top: 50%; left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 9997;
-    max-width: 550px;
-    width: 90%;
-}
-
-.settings-panel.active { display: block; animation: slideDown 0.4s ease; }
-
-.settings-panel .form-box {
-    background: var(--bg-secondary);
-    padding: 35px 30px;
-    border-radius: 30px;
-    border: 2px solid var(--gold);
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
-    max-width: 100%;
-    position: relative;
-}
-
-.settings-panel .form-box .close-settings {
-    position: absolute;
-    top: 15px; left: 15px;
-    background: var(--bg-card);
-    color: var(--text-secondary);
-    border: 1px solid var(--border-color);
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
-    font-size: 1.2rem;
-    cursor: pointer;
-    font-family: inherit;
-}
-
-.settings-panel .form-box .close-settings:hover {
-    transform: rotate(90deg);
-    border-color: var(--gold);
-    color: var(--gold);
-}
-
-.settings-panel .form-box h3 {
-    color: var(--gold);
-    text-align: center;
-    margin-bottom: 20px;
-    font-size: 1.4rem;
-}
-
-.settings-panel .form-box .divider {
-    border: none;
-    border-top: 2px solid var(--border-color);
-    margin: 20px 0;
-}
-
-.settings-panel .form-box .settings-success {
-    background: rgba(68, 255, 136, 0.3);
-    color: #44ff88;
-    padding: 12px;
-    border-radius: 14px;
-    margin-top: 15px;
-    display: none;
-    font-weight: 700;
-    text-align: center;
-    border: 2px solid #44ff88;
-}
-
-.settings-panel .form-box .settings-success.show { display: block; }
-
-/* ============================================================
-   RESPONSIVE
+   ۶. ریسپانسیو
    ============================================================ */
 @media (max-width: 768px) {
-    .chat-container { flex-direction: column-reverse; max-height: none; }
-    .chat-users { width: 100%; border-left: none; border-top: 1px solid var(--border-color); max-height: 200px; }
+    .chat-container {
+        flex-direction: column-reverse;
+        max-height: none;
+    }
+    .chat-users {
+        width: 100%;
+        border-left: none;
+        border-top: 1px solid var(--border-color);
+        max-height: 200px;
+    }
     .chat-main { min-height: 400px; }
     .admin-panel .admin-content table { font-size: 0.75rem; min-width: 600px; }
-    .logout-box { padding: 30px 20px; }
 }
 
 @media (max-width: 650px) {
-    .settings-panel { width: 95%; }
-    .settings-panel .form-box { padding: 25px 15px; }
-    .logout-box .logout-buttons { flex-direction: column; }
-    .logout-box .logout-buttons button { width: 100%; }
     .chat-users { max-height: 150px; }
     .chat-main { min-height: 350px; }
-    .dashboard .welcome-banner { padding: 18px 15px; }
-    .dashboard .welcome-banner h2 { font-size: 1.4rem; }
 }
 
 @media (max-width: 480px) {
