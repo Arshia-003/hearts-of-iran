@@ -165,7 +165,8 @@ navLinks.forEach(link => {
         } else if (target === 'events') {
             showSection('home');
             setTimeout(() => {
-                $('eventsSection').scrollIntoView({ behavior: 'smooth' });
+                const eventsSection = $('eventsSection');
+                if (eventsSection) eventsSection.scrollIntoView({ behavior: 'smooth' });
             }, 100);
         }
     });
@@ -461,6 +462,12 @@ async function sendMessage() {
     if (!text) return;
     if (!currentUser) { alert('لطفاً ابتدا وارد شوید!'); return; }
 
+    const timedOut = getTimedOutUsers();
+    if (timedOut.includes(currentUser.username)) {
+        alert('⏰ شما توسط ادمین تایم‌اوت شده‌اید و نمی‌توانید پیام بفرستید!');
+        return;
+    }
+
     const data = await getData();
     const messages = data.messages || [];
 
@@ -713,29 +720,75 @@ async function loadAdminUsers() {
     container.innerHTML = html;
 }
 
+// ============================================================
+// DELETE USER (اصلاح شده - حذف کامل از دیتابیس)
+// ============================================================
 window.deleteUser = async function(username) {
     if (!canManageUsers(currentUser.username, username)) {
-        alert('شما دسترسی حذف این کاربر را ندارید!');
+        alert('❌ شما دسترسی حذف این کاربر را ندارید!');
         return;
     }
-    if (username === currentUser.username) { alert('نمیتوانید خودتان را حذف کنید!'); return; }
-    if (!confirm(`آیا از حذف کاربر "${username}" مطمئن هستید؟`)) return;
-    if (isOwner(username)) { alert('نمیتوانید مدیر اصلی را حذف کنید!'); return; }
+    if (username === currentUser.username) {
+        alert('❌ نمیتوانید خودتان را حذف کنید!');
+        return;
+    }
+    if (!confirm(`آیا از حذف کامل کاربر "${username}" مطمئن هستید؟`)) return;
+    if (isOwner(username)) {
+        alert('❌ نمیتوانید مدیر اصلی را حذف کنید!');
+        return;
+    }
 
-    const data = await getData();
-    const users = data.users || [];
-    const updatedUsers = users.filter(u => u.username !== username);
-    await updateData({ ...data, users: updatedUsers });
+    try {
+        // ===== مرحله ۱: حذف از دیتابیس JSONBin =====
+        const data = await getData();
+        let users = data.users || [];
+        
+        const userIndex = users.findIndex(u => u.username === username);
+        if (userIndex === -1) {
+            alert('❌ کاربر در دیتابیس پیدا نشد!');
+            return;
+        }
 
-    adminList = adminList.filter(u => u !== username);
-    saveAdminList();
+        // حذف کامل کاربر از آرایه
+        users.splice(userIndex, 1);
+        
+        // ذخیره در JSONBin
+        const result = await updateData({ ...data, users: users });
+        
+        if (!result) {
+            alert('❌ خطا در حذف کاربر از دیتابیس!');
+            return;
+        }
 
-    const timedOut = getTimedOutUsers().filter(u => u !== username);
-    saveTimedOutUsers(timedOut);
+        // ===== مرحله ۲: حذف از لیست ادمین‌ها =====
+        adminList = adminList.filter(u => u !== username);
+        saveAdminList();
 
-    loadAdminUsers();
-    loadChatUsers();
-    alert(`✅ کاربر "${username}" با موفقیت حذف شد!`);
+        // ===== مرحله ۳: حذف از لیست تایم‌اوت =====
+        const timedOut = getTimedOutUsers().filter(u => u !== username);
+        saveTimedOutUsers(timedOut);
+
+        // ===== مرحله ۴: حذف پیام‌های کاربر از چت =====
+        const freshData = await getData();
+        const messages = freshData.messages || [];
+        const filteredMessages = messages.filter(m => m.username !== username);
+        
+        if (filteredMessages.length !== messages.length) {
+            await updateData({ ...freshData, users: freshData.users, messages: filteredMessages });
+        }
+
+        // ===== مرحله ۵: رفرش کردن پنل مدیریت و چت =====
+        await loadAdminUsers();
+        if (chatSection.classList.contains('active')) {
+            await loadChatUsers();
+            await loadMessages();
+        }
+        
+        alert(`✅ کاربر "${username}" به طور کامل از دیتابیس حذف شد!`);
+    } catch (e) {
+        console.error('❌ خطا در حذف کاربر:', e);
+        alert('❌ خطا در حذف کاربر!');
+    }
 };
 
 window.makeAdmin = function(username) {
@@ -746,7 +799,7 @@ window.makeAdmin = function(username) {
         saveAdminList();
     }
     loadAdminUsers();
-    loadChatUsers();
+    if (chatSection.classList.contains('active')) loadChatUsers();
     alert(`✅ "${username}" به لیست ادمین‌ها اضافه شد!`);
 };
 
@@ -756,7 +809,7 @@ window.removeAdmin = function(username) {
     adminList = adminList.filter(u => u !== username);
     saveAdminList();
     loadAdminUsers();
-    loadChatUsers();
+    if (chatSection.classList.contains('active')) loadChatUsers();
     alert(`✅ ادمین بودن "${username}" لغو شد!`);
 };
 
@@ -846,7 +899,8 @@ settingsForm.addEventListener('submit', async function(e) {
     const newCountry = settingsCountry.value;
 
     let hasError = false;
-    let usersList = await getData().then(d => d.users || []);
+    const data = await getData();
+    const usersList = data.users || [];
 
     if (newUsername.length < 3) {
         settingsUsernameError.textContent = 'نام کاربری باید حداقل ۳ کاراکتر باشد.';
@@ -876,15 +930,13 @@ settingsForm.addEventListener('submit', async function(e) {
     }
 
     // آپدیت در JSONBin
-    const data = await getData();
-    const users = data.users || [];
-    const idx = users.findIndex(u => u.email === currentUser.email);
+    const idx = usersList.findIndex(u => u.email === currentUser.email);
 
     if (idx !== -1) {
-        users[idx].username = newUsername;
-        if (newPassword) users[idx].password = newPassword;
-        users[idx].country = newCountry;
-        await updateData({ ...data, users });
+        usersList[idx].username = newUsername;
+        if (newPassword) usersList[idx].password = newPassword;
+        usersList[idx].country = newCountry;
+        await updateData({ ...data, users: usersList });
     }
 
     const updatedUser = { ...currentUser, username: newUsername, country: newCountry };
