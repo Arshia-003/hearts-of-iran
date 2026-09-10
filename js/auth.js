@@ -2,9 +2,6 @@
 // AUTH - ثبت‌نام، ورود، تنظیمات
 // ============================================================
 
-// ============================================================
-// FORM VALIDATION
-// ============================================================
 function validateField(input, errorEl, condition, errorMsg) {
     if (!input || !errorEl) return false;
     if (!condition) {
@@ -21,9 +18,6 @@ function validateField(input, errorEl, condition, errorMsg) {
     }
 }
 
-// ============================================================
-// SWITCH BETWEEN REGISTER & LOGIN
-// ============================================================
 function initAuthSwitch() {
     const switchBtn = $('switchAuthBtn');
     if (!switchBtn) return;
@@ -63,9 +57,6 @@ function initAuthSwitch() {
     });
 }
 
-// ============================================================
-// FORM VALIDATION LISTENERS
-// ============================================================
 function initFormValidation() {
     const usernameInput = $('username');
     const emailInput = $('email');
@@ -102,16 +93,12 @@ function initFormValidation() {
     }
 }
 
-// ============================================================
-// REGISTER / LOGIN SUBMIT
-// ============================================================
 function initRegisterForm() {
     const form = $('registerForm');
     if (!form) return;
 
     form.addEventListener('submit', async function(e) {
         e.preventDefault();
-
         if (isLoginMode) {
             await handleLogin();
         } else {
@@ -120,12 +107,7 @@ function initRegisterForm() {
     });
 }
 
-// ============================================================
-// LOGIN
-// ============================================================
 async function handleLogin() {
-    console.log('🔐 شروع ورود...');
-
     const loginUsernameInput = $('loginUsername');
     const passwordInput = $('password');
     const loginSuccessMsg = $('loginSuccessMsg');
@@ -137,218 +119,4 @@ async function handleLogin() {
     const isPasswordValid = password.length >= 6;
 
     validateField(loginUsernameInput, $('loginUsernameError'), isLoginValid,
-        'لطفاً نام کاربری یا ایمیل خود را وارد کنید.');
-    validateField(passwordInput, $('passwordError'), isPasswordValid,
-        'رمز عبور باید حداقل ۶ کاراکتر باشد.');
-
-    if (!isLoginValid || !isPasswordValid) return;
-
-    const data = await getData();
-    const users = data.users || [];
-    const found = users.find(u =>
-        (u.username.toLowerCase() === identifier.toLowerCase() ||
-            u.email.toLowerCase() === identifier.toLowerCase()) &&
-        u.password === password
-    );
-
-    if (!found) {
-        loginUsernameInput.classList.add('error');
-        $('loginUsernameError').textContent = 'نام کاربری، ایمیل یا رمز عبور اشتباه است!';
-        $('loginUsernameError').classList.add('show');
-        loginSuccessMsg.classList.remove('show');
-        return;
-    }
-
-    currentUser = found;
-    saveSession(found.username);
-    await setUserOnline(found.username, true);
-
-    loginSuccessMsg.style.display = 'block';
-    loginSuccessMsg.textContent = '✅ ورود با موفقیت انجام شد!';
-    loginSuccessMsg.classList.add('show');
-    updateUIForUser();
-
-    setTimeout(() => {
-        loginSuccessMsg.classList.remove('show');
-        loginSuccessMsg.style.display = 'none';
-        console.log('👤 رفتن به پنل کاربری...');
-        showUserPanel();
-    }, 1200);
-}
-
-// ============================================================
-// REGISTER
-// ============================================================
-async function handleRegister() {
-    console.log('📝 شروع ثبت‌نام...');
-
-    const usernameInput = $('username');
-    const emailInput = $('email');
-    const passwordInput = $('password');
-    const countrySelect = $('country');
-    const successMsg = $('successMsg');
-
-    const username = usernameInput.value.trim();
-    const email = emailInput.value.trim();
-    const password = passwordInput.value;
-    const country = countrySelect.value;
-
-    const isUsernameValid = username.length >= 3;
-    const isEmailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-    const isPasswordValid = password.length >= 6;
-
-    validateField(usernameInput, $('usernameError'), isUsernameValid,
-        'نام کاربری باید حداقل ۳ کاراکتر باشد.');
-    validateField(emailInput, $('emailError'), isEmailValid,
-        'لطفاً یک ایمیل واقعی و معتبر وارد کنید.');
-    validateField(passwordInput, $('passwordError'), isPasswordValid,
-        'رمز عبور باید حداقل ۶ کاراکتر باشد.');
-
-    if (!isUsernameValid || !isEmailValid || !isPasswordValid) return;
-
-    const data = await getData();
-    const users = data.users || [];
-
-    if (users.some(u => u.username.toLowerCase() === username.toLowerCase())) {
-        usernameInput.classList.add('error');
-        $('usernameError').textContent = 'این نام کاربری قبلاً ثبت‌نام شده است!';
-        $('usernameError').classList.add('show');
-        return;
-    }
-
-    if (users.some(u => u.email.toLowerCase() === email.toLowerCase())) {
-        emailInput.classList.add('error');
-        $('emailError').textContent = 'این ایمیل قبلاً ثبت‌نام شده است!';
-        $('emailError').classList.add('show');
-        return;
-    }
-
-    const newUser = {
-        username,
-        email,
-        password,
-        country,
-        date: new Date().toLocaleDateString('fa-IR'),
-        online: true
-    };
-
-    users.push(newUser);
-    await updateData({ ...data, users });
-
-    currentUser = newUser;
-    saveSession(newUser.username);
-
-    successMsg.textContent = '✅ اکانت شما با موفقیت ساخته شد!';
-    successMsg.classList.add('show');
-    updateUIForUser();
-    $('registerForm').reset();
-
-    setTimeout(() => {
-        successMsg.classList.remove('show');
-        console.log('👤 رفتن به پنل کاربری (ثبت‌نام)...');
-        showUserPanel();
-    }, 1200);
-}
-
-// ============================================================
-// UI UPDATE FOR USER
-// ============================================================
-function updateUIForUser() {
-    const registerBtnNav = $('registerBtnNav');
-    const userBtnNav = $('userBtnNav');
-    const chatBtnNav = $('chatBtnNav');
-
-    if (currentUser) {
-        if (registerBtnNav) registerBtnNav.style.display = 'none';
-        if (userBtnNav) {
-            userBtnNav.classList.add('show');
-            userBtnNav.textContent = `👤 ${currentUser.username}`;
-        }
-        if (chatBtnNav) chatBtnNav.classList.add('show');
-    } else {
-        if (registerBtnNav) registerBtnNav.style.display = 'flex';
-        if (userBtnNav) userBtnNav.classList.remove('show');
-        if (chatBtnNav) chatBtnNav.classList.remove('show');
-    }
-}
-
-// ============================================================
-// SETTINGS
-// ============================================================
-function initSettings() {
-    const settingsForm = $('settingsForm');
-    if (!settingsForm) return;
-
-    settingsForm.addEventListener('submit', async function(e) {
-        e.preventDefault();
-        if (!currentUser) { alert('لطفاً ابتدا وارد شوید!'); return; }
-
-        const newUsername = $('settingsUsername').value.trim();
-        const newPassword = $('settingsPassword').value.trim();
-        const newCountry = $('settingsCountry').value;
-
-        let hasError = false;
-        const data = await getData();
-        const usersList = data.users || [];
-
-        if (newUsername.length < 3) {
-            $('settingsUsernameError').textContent = 'نام کاربری باید حداقل ۳ کاراکتر باشد.';
-            $('settingsUsernameError').classList.add('show');
-            hasError = true;
-        } else if (newUsername !== currentUser.username &&
-            usersList.some(u => u.username.toLowerCase() === newUsername.toLowerCase())) {
-            $('settingsUsernameError').textContent = 'این نام کاربری قبلاً ثبت شده است!';
-            $('settingsUsernameError').classList.add('show');
-            hasError = true;
-        } else {
-            $('settingsUsernameError').classList.remove('show');
-        }
-
-        if (newPassword && newPassword.length < 6) {
-            $('settingsPasswordError').textContent = 'رمز عبور باید حداقل ۶ کاراکتر باشد.';
-            $('settingsPasswordError').classList.add('show');
-            hasError = true;
-        } else {
-            $('settingsPasswordError').classList.remove('show');
-        }
-
-        if (hasError) return;
-
-        const idx = usersList.findIndex(u => u.email === currentUser.email);
-        if (idx !== -1) {
-            usersList[idx].username = newUsername;
-            if (newPassword) usersList[idx].password = newPassword;
-            usersList[idx].country = newCountry;
-        }
-
-        const admins = data.admins || [];
-        const adminIdx = admins.indexOf(currentUser.username);
-        if (adminIdx !== -1) admins[adminIdx] = newUsername;
-
-        await updateData({ ...data, users: usersList, admins });
-
-        const updatedUser = { ...currentUser, username: newUsername, country: newCountry };
-        if (newPassword) updatedUser.password = newPassword;
-        currentUser = updatedUser;
-        saveSession(newUsername);
-
-        updateUIForUser();
-        if (typeof showUserPanel === 'function') showUserPanel();
-
-        $('settingsSuccess').classList.add('show');
-        setTimeout(() => {
-            $('settingsSuccess').classList.remove('show');
-            if (typeof closeSettings === 'function') closeSettings();
-        }, 2000);
-    });
-}
-
-// ============================================================
-// INIT AUTH
-// ============================================================
-function initAuth() {
-    initAuthSwitch();
-    initFormValidation();
-    initRegisterForm();
-    initSettings();
-}
+        'لطفاً
