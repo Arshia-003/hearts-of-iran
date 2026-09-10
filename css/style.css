@@ -1,5 +1,5 @@
 /* ============================================================
-   RESET & BASE (مشترک بین همه صفحات)
+   RESET & BASE
    ============================================================ */
 * {
     margin: 0;
@@ -51,7 +51,7 @@ body {
 ::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 10px; }
 
 /* ============================================================
-   NAVBAR (مشترک)
+   NAVBAR
    ============================================================ */
 nav {
     background: var(--bg-secondary);
@@ -78,6 +78,7 @@ nav {
     display: flex;
     align-items: center;
     gap: 8px;
+    animation: slideInFromRight 0.6s ease;
 }
 
 .nav-center {
@@ -109,46 +110,186 @@ nav a {
 nav a:hover { color: var(--gold-light); transform: scale(1.05); }
 nav a.active { color: var(--gold-light); background: var(--bg-card); border-radius: 8px; }
 
+/* ============================================================
+   NAVBAR BUTTONS
+   ============================================================ */
+.register-btn-nav {
+    background: linear-gradient(45deg, var(--gold), var(--gold-light));
+    color: #0b0e14;
+    border: none;
+    border-radius: 50px;
+    padding: 8px 20px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all var(--transition);
+    font-weight: 900;
+    font-family: inherit;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    position: relative;
+    overflow: hidden;
+    animation: pulseButton 2s infinite;
+    box-shadow: 0 4px 15px rgba(184, 134, 11, 0.3);
+}
+
+.register-btn-nav::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+    transition: left 0.5s ease;
+}
+
+.register-btn-nav:hover::before {
+    left: 100%;
+}
+
+.register-btn-nav:hover {
+    transform: scale(1.08);
+    box-shadow: 0 0 25px var(--gold), 0 0 50px rgba(184, 134, 11, 0.5);
+    animation: none;
+}
+
+.user-btn-nav {
+    background: linear-gradient(45deg, var(--gold), var(--gold-light));
+    color: #0b0e14;
+    border: none;
+    border-radius: 50px;
+    padding: 8px 20px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all var(--transition);
+    font-weight: 900;
+    font-family: inherit;
+    white-space: nowrap;
+    display: none;
+    align-items: center;
+    gap: 6px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(184, 134, 11, 0.3);
+}
+
+.user-btn-nav::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+    transition: left 0.5s ease;
+}
+
+.user-btn-nav:hover::before {
+    left: 100%;
+}
+
+.user-btn-nav:hover {
+    transform: scale(1.08);
+    box-shadow: 0 0 25px var(--gold), 0 0 50px rgba(184, 134, 11, 0.5);
+}
+
+.user-btn-nav.show {
+    display: flex;
+}
+
+.chat-btn-nav {
+    background: var(--bg-card);
+    color: var(--text-primary);
+    border: 2px solid var(--gold);
+    border-radius: 50px;
+    padding: 6px 16px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all var(--transition);
+    font-weight: 900;
+    display: none;
+    align-items: center;
+    gap: 6px;
+    font-family: inherit;
+    white-space: nowrap;
+    position: relative;
+    overflow: hidden;
+}
+
+.chat-btn-nav::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(184, 134, 11, 0.3), transparent);
+    transition: left 0.5s ease;
+}
+
+.chat-btn-nav:hover::before {
+    left: 100%;
+}
+
+.chat-btn-nav:hover {
+    transform: scale(1.08);
+    border-color: var(--gold-light);
+    color: var(--gold-light);
+    box-shadow: 0 0 25px var(--gold), 0 0 50px rgba(184, 134, 11, 0.4);
+}
+
+.chat-btn-nav.show {
+    display: flex;
+}
+
 .theme-toggle-nav {
     background: var(--bg-card);
     color: var(--text-primary);
     border: 2px solid var(--gold);
     border-radius: 50px;
-    padding: 6px 14px;
+    padding: 6px 16px;
     font-size: 0.9rem;
     cursor: pointer;
-    font-weight: 700;
+    transition: all var(--transition);
+    font-weight: 900;
     display: flex;
     align-items: center;
     gap: 6px;
     font-family: inherit;
+    white-space: nowrap;
+    position: relative;
+    overflow: hidden;
 }
 
-.theme-toggle-nav:hover { transform: scale(1.05); border-color: var(--gold-light); box-shadow: 0 0 20px var(--gold); }
-
-.user-btn-nav {
-    background: var(--gold);
-    color: #0b0e14;
-    border: none;
-    border-radius: 50px;
-    padding: 6px 18px;
-    font-size: 0.9rem;
-    cursor: pointer;
-    font-weight: 700;
-    font-family: inherit;
-    display: none;
-    align-items: center;
-    gap: 6px;
+.theme-toggle-nav::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(184, 134, 11, 0.3), transparent);
+    transition: left 0.5s ease;
 }
 
-.user-btn-nav:hover { transform: scale(1.05); box-shadow: 0 0 20px var(--gold); }
-.user-btn-nav.show { display: flex; }
+.theme-toggle-nav:hover::before {
+    left: 100%;
+}
+
+.theme-toggle-nav:hover {
+    transform: scale(1.08);
+    border-color: var(--gold-light);
+    color: var(--gold-light);
+    box-shadow: 0 0 25px var(--gold);
+}
 
 /* ============================================================
-   BUTTONS & FORMS (مشترک)
+   BUTTONS & FORMS
    ============================================================ */
 .btn {
-    background: var(--gold);
+    background: linear-gradient(45deg, var(--gold), var(--gold-light));
     color: #0b0e14;
     font-weight: 900;
     padding: 14px 28px;
@@ -159,12 +300,30 @@ nav a.active { color: var(--gold-light); background: var(--bg-card); border-radi
     transition: all var(--transition);
     width: 100%;
     font-family: inherit;
+    letter-spacing: 1px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(184, 134, 11, 0.3);
+}
+
+.btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+    transition: left 0.6s ease;
+}
+
+.btn:hover::before {
+    left: 100%;
 }
 
 .btn:hover {
-    background: var(--gold-light);
     transform: scale(1.03);
-    box-shadow: 0 0 40px rgba(245, 215, 123, 0.4);
+    box-shadow: 0 0 30px var(--gold), 0 0 60px rgba(184, 134, 11, 0.4);
 }
 
 input, select {
@@ -217,7 +376,7 @@ label { font-weight: 700; color: var(--gold); font-size: 0.95rem; display: block
 .success-msg.show { display: block; }
 
 /* ============================================================
-   HEADER (مشترک)
+   HEADER
    ============================================================ */
 .hero {
     background: radial-gradient(ellipse at bottom, var(--bg-secondary) 0%, var(--bg-primary) 100%);
@@ -229,6 +388,7 @@ label { font-weight: 700; color: var(--gold); font-size: 0.95rem; display: block
 }
 
 .hero h1 {
+    font-family: 'Orbitron', sans-serif;
     font-size: 2.8rem;
     font-weight: 900;
     background: linear-gradient(45deg, var(--gold-light), var(--gold));
@@ -253,20 +413,71 @@ label { font-weight: 700; color: var(--gold); font-size: 0.95rem; display: block
     font-size: 1rem;
     letter-spacing: 2px;
     margin-bottom: 12px;
+    animation: pulseGlow 2s infinite;
 }
 
 /* ============================================================
-   RESPONSIVE (مشترک)
+   ANIMATIONS
+   ============================================================ */
+@keyframes pulseButton {
+    0%, 100% {
+        box-shadow: 0 0 0 0 rgba(184, 134, 11, 0.7);
+    }
+    50% {
+        box-shadow: 0 0 0 10px rgba(184, 134, 11, 0);
+    }
+}
+
+@keyframes pulseGlow {
+    0%, 100% {
+        box-shadow: 0 0 20px var(--gold);
+    }
+    50% {
+        box-shadow: 0 0 50px var(--gold-light);
+    }
+}
+
+@keyframes slideInFromRight {
+    from {
+        opacity: 0;
+        transform: translateX(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ============================================================
+   RESPONSIVE
    ============================================================ */
 @media (max-width: 768px) {
     .nav-container { flex-direction: column; gap: 10px; padding: 5px 0; }
-    .nav-left { position: relative; right: auto; }
+    .nav-left { position: relative; right: auto; flex-wrap: wrap; justify-content: center; }
     .nav-right { position: relative; left: auto; }
     .nav-center { gap: 8px; justify-content: center; }
-    .theme-toggle-nav, .user-btn-nav { font-size: 0.75rem; padding: 4px 12px; }
+    .register-btn-nav, .user-btn-nav, .chat-btn-nav, .theme-toggle-nav {
+        font-size: 0.75rem;
+        padding: 5px 12px;
+    }
 }
 
 @media (max-width: 480px) {
     .hero h1 { font-size: 1.6rem; }
     nav a { font-size: 0.7rem; padding: 3px 6px; }
+    .register-btn-nav, .user-btn-nav, .chat-btn-nav, .theme-toggle-nav {
+        font-size: 0.7rem;
+        padding: 4px 10px;
+    }
 }
